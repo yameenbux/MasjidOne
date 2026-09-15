@@ -90,9 +90,13 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    once (waived on twelve months prepaid), 0% commission on donations. Do not
    invent tiers, discounts or "from £" phrasing.
    **Never discount the monthly — waive the setup fee instead.** The pricing
-   toggle enforces this: `price` and `yearlyPrice` are identical for both
-   monthly plans, and only the setup card moves, £499 to £0. If you ever see
-   those two differ on a monthly plan, that is a bug.
+   toggle shows the same rate two ways, and the invariant is arithmetic:
+   for a plan whose `period` is `month`, `yearlyPrice` must be exactly
+   `price × 12` (£79 → £948, £179 → £2,148). Anything less than 12× is a
+   discount on the monthly and is wrong. Only the setup card genuinely
+   falls, £499 → £0.
+   In the yearly view each card also prints its monthly rate underneath, so
+   a twelve-month total cannot be misread as a price rise. Keep that line.
 4. **Do not name competitors on the public site.** The comparison happens in
    the room, not on the page.
 5. **No customer is named.** The Bolton reference mosque has not signed its

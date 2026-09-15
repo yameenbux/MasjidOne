@@ -5,17 +5,21 @@ import { Pricing } from "@/components/ui/pricing";
 /**
  * MasjidOne's real published prices.
  *
- * `yearlyPrice` is what the toggle switches to. The monthly plans are
- * deliberately identical in both states — MasjidOne never discounts the
- * monthly, it waives the setup fee. So the only figure that moves is the
- * setup card, £499 to £0, which is what the toggle actually means.
+ * `yearlyPrice` must be exactly `price` x 12 for the monthly plans. That is
+ * the same monthly rate shown as a twelve-month total, not a cheaper one —
+ * MasjidOne never discounts the monthly, it waives the setup fee. The setup
+ * card is the only figure that actually falls, £499 to £0.
+ *
+ *   Madrasah         79 x 12 =   948
+ *   Masjid Complete 179 x 12 = 2,148
  */
 const masjidOnePlans = [
   {
     name: "MADRASAH",
     price: "79",
-    yearlyPrice: "79",
+    yearlyPrice: "948",
     period: "month",
+    yearlyPeriod: "year",
     features: [
       "Unlimited students and teachers",
       "Registers, Hifz and sabaq progress",
@@ -32,8 +36,9 @@ const masjidOnePlans = [
   {
     name: "MASJID COMPLETE",
     price: "179",
-    yearlyPrice: "179",
+    yearlyPrice: "2148",
     period: "month",
+    yearlyPeriod: "year",
     features: [
       "Everything in Madrasah",
       "Congregation app with jamāʿah reminders",
@@ -52,6 +57,7 @@ const masjidOnePlans = [
     price: "499",
     yearlyPrice: "0",
     period: "once",
+    yearlyPeriod: "once",
     features: [
       "Your existing data imported",
       "Prayer hall screens configured",

@@ -17,6 +17,8 @@ interface PricingPlan {
   price: string;
   yearlyPrice: string;
   period: string;
+  /** EDIT: the period label when twelve months are prepaid, e.g. "year". */
+  yearlyPeriod?: string;
   features: string[];
   description: string;
   buttonText: string;
@@ -188,7 +190,9 @@ export function Pricing({
                 </span>
                 {plan.period !== "Next 3 months" && (
                   <span className="text-sm font-semibold leading-6 tracking-wide text-muted-foreground">
-                    / {plan.period}
+                    {/* EDIT: the unit changes with the toggle — per month
+                        when billed monthly, per year when prepaid. */}
+                    / {isMonthly ? plan.period : plan.yearlyPeriod ?? plan.period}
                   </span>
                 )}
               </div>
@@ -203,7 +207,7 @@ export function Pricing({
                     : "waived"
                   : isMonthly
                     ? "billed monthly"
-                    : "twelve months prepaid"}
+                    : `£${plan.price} a month, paid twelve months up front`}
               </p>
 
               <ul className="mt-5 gap-2 flex flex-col">
