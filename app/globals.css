@@ -93,6 +93,8 @@
   --ink:#12201A; --ink-2:#4E5F57;
   --rule:#D5D1C4; --rule-2:#B4AE9D;
   --cta-bg:#0C2A21; --cta-fg:#F3F1EA;
+  /* Spinning-border CTA. Existing palette values only. */
+  --beam:#C0A46A; --beam-rim:#2C4C40; --beam-sheen:#2C4C40;
   --btn-fill:#C0A46A; --btn-fill-fg:#0C2A21;
   color-scheme:light;
 }
@@ -105,6 +107,8 @@
     --ink:#E9E5D9; --ink-2:#92A49B;
     --rule:#1D322A; --rule-2:#2B4438;
     --cta-bg:#C9A567; --cta-fg:#081513;
+  --beam:#E7E3D7; --beam-rim:#8C7240; --beam-sheen:#E7E3D7;
+    --beam:#E7E3D7; --beam-rim:#8C7240; --beam-sheen:#E7E3D7;
     --btn-fill:#0E241C; --btn-fill-fg:#C9A567;
     color-scheme:dark;
   }
@@ -534,7 +538,35 @@ ul{margin:0;padding:0;list-style:none}
    footer are one dark block. */
 .ftr{background:var(--board);color:var(--board-ink-2);padding-block:var(--s4);
   border-top:var(--hair) solid var(--board-rule);font-size:var(--t-small)}
-.ftr__in{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center}
+.ftr__in{display:flex;flex-direction:column;gap:var(--s3)}
+.ftr__cols{display:grid;gap:var(--s3);align-items:start}
+@media (min-width:44em){.ftr__cols{grid-template-columns:minmax(0,1fr) auto;gap:var(--s4)}}
+.ftr__brandcol{display:grid;gap:var(--s1);max-width:38ch}
+.ftr .brand{color:var(--board-ink)}
+.ftr__blurb{color:var(--board-ink-2)}
+.ftr__legal{color:var(--board-ink-2);font-size:var(--t-label);line-height:1.8;
+  letter-spacing:.04em;margin-top:var(--s1)}
+.ftr__links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3) var(--s4)}
+.ftr__head{font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;
+  font-variation-settings:"wdth" 82,"wght" 600;color:var(--board-brass);
+  margin:0 0 .7rem;font-family:inherit;font-weight:inherit}
+.ftr__list{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+.ftr__list a{color:var(--board-ink-2);text-decoration:none;
+  transition:color .2s ease;display:inline-block}
+.ftr__list a:hover,.ftr__list a:focus-visible{color:var(--board-ink)}
+
+/* The oversized wordmark. Clipped by its own container so a long name can
+   never push the page sideways, and it fades into the board it sits on. */
+.ftr__wordmark{overflow:hidden;line-height:.78;user-select:none;
+  margin-top:var(--s2);border-top:var(--hair) solid var(--board-rule);
+  padding-top:var(--s3)}
+.ftr__wordmark span{
+  display:block;font-family:var(--font-newsreader),Georgia,serif;font-weight:400;
+  font-size:clamp(2.6rem,16.5vw,10rem);letter-spacing:-.035em;white-space:nowrap;
+  background-image:linear-gradient(to bottom,var(--board-rule),var(--board));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.ftr__wordmark i{font-style:italic}
 .ftr p{margin:0}
 .to-top{
   margin-left:auto;display:inline-flex;align-items:center;gap:.5rem;
