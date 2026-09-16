@@ -550,7 +550,7 @@ html:not(.js) .stack__hint{display:none}
 .cmp tbody tr:last-child .is-featured{border-bottom:var(--hair) solid var(--rule-2)}
 
 /* ============================================================
-   MODULES DIAGRAM — five modules, one hub
+   MODULES DIAGRAM — six modules, one hub
    ============================================================ */
 .dgm{margin:var(--s4) 0 var(--s5);padding:0}
 
@@ -561,17 +561,17 @@ html:not(.js) .stack__hint{display:none}
 .dgm__stage{position:relative;display:flex;align-items:center;justify-content:center}
 .dgm__band{display:flex;flex-direction:column;gap:var(--s5);width:100%}
 @media (min-width:52em){
-  .dgm__stage{min-height:36rem;padding-block:var(--s4)}
+  .dgm__stage{min-height:42rem;padding-block:var(--s4)}
   /* Held well inside the measure. Pinning the columns to the page edges
      stretches the beams into near-straight lines; the sweep needs the nodes
      clustered and the space around them empty. */
   .dgm__band{flex-direction:row;align-items:stretch;justify-content:space-between;
-    gap:var(--s3);height:23rem;max-width:64rem}
+    gap:var(--s3);height:30rem;max-width:64rem}
 }
 
 .dgm__col{display:flex;flex-direction:column;align-items:center;gap:var(--s4);min-width:0}
 @media (min-width:52em){
-  .dgm__col{position:relative;padding-top:1.8rem;justify-content:space-around;
+  .dgm__col{position:relative;padding-top:2.2rem;justify-content:space-between;
     gap:0;flex:0 0 16rem}
   .dgm__col--right{justify-content:space-between}
 }

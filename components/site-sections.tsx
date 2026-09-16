@@ -146,7 +146,7 @@ export function Modules() {
   return (
 <section className="sect wrap" id="what">
   <p className="eyebrow eyebrow--brass rv">What it runs</p>
-  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>Five modules, one record of the family.</h2>
+  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>Six modules, one record of the family.</h2>
 
   <div className="rv" style={{ "--i": "2" } as React.CSSProperties}>
     <MasjidOneModulesDiagram />

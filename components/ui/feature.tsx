@@ -144,6 +144,31 @@ export default function LayoutAnimation() {
   )
 }
 
+/** Scope: three bands of access, one lit at a time. Deliberately unlabelled —
+ *  naming the teacher and parent roles here would imply they ship today. */
+function ScopeBands() {
+  const reduced = useReducedMotion()
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    if (reduced) return
+    const id = setInterval(() => setI((p) => (p + 1) % 3), 1100)
+    return () => clearInterval(id)
+  }, [reduced])
+  return (
+    <div className="flex flex-col justify-center h-full gap-3 w-full max-w-[150px] mx-auto">
+      {[40, 70, 100].map((w, r) => (
+        <motion.div
+          key={w}
+          className="h-2 rounded-full bg-primary/20"
+          style={{ width: `${w}%` }}
+          animate={{ opacity: r === i ? 1 : 0.25 }}
+          transition={{ duration: 0.5, ease: EASE }}
+        />
+      ))}
+    </div>
+  )
+}
+
 /** 0% commission — a committed fact, in the block's scaling-type shape. */
 function CommissionMark() {
   const reduced = useReducedMotion()
@@ -205,6 +230,16 @@ const CARDS: Card[] = [
     status: "Live",
     body: "A managed mosque website kept current from the same place as everything else, and unlimited screens on any TV with a browser. Live announcements and janāzah notices reach the hall and the phone together.",
     Visual: LayoutAnimation,
+  },
+  {
+    key: "roles",
+    title: "Committee and roles",
+    status: "Live",
+    // Live describes the congregation side, which is what exists. The madrasah
+    // roles depend on the portal, so they are named as arriving rather than
+    // folded in as though they already work.
+    body: "Access set by role, not by a shared password. Who can change the jamāʿah times, who can publish an announcement or a janāzah notice, who can see the donation figures. The committee sees committee-level data; nobody sees everything by default. Teacher and parent roles arrive with the madrasah portal.",
+    Visual: ScopeBands,
   },
   {
     key: "giving",
