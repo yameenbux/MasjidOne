@@ -9,14 +9,17 @@ import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
  * a device MasjidOne runs on with what that device shows.
  *
  * Every card is a real screen of a shipped product, used with Taiyabah Masjid's
- * permission (given 16 September 2026). There are deliberately no
- * madrasah-portal or parent-access cards: those modules are not built, and an
- * invented screen for them would be the page's biggest untrue claim. They join
- * the stack when they exist.
+ * permission (given 16 September 2026). Filenames are exactly as uploaded —
+ * do not rename them, the references here follow the files rather than the
+ * other way round.
  *
- * The captures are supplied separately. Drop them in `public/devices/` under
- * the filenames below and they appear; until then each card shows a labelled
- * frame rather than a broken image, so the page is never embarrassing.
+ * There are deliberately no madrasah-portal or parent-access cards: those
+ * modules are not built, and an invented screen for them would be the page's
+ * biggest untrue claim. They join the stack when they exist.
+ *
+ * Card sizes are set so each one's vw/vh ratio roughly matches its image, since
+ * `object-fit: cover` crops the difference. 16:9 display captures get wide
+ * cards, 9:16 and phone captures get tall ones.
  *
  * NEXT_PUBLIC_BASE_PATH is prefixed by hand. `next/image` is not in use here
  * (the export is unoptimised anyway) and a plain <img src="/devices/..."> would
@@ -27,108 +30,115 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const img = (file: string) => `${BASE}/devices/${file}`;
 
 const CARDS: StackSpreadCard[] = [
-  // Landscape hall screen — the widest card, and the one that proves the most.
+  // Prayer hall screen, landscape — 1920x1080
   {
     item: {
-      src: img("hall-screen.png"),
-      alt: "A prayer hall screen: the live clock, the next jamāʿah countdown, and today's begins and jamāʿah times",
+      src: img("timetable_landscape_raw.png"),
+      alt: "A prayer hall screen: the live clock, the next jamāʿah countdown, and today's beginning and jamāʿah times",
       caption: "Prayer hall screen",
       status: "live",
     },
     stackOffset: { x: -8, y: -10 },
     stackRotate: -12,
-    target: { x: -28, y: -30, rotate: 0, scale: 1, w: 30, h: 24 },
+    target: { x: -30, y: -30, rotate: 0, scale: 1, w: 30, h: 27 },
     targetSm: { x: -22, y: -40 },
     z: 2,
   },
+  // The same timetable, portrait — 1080x1920
   {
     item: {
-      src: img("hall-screen-portrait.png"),
-      alt: "The same hall screen in portrait, for a wall-mounted display",
+      src: img("timetable_portrait_raw.png"),
+      alt: "The same timetable on a portrait wall-mounted display",
       caption: "Hall screen · portrait",
       status: "live",
     },
     stackOffset: { x: 14, y: -10 },
     stackRotate: 15,
-    target: { x: 33, y: -28, rotate: 0, scale: 1, w: 14, h: 34 },
+    target: { x: 36, y: -24, rotate: 0, scale: 1, w: 12, h: 30 },
     targetSm: { x: 22, y: -40 },
     z: 3,
   },
+  // Website on a laptop — 3000x2040
   {
     item: {
-      src: img("website.png"),
+      src: img("taiyabah-website-laptop.png"),
       alt: "The managed mosque website on a laptop, with prayer times in the header",
       caption: "Managed website",
       status: "live",
     },
     stackOffset: { x: -16, y: 2 },
     stackRotate: -5,
-    target: { x: -36, y: 6, rotate: 0, scale: 1, w: 26, h: 24 },
+    target: { x: -34, y: 10, rotate: 0, scale: 1, w: 28, h: 28 },
     targetSm: { x: -22, y: -19 },
     z: 4,
   },
+  // App · prayer times — 1179x2556
   {
     item: {
-      src: img("app-prayer-times.png"),
+      src: img("times.png"),
       alt: "The congregation app showing beginning and jamāʿah times side by side",
       caption: "Congregation app · the masjid's own times",
       status: "live",
     },
     stackOffset: { x: 1, y: -10 },
     stackRotate: -2,
-    target: { x: 4, y: -32, rotate: 0, scale: 1, w: 13, h: 32 },
+    target: { x: -14, y: -38, rotate: 0, scale: 1, w: 11, h: 28 },
     targetSm: { x: 22, y: -19 },
     z: 5,
   },
+  // Foyer appeal screen, landscape — 1920x1080
   {
     item: {
-      src: img("newbuild-desktop.png"),
-      alt: "The new build appeal page, with the phases so far and how to give",
-      caption: "Appeal pages",
+      src: img("foyer_landscape_raw.png"),
+      alt: "A foyer screen running the new build appeal, with the phases so far and how to give",
+      caption: "Foyer screen · appeals",
       status: "live",
     },
     stackOffset: { x: 18, y: 2 },
     stackRotate: 7,
-    target: { x: 34, y: 10, rotate: 0, scale: 1, w: 26, h: 22 },
+    target: { x: 34, y: 14, rotate: 0, scale: 1, w: 26, h: 23 },
     targetSm: { x: 22, y: 20 },
     z: 6,
   },
+  // App · giving — 1179x2556
   {
     item: {
-      src: img("app-giving.png"),
+      src: img("donate.png"),
       alt: "Giving in the app, with Apple Pay and Google Pay, at 0% commission",
       caption: "Donations · 0% commission",
       status: "live",
     },
     stackOffset: { x: -6, y: 10 },
     stackRotate: 5,
-    target: { x: -20, y: 34, rotate: 0, scale: 1, w: 13, h: 30 },
+    target: { x: -18, y: 38, rotate: 0, scale: 1, w: 11, h: 28 },
     targetSm: { x: -22, y: 20 },
     z: 7,
   },
+  // App · madrasah curriculum — 1179x2556
   {
     item: {
-      src: img("app-madrasah.png"),
+      src: img("curriculum.png"),
       alt: "The madrasah curriculum in the app: what students learn, by subject",
       caption: "Madrasah · what is taught",
       status: "live",
     },
     stackOffset: { x: 8, y: 8 },
     stackRotate: 3,
-    target: { x: 2, y: 36, rotate: 0, scale: 1, w: 13, h: 30 },
+    target: { x: 16, y: 38, rotate: 0, scale: 1, w: 11, h: 28 },
     targetSm: { x: -22, y: 40 },
     z: 8,
   },
+  // App · everyday duʿās — 1179x2556
   {
     item: {
-      src: img("app-duas.png"),
+      src: img("duas.png"),
       alt: "Everyday duʿās in the app, by occasion, with transliteration",
       caption: "Everyday duʿās",
       status: "live",
     },
     stackOffset: { x: 20, y: 12 },
     stackRotate: -8,
-    target: { x: 22, y: 34, rotate: 0, scale: 1, w: 13, h: 30 },
+    target: { x: 14, y: -38, rotate: 0, scale: 1, w: 11, h: 28 },
     targetSm: { x: 22, y: 40 },
     z: 9,
   },

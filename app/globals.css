@@ -93,6 +93,9 @@
   --ink:#12201A; --ink-2:#4E5F57;
   --rule:#D5D1C4; --rule-2:#B4AE9D;
   --cta-bg:#0C2A21; --cta-fg:#F3F1EA;
+  /* Scrim under a caption sitting on a screenshot. Theme-invariant on purpose:
+     it darkens photography, not the page, so it does not flip with the theme. */
+  --shade-1:rgb(0 0 0 / .72); --shade-2:rgb(0 0 0 / .45);
   /* Spinning-border CTA. Existing palette values only. */
   --beam:#C0A46A; --beam-rim:#2C4C40; --beam-sheen:#2C4C40;
   --btn-fill:#C0A46A; --btn-fill-fg:#0C2A21;
@@ -281,15 +284,13 @@ ul{margin:0;padding:0;list-style:none}
   align-items:center;justify-content:center;gap:var(--s2);
   padding-inline:var(--s3);text-align:center;pointer-events:none;
 }
-.stack__copy > *{pointer-events:auto;position:relative;z-index:1}
-/* A soft wash of the page colour so the headline stays legible over the
-   clustered cards. Fades away as they scatter is unnecessary — it is the same
-   colour as the ground, so it is invisible once nothing sits behind it. */
-.stack__copy::before{
-  content:"";position:absolute;left:50%;top:50%;translate:-50% -50%;
-  width:min(74rem,120%);height:min(40rem,110%);z-index:0;pointer-events:none;
-  background:radial-gradient(closest-side,var(--paper) 0%,var(--paper) 58%,transparent 100%);
+.stack__copy > *{pointer-events:auto}
+.stack__scrim{
+  position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:9;
+  width:min(62rem,92vw);height:min(34rem,64vh);pointer-events:none;
+  background:radial-gradient(closest-side,var(--paper) 0%,var(--paper) 46%,transparent 100%);
 }
+html:not(.js) .stack__scrim{display:none}
 .stack__eyebrow{justify-content:center}
 .stack__eyebrow::after{display:none}
 .stack__h1{
@@ -305,19 +306,25 @@ ul{margin:0;padding:0;list-style:none}
 
 .stack__cards{position:absolute;inset:0;z-index:1}
 .stack-card{position:absolute;left:50%;top:50%;will-change:transform}
-.stack-card__face{margin:0;height:100%;width:100%;display:flex;
-  flex-direction:column;gap:.5rem}
-.stack-card__face img{flex:1;min-height:0;width:100%;object-fit:cover;
-  border:var(--hair) solid var(--rule-2);background:var(--paper-2);display:block}
+.stack-card__face{margin:0;height:100%;width:100%;position:relative;
+  border:var(--hair) solid var(--rule-2);background:var(--paper-2);overflow:hidden}
+.stack-card__face img{position:absolute;inset:0;height:100%;width:100%;
+  object-fit:cover;display:block}
 .stack-card__pending{
-  flex:1;min-height:0;display:grid;place-items:center;padding:1rem;
+  position:absolute;inset:0;display:grid;place-items:center;padding:1rem;
   border:var(--hair) dashed var(--rule-2);background:var(--paper-2);
   color:var(--ink-2);font-size:var(--t-label);letter-spacing:.1em;
   text-transform:uppercase;text-align:center;font-variation-settings:"wdth" 82,"wght" 600;
 }
-.stack-card__cap{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
-  justify-content:center;font-size:var(--t-label);color:var(--ink-2);
-  letter-spacing:.06em;text-align:center}
+/* The caption sits inside the card. Below it, captions collided with the
+   headline and with each other once the stack spread out. */
+.stack-card__cap{position:absolute;left:0;right:0;bottom:0;
+  display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;justify-content:center;
+  padding:.5rem .6rem;font-size:var(--t-label);letter-spacing:.06em;
+  text-align:center;color:var(--board-ink);
+  background:linear-gradient(to top,var(--shade-1),var(--shade-2) 60%,transparent);
+}
+.stack-card__cap .tag{color:var(--board-brass);border-color:var(--board-brass)}
 
 .stack__hint{
   position:absolute;left:0;right:0;bottom:var(--s3);z-index:20;margin:0;
