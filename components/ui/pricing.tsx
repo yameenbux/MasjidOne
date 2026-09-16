@@ -5,12 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
+
+/**
+ * EDIT: the site tags every module Live or In development, and the price cards
+ * have to carry the same tags or the pricing block quietly claims more than the
+ * rest of the page does. A plan-level status covers a plan that is wholly one or
+ * the other; a feature-level one covers the mixed card.
+ */
+type Status = "live" | "dev";
+
+type PricingFeature = string | { text: string; status: Status };
 
 interface PricingPlan {
   name: string;
@@ -19,7 +29,9 @@ interface PricingPlan {
   period: string;
   /** EDIT: the period label when twelve months are prepaid, e.g. "year". */
   yearlyPeriod?: string;
-  features: string[];
+  /** EDIT: shown as a tag under the plan name. */
+  status?: Status;
+  features: PricingFeature[];
   description: string;
   buttonText: string;
   href: string;
@@ -32,6 +44,26 @@ interface PricingProps {
   description?: string;
 }
 
+const TAG_LABEL: Record<Status, string> = {
+  live: "Live",
+  dev: "In development",
+};
+
+/** EDIT: reuses the site's own .tag rules so the wording and colour match #what. */
+function StatusTag({ status, className }: { status: Status; className?: string }) {
+  return (
+    <span
+      className={cn(
+        "tag",
+        status === "live" ? "tag--live" : "tag--dev",
+        className
+      )}
+    >
+      {TAG_LABEL[status]}
+    </span>
+  );
+}
+
 export function Pricing({
   plans,
   title = "Simple, Transparent Pricing",
@@ -39,23 +71,59 @@ export function Pricing({
 }: PricingProps) {
   const [isMonthly, setIsMonthly] = useState(true);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  // EDIT: the repo's quality bar requires prefers-reduced-motion guards, and
+  // neither the card motion nor the confetti had one.
+  const reduceMotion = useReducedMotion();
   const switchRef = useRef<HTMLButtonElement>(null);
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
-    if (checked && switchRef.current) {
+    if (checked && switchRef.current && !reduceMotion) {
       const rect = switchRef.current.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
 
-      // EDIT: canvas-confetti cannot parse "hsl(var(--primary))" — it needs a
-      // real colour string. Resolve the tokens off the document first.
-      const token = (name: string) => {
-        const v = getComputedStyle(document.documentElement)
-          .getPropertyValue(name)
-          .trim();
-        return v ? `hsl(${v})` : "#8E6D33";
+      // EDIT: canvas-confetti parses hex and nothing else — its colorsToRgb
+      // maps every entry through hexToRgb, which strips non-hex characters and
+      // slices the result. Handing it "hsl(162 56% 11%)" does not fail loudly,
+      // it silently yields a garbage colour, which is why the confetti came out
+      // mauve instead of brass. The shadcn tokens stay the source of truth, so
+      // resolve them off the document and convert to hex here.
+      const hslToHex = (hsl: string) => {
+        const [h, sPct, lPct] = hsl
+          .split(/[\s,/]+/)
+          .slice(0, 3)
+          .map((n) => parseFloat(n));
+        if ([h, sPct, lPct].some(Number.isNaN)) return null;
+        const sat = sPct / 100;
+        const light = lPct / 100;
+        const c = (1 - Math.abs(2 * light - 1)) * sat;
+        const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        const m = light - c / 2;
+        const seg = Math.floor(((h % 360) + 360) % 360 / 60);
+        const [r, g, b] = [
+          [c, x, 0], [x, c, 0], [0, c, x],
+          [0, x, c], [x, 0, c], [c, 0, x],
+        ][seg];
+        const hex = (v: number) =>
+          Math.round((v + m) * 255).toString(16).padStart(2, "0");
+        return `#${hex(r)}${hex(g)}${hex(b)}`;
       };
+
+      const styles = getComputedStyle(document.documentElement);
+      const token = (name: string) => {
+        const raw = styles.getPropertyValue(name).trim();
+        if (!raw) return null;
+        // The raw MasjidOne tokens are already hex; the shadcn ones are HSL.
+        return raw.startsWith("#") ? raw : hslToHex(raw);
+      };
+
+      const palette = [
+        token("--accent"),
+        token("--primary"),
+        token("--secondary"),
+        token("--brass-2"),
+      ].filter((c): c is string => Boolean(c));
 
       confetti({
         particleCount: 50,
@@ -64,12 +132,9 @@ export function Pricing({
           x: x / window.innerWidth,
           y: y / window.innerHeight,
         },
-        colors: [
-          token("--primary"),
-          token("--accent"),
-          token("--secondary"),
-          token("--muted"),
-        ],
+        // Omitting `colors` entirely would give canvas-confetti's own default
+        // palette, which is not ours — so only pass it when we resolved some.
+        ...(palette.length ? { colors: palette } : {}),
         ticks: 200,
         gravity: 1.2,
         decay: 0.94,
@@ -90,51 +155,72 @@ export function Pricing({
         </p>
       </div>
 
-      <div className="flex justify-center mb-10">
-        <label className="relative inline-flex items-center cursor-pointer">
-          <Label>
-            <Switch
-              ref={switchRef as any}
-              checked={!isMonthly}
-              onCheckedChange={handleToggle}
-              className="relative"
-            />
-          </Label>
-        </label>
-        <span className="ml-2 font-semibold">
+      {/* EDIT: was an empty <label> wrapping an empty <Label> wrapping the
+          Switch, with the only text in a sibling <span> — so the control had no
+          accessible name at all and a screen reader announced a bare "switch".
+          One Label, associated by id, and the visible text is the name. */}
+      <div className="flex items-center justify-center mb-10">
+        <Switch
+          id="masjidone-billing-toggle"
+          ref={switchRef as any}
+          checked={!isMonthly}
+          onCheckedChange={handleToggle}
+          className="relative"
+        />
+        <Label
+          htmlFor="masjidone-billing-toggle"
+          className="ml-3 font-semibold cursor-pointer"
+        >
           {/* EDIT: MasjidOne never discounts the monthly — the setup fee is
               waived instead, so the label says what actually happens. */}
           Twelve months prepaid{" "}
           <span className="text-primary">(setup fee waived)</span>
-        </span>
+        </Label>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 sm:2 gap-4">
-        {plans.map((plan, index) => (
+        {plans.map((plan, index) => {
+          // EDIT: where the card comes to rest. The sideways offset and the
+          // slight scale-down are the decorative part, so they only apply on a
+          // desktop viewport; the phone layout rests flat.
+          const restingLayout = isDesktop
+            ? {
+                y: plan.isPopular ? -20 : 0,
+                opacity: 1,
+                x: index === 2 ? -30 : index === 0 ? 30 : 0,
+                scale: index === 0 || index === 2 ? 0.94 : 1.0,
+              }
+            : { y: 0, opacity: 1, x: 0, scale: 1 };
+
+          return (
           <motion.div
             key={index}
-            initial={{ y: 50, opacity: 1 }}
-            whileInView={
-              isDesktop
-                ? {
-                    y: plan.isPopular ? -20 : 0,
-                    opacity: 1,
-                    x: index === 2 ? -30 : index === 0 ? 30 : 0,
-                    scale: index === 0 || index === 2 ? 0.94 : 1.0,
-                  }
-                : {}
-            }
+            // EDIT: `initial` pushed every card down 50px and the mobile branch
+            // animated to `{}`. An empty target animates nothing, so below 768px
+            // the cards stayed stranded at y:50 permanently. An empty target is
+            // never safe here, so the resting layout is computed once and both
+            // branches animate to it; reduced motion starts there and skips the
+            // travel rather than skipping the animation.
+            initial={reduceMotion ? restingLayout : { y: 50, opacity: 1 }}
+            whileInView={restingLayout}
+            // EDIT: default `amount` ("some" — any pixel). A fractional amount
+            // can never be met by a card taller than the viewport/amount ratio,
+            // which would strand it at its initial offset for good.
             viewport={{ once: true }}
-            transition={{
-              duration: 1.6,
-              type: "spring",
-              stiffness: 100,
-              damping: 30,
-              delay: 0.4,
-              opacity: { duration: 0.5 },
-            }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : {
+                    duration: 1.6,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 30,
+                    delay: 0.4,
+                    opacity: { duration: 0.5 },
+                  }
+            }
             className={cn(
-              `rounded-2xl border-[1px] p-6 bg-background text-center lg:flex lg:flex-col lg:justify-center relative`,
+              `price-card rounded-2xl border-[1px] p-6 bg-background text-center lg:flex lg:flex-col lg:justify-center relative`,
               plan.isPopular ? "border-primary border-2" : "border-border",
               "flex flex-col",
               !plan.isPopular && "mt-5",
@@ -163,6 +249,11 @@ export function Pricing({
               )}>
                 {plan.name}
               </p>
+              {/* EDIT: rendered unconditionally so a card without a status
+                  does not pull its price up out of line with the other two. */}
+              <p className="mt-2 flex justify-center min-h-[1.75rem]">
+                {plan.status && <StatusTag status={plan.status} />}
+              </p>
               <div className="mt-6 flex items-center justify-center gap-x-2">
                 <span className="text-5xl font-bold tracking-tight text-foreground">
                   <NumberFlow
@@ -188,7 +279,10 @@ export function Pricing({
                     className="font-variant-numeric: tabular-nums"
                   />
                 </span>
-                {plan.period !== "Next 3 months" && (
+                {/* EDIT: was a leftover demo check on "Next 3 months". A
+                    one-off fee has no unit — "£499 / once" reads as a rate.
+                    The line underneath already says it is charged once. */}
+                {plan.period !== "once" && (
                   <span className="text-sm font-semibold leading-6 tracking-wide text-muted-foreground">
                     {/* EDIT: the unit changes with the toggle — per month
                         when billed monthly, per year when prepaid. */}
@@ -211,12 +305,23 @@ export function Pricing({
               </p>
 
               <ul className="mt-5 gap-2 flex flex-col">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <Check aria-hidden="true" className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span className="text-left">{feature}</span>
-                  </li>
-                ))}
+                {plan.features.map((feature, idx) => {
+                  const text =
+                    typeof feature === "string" ? feature : feature.text;
+                  const status =
+                    typeof feature === "string" ? undefined : feature.status;
+                  return (
+                    <li key={idx} className="flex items-start gap-2">
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
+                      <span className="text-left">
+                        {text}
+                        {status && (
+                          <StatusTag status={status} className="ml-2 align-middle" />
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
 
               <hr className="w-full my-4" />
@@ -241,7 +346,8 @@ export function Pricing({
               </p>
             </div>
           </motion.div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
