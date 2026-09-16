@@ -1,3 +1,4 @@
+import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
 
 /**
@@ -27,7 +28,7 @@ export function SiteHeader() {
           <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z"/>
         </svg>
       </button>
-      <a className="btn" href="#contact"><span className="btn__t">Request a demo <span className="arw" aria-hidden="true">→</span></span></a>
+      <SpinningBorderLink href="#contact">Request a demo</SpinningBorderLink>
     </div>
   </div>
 </header>
@@ -83,7 +84,7 @@ export function Hero() {
 
     <div className="hero__act">
       <div className="btn-row rv" style={{ "--i": "1" } as React.CSSProperties}>
-        <a className="btn" href="#contact"><span className="btn__t">Request a demo <span className="arw" aria-hidden="true">→</span></span></a>
+        <SpinningBorderLink href="#contact">Request a demo</SpinningBorderLink>
         <a className="btn btn--ghost" href="#pricing"><span className="btn__t">See the pricing</span></a>
       </div>
       <p className="hero__note rv" style={{ "--i": "2" } as React.CSSProperties}>
@@ -366,14 +367,4 @@ export function Contact() {
   );
 }
 
-export function SiteFooter() {
-  return (
-<footer className="ftr">
-  <div className="wrap ftr__in">
-    <p>&copy; <span className="num" id="yr">2026</span> YSB Ventures Ltd. All rights reserved.</p>
-    <p>MasjidOne is a product of YSB Ventures Ltd, Bolton.</p>
-    <a className="to-top" href="#top">Back to top <span aria-hidden="true">&uarr;</span></a>
-  </div>
-</footer>
-  );
-}
+export { Footer as SiteFooter } from "@/components/ui/large-name-footer";
