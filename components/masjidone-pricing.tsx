@@ -1,6 +1,7 @@
 "use client";
 
 import { Pricing } from "@/components/ui/pricing";
+import { DEMO_MAILTO } from "@/lib/site";
 
 /**
  * MasjidOne's real published prices.
@@ -36,7 +37,7 @@ const masjidOnePlans = [
     description:
       "For the September 2027 intake. Setup is charged at signing; the monthly starts at go-live.",
     buttonText: "Request a demo",
-    href: "#contact",
+    href: DEMO_MAILTO,
     isPopular: false,
   },
   {
@@ -58,7 +59,7 @@ const masjidOnePlans = [
     description:
       "The congregation side runs in a Bolton masjid now. The madrasah portal joins it at no extra cost.",
     buttonText: "Request a demo",
-    href: "#contact",
+    href: DEMO_MAILTO,
     isPopular: true,
   },
   {
@@ -76,7 +77,7 @@ const masjidOnePlans = [
     ],
     description: "Charged once, not monthly. This is the only figure that falls.",
     buttonText: "Request a demo",
-    href: "#contact",
+    href: DEMO_MAILTO,
     isPopular: false,
   },
 ];

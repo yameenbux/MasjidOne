@@ -1,6 +1,7 @@
 import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
+import { DEMO_MAILTO } from "@/lib/site";
 
 // The header renders on every page, so its links cannot be bare hashes.
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -26,7 +27,7 @@ export function SiteHeader() {
           <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z"/>
         </svg>
       </button>
-      <SpinningBorderLink href={`${BASE}/#contact`}>Request a demo</SpinningBorderLink>
+      <SpinningBorderLink href={DEMO_MAILTO}>Request a demo</SpinningBorderLink>
     </div>
   </div>
 </header>
@@ -82,7 +83,7 @@ export function Hero() {
 
     <div className="hero__act">
       <div className="btn-row rv" style={{ "--i": "1" } as React.CSSProperties}>
-        <SpinningBorderLink href={`${BASE}/#contact`}>Request a demo</SpinningBorderLink>
+        <SpinningBorderLink href={DEMO_MAILTO}>Request a demo</SpinningBorderLink>
         <a className="btn btn--ghost" href="#pricing"><span className="btn__t">See the pricing</span></a>
       </div>
       <p className="hero__note rv" style={{ "--i": "2" } as React.CSSProperties}>
@@ -325,26 +326,6 @@ export function Trust() {
       <summary>When is the madrasah portal ready?</summary>
       <div className="qa__body"><p>It is in development now, targeted at the September 2027 intake, because madrasahs change systems before a new year rather than during one. Early partner mosques go on first and help shape it. Until then we will not pretend it is shipping — the congregation modules are what is live today.</p></div>
     </details>
-  </div>
-</section>
-  );
-}
-
-export function Contact() {
-  return (
-<section className="sect cta" id="contact">
-  <div className="wrap cta__grid cta__grid--single">
-    <div>
-      <p className="eyebrow rv">Request a demo</p>
-      <h2 className="rv rv--blur measure" style={{ "--i": "1" } as React.CSSProperties}>Best seen between Maghrib and ʿIshāʾ, in your own masjid.</h2>
-      <p className="rv" style={{ "--i": "2" } as React.CSSProperties}>
-        Half an hour with the committee, on your screens, with your timetable
-        loaded. Nobody buys this from a webpage and we would not ask you to.
-      </p>
-      <div className="btn-row rv" style={{ "--i": "3" } as React.CSSProperties}>
-        <a className="btn btn--onboard" href="mailto:REPLACE-ME@masjidone.example?subject=MasjidOne%20demo%20request"><span className="btn__t">Email to arrange a visit <span className="arw" aria-hidden="true">→</span></span></a>
-      </div>
-    </div>
   </div>
 </section>
   );

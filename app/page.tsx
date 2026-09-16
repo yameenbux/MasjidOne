@@ -4,7 +4,6 @@ import {
   Modules,
   Previews,
   Trust,
-  Contact,
   SiteFooter,
 } from "@/components/site-sections";
 import { SiteBehaviour } from "@/components/site-behaviour";
@@ -28,7 +27,6 @@ export default function Home() {
           <MasjidOnePricing />
         </section>
         <Trust />
-        <Contact />
       </main>
       <SiteFooter />
       <SiteBehaviour />

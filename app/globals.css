@@ -295,8 +295,6 @@ ul{margin:0;padding:0;list-style:none}
   background:radial-gradient(closest-side,var(--paper) 0%,var(--paper) 46%,transparent 100%);
 }
 html:not(.js) .stack__scrim{display:none}
-.stack__eyebrow{justify-content:center}
-.stack__eyebrow::after{display:none}
 .stack__h1{
   font-family:var(--font-newsreader),Georgia,serif;font-weight:400;
   font-size:clamp(1.9rem,5vw,4rem);line-height:1.04;letter-spacing:-.02em;
@@ -641,7 +639,11 @@ html:not(.js) .stack__hint{display:none}
 .ftr__blurb{color:var(--board-ink-2)}
 .ftr__legal{color:var(--board-ink-2);font-size:var(--t-label);line-height:1.8;
   letter-spacing:.04em;margin-top:var(--s1)}
-.ftr__links{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:var(--s3) var(--s4)}
+/* Flex, not auto-fit grid: .ftr__links sits in the `auto` track of
+   .ftr__cols, which has no definite width, so repeat(auto-fit, …) collapsed
+   to a single column and stacked the three lists vertically. */
+.ftr__links{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s4);align-items:flex-start}
+.ftr__links > div{min-width:8rem}
 .ftr__head{font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;
   font-variation-settings:"wdth" 82,"wght" 600;color:var(--board-brass);
   margin:0 0 .7rem;font-family:inherit;font-weight:inherit}
