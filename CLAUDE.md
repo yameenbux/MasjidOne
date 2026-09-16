@@ -99,8 +99,13 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    a twelve-month total cannot be misread as a price rise. Keep that line.
 4. **Do not name competitors on the public site.** The comparison happens in
    the room, not on the page.
-5. **No customer is named.** The Bolton reference mosque has not signed its
-   founding-customer agreement. Copy says "a Bolton masjid" until it has.
+5. **Taiyabah Masjid may now be named.** Permission to use their name, logo
+   and screenshots was given on 16 September 2026. The hero uses real captures
+   of their live site, app and hall screens. Two things still apply: get the
+   permission in writing as part of the founding-customer agreement, and never
+   publish a screen containing a real child's record or a real family's fee
+   history — see `public/devices/README.md`. Other customers stay unnamed until
+   they say otherwise.
 6. **No social proof.** No customer counts, logos, testimonials or "popular"
    badges — there are no customers yet. The pricing block's badge says
    "Recommended", which is our own view, not a popularity claim.
