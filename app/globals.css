@@ -89,9 +89,11 @@
   --paper:#F3F1EA; --paper-2:#EAE7DD;
   --board:#0C2A21; --board-ink:#EDE9DD;
   --board-rule:#2C4C40; --board-ink-2:#93A69B; --board-brass:#C0A46A;
-  /* Darkened from #8E6D33, which measured 4.24:1 on --paper and missed
-     WCAG AA for normal text by a hair. #886831 is the same hue at 4.56:1. */
-  --brass:#886831; --brass-2:#C0A46A;
+  /* Darkened twice, both times to clear AA for normal text. #8E6D33 measured
+     4.24:1 on --paper; #886831 fixed that but still read 4.17:1 on --paper-2,
+     which is the surface the module cards use. #7D5F2D clears both: 5.17:1 on
+     --paper and 4.79:1 on --paper-2. */
+  --brass:#7D5F2D; --brass-2:#C0A46A;
   --ink:#12201A; --ink-2:#4E5F57;
   --rule:#D5D1C4; --rule-2:#B4AE9D;
   --cta-bg:#0C2A21; --cta-fg:#F3F1EA;
@@ -559,18 +561,18 @@ html:not(.js) .stack__hint{display:none}
 .dgm__stage{position:relative;display:flex;align-items:center;justify-content:center}
 .dgm__band{display:flex;flex-direction:column;gap:var(--s5);width:100%}
 @media (min-width:52em){
-  .dgm__stage{min-height:26rem;padding-block:var(--s3)}
+  .dgm__stage{min-height:36rem;padding-block:var(--s4)}
   /* Held well inside the measure. Pinning the columns to the page edges
      stretches the beams into near-straight lines; the sweep needs the nodes
      clustered and the space around them empty. */
   .dgm__band{flex-direction:row;align-items:stretch;justify-content:space-between;
-    gap:var(--s3);height:16rem;max-width:54rem}
+    gap:var(--s3);height:23rem;max-width:64rem}
 }
 
 .dgm__col{display:flex;flex-direction:column;align-items:center;gap:var(--s4);min-width:0}
 @media (min-width:52em){
-  .dgm__col{position:relative;padding-top:1.6rem;justify-content:space-around;
-    gap:0;flex:0 0 13rem}
+  .dgm__col{position:relative;padding-top:1.8rem;justify-content:space-around;
+    gap:0;flex:0 0 16rem}
   .dgm__col--right{justify-content:space-between}
 }
 .dgm__side{margin:0;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;
@@ -580,30 +582,32 @@ html:not(.js) .stack__hint{display:none}
 /* A graph node is not a card, so the round shape here is not the pricing
    block's styling leaking outward. z-index keeps the nodes over the beams. */
 .dgm__node{position:relative;z-index:1;display:flex;align-items:center;gap:var(--s2)}
-@media (min-width:52em){.dgm__node{flex-direction:column;gap:.6rem;text-align:center}}
-.dgm__circle{display:grid;place-items:center;width:3rem;height:3rem;flex:0 0 auto;
+@media (min-width:52em){.dgm__node{flex-direction:column;gap:.8rem;text-align:center}}
+.dgm__circle{display:grid;place-items:center;width:4.5rem;height:4.5rem;flex:0 0 auto;
   border-radius:50%;background:var(--paper);border:var(--hair) solid var(--rule-2);
   color:var(--brass)}
-.dgm__glyph{width:1.15rem;height:1.15rem}
+.dgm__glyph{width:1.7rem;height:1.7rem}
 .dgm__label{display:flex;flex-direction:column;gap:.15rem;font-size:var(--t-small);
   line-height:1.3;min-width:0}
-@media (min-width:52em){.dgm__label{max-width:11rem}}
+@media (min-width:52em){.dgm__label{max-width:14rem;font-size:var(--t-body);gap:.3rem}}
 .dgm__status{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;
   font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
 .dgm__status.is-live{color:var(--brass)}
 
 .dgm__hubwrap{position:relative;z-index:1;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:.7rem;flex:0 0 auto}
-.dgm__hub{display:grid;place-items:center;width:7.5rem;height:7.5rem;border-radius:50%;
+.dgm__hub{display:grid;place-items:center;width:13rem;height:13rem;border-radius:50%;
   background:var(--board);color:var(--board-ink);border:var(--hair) solid var(--board-rule)}
-.dgm__mark{font-family:var(--font-newsreader),Georgia,serif;font-size:var(--t-h3);
-  letter-spacing:-.01em;line-height:1}
+/* A fixed size, not a scale token: the mark is a lockup that has to sit
+   inside a circle of known diameter. On --t-h2 it kept growing with the
+   viewport and overflowed the hub at 1280 and up (184px of text in a 176px
+   circle). The header wordmark is sized the same way, for the same reason. */
+.dgm__mark{font-family:var(--font-newsreader),Georgia,serif;font-size:2.25rem;
+  letter-spacing:-.015em;line-height:1;white-space:nowrap}
 .dgm__mark i{font-style:italic;color:var(--board-brass)}
 .dgm__hubsub{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;
   font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2);text-align:center;
-  max-width:10rem}
-.dgm__cap{margin:var(--s3) 0 0;font-size:var(--t-small);line-height:1.6;color:var(--ink-2);
-  max-width:44rem}
+  max-width:13rem}
 
 /* ============================================================
    MODULES
@@ -847,6 +851,18 @@ html:not(.js) .stack__hint{display:none}
    as .rv: with no JS there is nothing to animate it away, so the cards would
    sit 50px low for good. Neutralise it when the js class is absent. */
 html:not(.js) .price-card{transform:none !important;opacity:1 !important}
+html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
+
+/* Radix mounts nothing for a collapsed accordion item, so without JavaScript
+   the answers are absent from the document rather than merely hidden — no
+   stylesheet can recover them. faq-nojs is a plain copy of the same questions
+   and answers; exactly one of the two is ever displayed. The details/summary
+   markup this section used before needed no JS at all, and the page still has
+   to read without it. */
+.faq-nojs{display:block}
+.js .faq-nojs{display:none}
+.faq-js{display:none}
+.js .faq-js{display:block}
 
 /* Scroll-linked spine: the one place continuous linkage earns its keep. */
 @supports (animation-timeline:view()){

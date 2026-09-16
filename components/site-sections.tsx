@@ -4,6 +4,7 @@ import * as React from "react";
 import { DEMO_MAILTO } from "@/lib/site";
 import { MasjidOneComparison } from "@/components/masjidone-comparison";
 import { MasjidOneModulesDiagram } from "@/components/masjidone-modules-diagram";
+import { FeaturesSection } from "@/components/ui/feature";
 
 // The header renders on every page, so its links cannot be bare hashes.
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -151,43 +152,7 @@ export function Modules() {
     <MasjidOneModulesDiagram />
   </div>
 
-  <div className="mods">
-    <article className="mod rv">
-      <h3>Madrasah portal <span className="tag tag--dev">In development</span></h3>
-      <p>Students, classes, daily registers, Hifz and sabaq progress, reports
-      and certificates. Fees by direct debit and card with automatic chasing.
-      Unlimited students and teachers — no per-pupil pricing, no paid add-ons.</p>
-    </article>
-
-    <article className="mod rv">
-      <h3>Parent access <span className="tag tag--dev">In development</span></h3>
-      <p>Absence alerts the same evening, fees paid in two taps, progress a
-      parent can actually read — inside the congregation app they already have.
-      No second app to install. This is the bridge, and it is the whole claim.</p>
-    </article>
-
-    <article className="mod rv">
-      <h3>Congregation app <span className="tag tag--live">Live</span></h3>
-      <p>The masjid's own timetable, not a calculated one. Jamāʿah reminders
-      with a per-person offset, so a man who needs twenty minutes gets twenty
-      minutes. Qibla, Zakat calculator, announcements, one-tap giving.</p>
-    </article>
-
-    <article className="mod rv">
-      <h3>Website and hall screens <span className="tag tag--live">Live</span></h3>
-      <p>A managed mosque website kept current from the same place as
-      everything else, and unlimited screens on any TV with a browser. Live
-      announcements and janāzah notices reach the hall and the phone together.</p>
-    </article>
-
-    <article className="mod rv">
-      <h3>Donations and Gift Aid <span className="tag tag--live">Live</span></h3>
-      <p>Card, Apple Pay and Google Pay. One-off or recurring, appeal
-      campaigns, Gift Aid claimed at the point of giving.
-      <strong>0% commission, permanently.</strong> Every pound given reaches
-      the masjid.</p>
-    </article>
-  </div>
+  <FeaturesSection />
 </section>
   );
 }
@@ -297,48 +262,6 @@ export function Previews() {
   );
 }
 
-export function Trust() {
-  return (
-<section className="sect wrap" id="trust">
-  <p className="eyebrow eyebrow--brass rv">Your data</p>
-  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>This platform will hold attendance records for your children.</h2>
-  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
-    That deserves a straight answer before a signature, not a privacy policy
-    nobody reads. Here is what is committed in writing before a masjid is ever
-    invoiced.
-  </p>
-
-  <ul className="checks">
-    <li className="rv"><b>One-click full export, always</b><span>Your data leaves in a standard format whenever you ask. Written into the agreement, not offered as a favour.</span></li>
-    <li className="rv" style={{ "--i": "1" } as React.CSSProperties}><b>Role-based access</b><span>A teacher sees their own classes. A parent sees their own children. The committee sees committee-level data. Nobody sees everything by default.</span></li>
-    <li className="rv" style={{ "--i": "2" } as React.CSSProperties}><b>ICO registration and a signed DPA</b><span>Registered with the Information Commissioner's Office, with a written data processing agreement for your masjid, before your first invoice.</span></li>
-    <li className="rv" style={{ "--i": "3" } as React.CSSProperties}><b>A documented retention policy</b><span>How long a child's record is kept, and what happens when they leave, stated in advance rather than decided later.</span></li>
-  </ul>
-
-  <div className="qa">
-    <details className="rv">
-      <summary>We already have a website and an app. Why change?</summary>
-      <div className="qa__body"><p>If the congregation side is all you need, you may well not need us — plenty of platforms do it. The reason to move is that your madrasah runs somewhere else entirely, so the same family exists twice and nothing reconciles. We join the two. That is the only thing we ask you to buy.</p></div>
-    </details>
-    <details className="rv">
-      <summary>You are a small company in Bolton. What if you stop?</summary>
-      <div className="qa__body"><p>A fair question and the one we get asked most. The answer is contractual: one-click full export of everything, in a standard format, at any time, written into your agreement from day one. You are never holding data you cannot take somewhere else.</p></div>
-    </details>
-    <details className="rv">
-      <summary>Our madrasah runs on paper and WhatsApp. Is this too much?</summary>
-      <div className="qa__body"><p>No, and migration from paper is usually simpler than migration from an existing system. Setup covers getting the class lists in and the teachers trained. Most madrasahs switch over one weekend, before a new term rather than mid-term.</p></div>
-    </details>
-    <details className="rv">
-      <summary>Is there a commission on donations?</summary>
-      <div className="qa__body"><p>No. 0%, permanently, in writing. Payment processing fees are charged by the card provider and go to them, not to us — we take nothing from what the congregation gives.</p></div>
-    </details>
-    <details className="rv">
-      <summary>When is the madrasah portal ready?</summary>
-      <div className="qa__body"><p>It is in development now, targeted at the September 2027 intake, because madrasahs change systems before a new year rather than during one. Early partner mosques go on first and help shape it. Until then we will not pretend it is shipping — the congregation modules are what is live today.</p></div>
-    </details>
-  </div>
-</section>
-  );
-}
+export { FAQ as Trust } from "@/components/ui/faq-section";
 
 export { Footer as SiteFooter } from "@/components/ui/large-name-footer";
