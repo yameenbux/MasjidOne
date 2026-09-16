@@ -102,6 +102,10 @@
   --shade-1:rgb(0 0 0 / .80); --shade-2:rgb(0 0 0 / .52);
   /* Spinning-border CTA. Existing palette values only. */
   --beam:#C0A46A; --beam-rim:#2C4C40; --beam-sheen:#2C4C40;
+  /* Static connector in the modules diagram. It has to carry the diagram's
+     meaning on its own for anyone with prefers-reduced-motion, so it is a
+     step stronger than --rule-2. */
+  --beam-line:#857F6E;
   --btn-fill:#C0A46A; --btn-fill-fg:#0C2A21;
   color-scheme:light;
 }
@@ -115,6 +119,7 @@
     --rule:#1D322A; --rule-2:#2B4438;
     --cta-bg:#C9A567; --cta-fg:#081513;
     --beam:#E7E3D7; --beam-rim:#8C7240; --beam-sheen:#E7E3D7;
+    --beam-line:#4A7563;
     --btn-fill:#0E241C; --btn-fill-fg:#C9A567;
     color-scheme:dark;
   }
@@ -127,6 +132,7 @@
   --ink:#E9E5D9; --ink-2:#92A49B;
   --rule:#1D322A; --rule-2:#2B4438;
   --cta-bg:#C9A567; --cta-fg:#081513;
+  --beam-line:#4A7563;
   --btn-fill:#0E241C; --btn-fill-fg:#C9A567;
   color-scheme:dark;
 }
@@ -422,6 +428,9 @@ html:not(.js) .stack__hint{display:none}
    THE JOIN — the thesis, made structural
    ============================================================ */
 .join{position:relative}
+.join__table{margin-top:var(--s4)}
+.join__foot{margin:var(--s3) 0 var(--s4);max-width:44rem;font-size:var(--t-small);
+  line-height:1.6;color:var(--ink-2)}
 
 /* A bento of unequal cells. The seams are the hairline gaps showing the --rule
    underneath, which is why there is no border-radius and no shadow here: this
@@ -476,18 +485,12 @@ html:not(.js) .stack__hint{display:none}
 
 @media (min-width:52em){
   .bento{grid-template-columns:repeat(12,1fr)}
-  .bento__cell--madrasah{grid-column:1/7}
-  .bento__cell--congregation{grid-column:7/13}
-  .bento__cell--cost{grid-column:1/7}
-  .bento__cell--bridge{grid-column:7/13}
+  .bento__cell--bridge{grid-column:1/13}
   .bento__cell--quote{grid-column:1/13}
 }
 @media (min-width:64em){
-  .bento__cell--madrasah{grid-column:1/5;grid-row:1/3}
-  .bento__cell--congregation{grid-column:5/9;grid-row:1/3}
-  .bento__cell--cost{grid-column:9/13;grid-row:1/2}
-  .bento__cell--bridge{grid-column:9/13;grid-row:2/3}
-  .bento__cell--quote{grid-column:1/13;grid-row:3/4;padding:var(--s4)}
+  .bento__cell--bridge{grid-column:1/6;grid-row:1/2}
+  .bento__cell--quote{grid-column:6/13;grid-row:1/2;padding:var(--s4)}
 }
 
 .join__quote{margin:0}
@@ -496,6 +499,101 @@ html:not(.js) .stack__hint{display:none}
 .join__quote cite{display:block;margin-top:var(--s2);font-family:var(--font-archivo),sans-serif;
   font-style:normal;font-size:var(--t-label);letter-spacing:.16em;text-transform:uppercase;
   font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
+
+/* ============================================================
+   COMPARISON TABLE — the join, stated as a grid of facts
+   ============================================================ */
+/* Wide content scrolls inside its own container; the body never scrolls
+   sideways. The region is focusable, so this is reachable without a mouse. */
+.cmp__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cmp__hint{margin:0 0 var(--s2);font-size:var(--t-label);letter-spacing:.14em;
+  text-transform:uppercase;font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
+@media (min-width:52em){.cmp__hint{display:none}}
+.cmp__scroll:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+.cmp{width:100%;min-width:38rem;border-collapse:separate;border-spacing:0;text-align:left;
+  border:var(--hair) solid var(--rule)}
+/* The label column is sticky, so a phone swiping the three columns can always
+   see which row it is on. Without this the table scrolls to checkmarks with no
+   row to attach them to, which is worse than not having the table. */
+.cmp__corner,.cmp__row-head{position:sticky;left:0;z-index:2;background:var(--paper);
+  border-right:var(--hair) solid var(--rule)}
+.cmp__corner{width:34%;padding:var(--s3) var(--s2);vertical-align:bottom}
+@media (min-width:52em){.cmp__corner{width:30%}}
+.cmp__kicker{font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;
+  font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
+.cmp__head{padding:var(--s3) var(--s2);vertical-align:bottom;font-weight:400;width:23.33%}
+.cmp__name{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;
+  font-family:var(--font-newsreader),Georgia,serif;font-size:var(--t-h3);
+  line-height:1.25;letter-spacing:-.005em}
+.cmp__summary{display:block;margin-top:var(--s1);font-size:var(--t-small);
+  line-height:1.5;color:var(--ink-2);max-width:16rem}
+/* border-collapse is separate so the sticky column can carry a background;
+   row rules therefore go on the cells rather than the row. */
+.cmp tbody th,.cmp tbody td{border-top:var(--hair) solid var(--rule)}
+.cmp__row-head{padding:.85rem var(--s2);font-weight:400;font-size:var(--t-small);
+  line-height:1.45;color:var(--ink)}
+.cmp__cell{padding:.85rem var(--s2);vertical-align:middle}
+.cmp__v{display:flex;align-items:center;min-height:1.5rem}
+.cmp__yes{width:1rem;height:1rem;color:var(--brass);stroke-width:2.5}
+/* "No" is muted but not invisible: --ink-2 clears the 3:1 that WCAG asks of a
+   graphic carrying meaning. Hierarchy comes from brass against grey, not from
+   hiding the negative. */
+.cmp__no{width:1rem;height:1rem;color:var(--ink-2)}
+.cmp__note{font-size:var(--t-small);color:var(--ink-2)}
+/* The featured column is a fill between hairlines. No radius, no shadow — the
+   rounded card is the pricing block's one-off and does not spread here. */
+.cmp .is-featured{background:var(--paper-2);
+  border-left:var(--hair) solid var(--rule-2);border-right:var(--hair) solid var(--rule-2)}
+.cmp thead .is-featured{border-top:var(--hair) solid var(--rule-2)}
+.cmp tbody tr:last-child .is-featured{border-bottom:var(--hair) solid var(--rule-2)}
+
+/* ============================================================
+   MODULES DIAGRAM — five modules, one hub
+   ============================================================ */
+.dgm{margin:var(--s4) 0 var(--s5);padding:0}
+.dgm__stage{position:relative;display:grid;gap:var(--s4);
+  border:var(--hair) solid var(--rule);background:var(--paper-2);padding:var(--s3)}
+@media (min-width:52em){
+  .dgm__stage{grid-template-columns:1fr auto 1fr;align-items:center;
+    gap:var(--s5);padding:var(--s4)}
+}
+.dgm__col{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
+.dgm__side{margin:0 0 var(--s1);font-size:var(--t-label);letter-spacing:.14em;
+  text-transform:uppercase;font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
+@media (min-width:52em){
+  /* The columns hold different numbers of nodes, so centring each one left the
+     two side labels at different heights. Stretch the columns, centre the nodes
+     inside them, and pin the labels to a shared top edge. */
+  .dgm__col{align-self:stretch;justify-content:center;position:relative;padding-top:1.6rem}
+  .dgm__side{position:absolute;top:0;left:0;right:0;margin:0}
+}
+@media (min-width:52em){.dgm__col--right .dgm__side,.dgm__col--right .dgm__node{text-align:right}}
+
+/* Nodes are square tiles on a hairline, not circles with a shadow: the board
+   vernacular holds here too. z-index keeps them over the beams. */
+.dgm__node{position:relative;z-index:1;display:flex;align-items:center;gap:var(--s2);
+  background:var(--paper);border:var(--hair) solid var(--rule);padding:.7rem var(--s2)}
+@media (min-width:52em){.dgm__col--right .dgm__node{flex-direction:row-reverse}}
+.dgm__icon{display:grid;place-items:center;width:1.75rem;height:1.75rem;flex:0 0 auto;
+  border:var(--hair) solid var(--rule-2);color:var(--brass)}
+.dgm__glyph{width:.95rem;height:.95rem}
+.dgm__label{display:flex;flex-direction:column;gap:.15rem;font-size:var(--t-small);
+  line-height:1.3;min-width:0}
+.dgm__status{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;
+  font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
+.dgm__status.is-live{color:var(--brass)}
+
+.dgm__hub{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:var(--s1);text-align:center;
+  background:var(--board);color:var(--board-ink);padding:var(--s3) var(--s2);
+  border:var(--hair) solid var(--board-rule);min-width:11rem}
+.dgm__mark{font-family:var(--font-newsreader),Georgia,serif;font-size:var(--t-h3);
+  letter-spacing:-.01em;line-height:1}
+.dgm__mark i{font-style:italic;color:var(--board-brass)}
+.dgm__hubsub{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;
+  font-variation-settings:"wdth" 82,"wght" 600;color:var(--board-ink-2);max-width:9rem}
+.dgm__cap{margin:var(--s2) 0 0;font-size:var(--t-small);line-height:1.6;color:var(--ink-2);
+  max-width:44rem}
 
 /* ============================================================
    MODULES

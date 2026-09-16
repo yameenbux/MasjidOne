@@ -2,6 +2,8 @@ import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
 import { DEMO_MAILTO } from "@/lib/site";
+import { MasjidOneComparison } from "@/components/masjidone-comparison";
+import { MasjidOneModulesDiagram } from "@/components/masjidone-modules-diagram";
 
 // The header renders on every page, so its links cannot be bare hashes.
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -107,46 +109,27 @@ export function Join() {
     exists, so the same family is entered twice, chased twice and counted twice.
   </p>
 
-  {/* A bento of unequal cells rather than five matching boxes: the two systems
-      are the tall pair, the cost of keeping them apart is the small cell, and
-      the bridge is the one inverted panel — the only claim this section is
-      making. Seamed with hairline gaps over --rule so the whole block reads as
-      a prayer-time board, not as the rounded cards of the pricing block. */}
-  <div className="bento rv" style={{ "--i": "3" } as React.CSSProperties}>
-    <article className="bento__cell bento__cell--madrasah">
-      <p className="bento__tag">System one</p>
-      <h3 className="bento__h">Madrasah</h3>
-      <ul className="bento__list">
-        <li>Students and classes</li>
-        <li>Daily registers</li>
-        <li>Hifz and sabaq progress</li>
-        <li>Fees and chasing</li>
-        <li>Reports and certificates</li>
-      </ul>
-    </article>
+  {/* The argument is the shape of the table, not an adjective in it. The
+      congregation column genuinely ticks the congregation rows — claiming
+      otherwise would be false — and every unbuilt cell says so. */}
+  <div className="join__table rv" style={{ "--i": "3" } as React.CSSProperties}>
+    <MasjidOneComparison />
+  </div>
+  <p className="join__foot rv" style={{ "--i": "3" } as React.CSSProperties}>
+    The last two rows are the product. They are why this exists, they are the
+    only rows nobody else fills, and they are not finished — both are in
+    development for the September 2027 intake.
+  </p>
 
-    <article className="bento__cell bento__cell--congregation">
-      <p className="bento__tag">System two</p>
-      <h3 className="bento__h">Congregation</h3>
-      <ul className="bento__list">
-        <li>Prayer times and jamāʿah reminders</li>
-        <li>Announcements and janāzah notices</li>
-        <li>Website and hall screens</li>
-        <li>Donations and sadaqah</li>
-      </ul>
-    </article>
-
-    <article className="bento__cell bento__cell--cost">
-      <p className="bento__tag">The cost of the gap</p>
-      <h3 className="bento__h bento__h--sm">Two databases, two logins, two versions of the same family.</h3>
-      <p className="bento__p">Nothing on either side knows they are the same family, so nobody can answer a question that crosses the middle.</p>
-    </article>
-
+  <div className="bento rv" style={{ "--i": "4" } as React.CSSProperties}>
     <article className="bento__cell bento__cell--bridge">
       <span className="bento__seam" aria-hidden="true"></span>
       <p className="bento__tag">The bridge</p>
       <h3 className="bento__h">Parent access <span className="tag tag--dev">In development</span></h3>
-      <p className="bento__p">A parent opens the app they already have for jamāʿah times and finds their own child: the register marked this evening, the sabaq heard this week, the fee due this month. One record of one family, reachable from both sides.</p>
+      <p className="bento__p">A parent opens the app they already have for
+      jamāʿah times and finds their own child: the register marked this
+      evening, the sabaq heard this week, the fee due this month. One record of
+      one family, reachable from both sides.</p>
     </article>
 
     <blockquote className="bento__cell bento__cell--quote join__quote">
@@ -163,6 +146,10 @@ export function Modules() {
 <section className="sect wrap" id="what">
   <p className="eyebrow eyebrow--brass rv">What it runs</p>
   <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>Five modules, one record of the family.</h2>
+
+  <div className="rv" style={{ "--i": "2" } as React.CSSProperties}>
+    <MasjidOneModulesDiagram />
+  </div>
 
   <div className="mods">
     <article className="mod rv">
