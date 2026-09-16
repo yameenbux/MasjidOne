@@ -1,4 +1,5 @@
 import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
 import { DEMO_MAILTO } from "@/lib/site";
@@ -21,7 +22,7 @@ export function SiteHeader() {
   return (
 <header className="hdr" id="hdr">
   <div className="wrap hdr__in">
-    <a className="brand" href={`${BASE}/#top`}>Masjid<i>One</i></a>
+    <a className="brand" href={`${BASE}/#top`}><BrandMark className="brand__mark" />Masjid<i>One</i></a>
     <SectionNav />
     <div className="hdr__end">
       <button className="icon-btn" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark theme">

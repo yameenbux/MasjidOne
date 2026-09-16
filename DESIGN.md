@@ -53,7 +53,9 @@ it probably does not belong.
 
 All colour lives in CSS custom properties. **Never write a hex outside the
 token blocks.** Two unavoidable exceptions exist: `<meta name="theme-color">`
-and the favicon data-URI, neither of which can read a custom property.
+and the favicon and app-icon files in `public/`, none of which can read a
+custom property. The in-page mark is inlined and draws in `currentColor`
+precisely so it is not a third exception.
 
 ### 3.1 Tokens
 
@@ -177,6 +179,34 @@ token. A lockup that must fit inside a circle of known diameter cannot be on a
 fluid scale — on `--t-h2` it grew to 184px of text inside a 176px circle. The
 header wordmark (`1.15rem`) is fixed for the same reason. **Lockups are sized
 to their container; everything else uses the scale.**
+
+---
+
+## 4a. The mark
+
+A dome between two minarets, the seam running through the base rule. Brass on
+paper, board brass on the board.
+
+| Where | What |
+| --- | --- |
+| Header and footer | `components/ui/brand-mark.tsx`, inlined, `currentColor`, `1.5em` tall beside the wordmark |
+| Favicon | `public/favicon-light-32.svg` and `favicon-32.svg`, swapped by `prefers-color-scheme` |
+| iOS | `public/apple-touch-icon.png`, 180×180 — iOS will not take an SVG |
+| Open Graph | `public/social-card.png`, 1200×630 |
+| Everything else | `assets/logo-src/` — lockups, avatar, letterhead, business card, clear-space rules |
+
+Rules from the bundle, which hold here too: clear space equals the dome's
+height on all four sides; minimum 16px for the mark alone, 120px for the
+horizontal lockup, 180px for the stacked one. Never rotate, outline or shadow
+it, never stretch the minarets, never set the wordmark in another family.
+
+The lockups are PNG rather than SVG on purpose — their wordmark is live
+Newsreader, and an SVG carrying `font-family="Newsreader"` renders in Georgia
+on any machine without the font.
+
+Source SVGs in `assets/logo-src/svg/` carry C2PA provenance metadata, about
+8KB each. The copies in `public/` have it stripped, because 8KB of base64 in a
+favicon is most of the file.
 
 ---
 

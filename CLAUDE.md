@@ -69,8 +69,10 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
   `:root[data-theme="dark"], .dark`. Forgetting one silently breaks dark mode.
   The theme toggle sets both `data-theme` and shadcn's `.dark` class.
 - Never hardcode a hex value in a rule or an SVG. Use `var(--token)`.
-  Two unavoidable exceptions: `<meta name="theme-color">` and the favicon
-  data-URI, where CSS variables cannot be used.
+  Two unavoidable exceptions: `<meta name="theme-color">` and the favicon and
+  app-icon files in `public/`, none of which can read a CSS variable. The
+  in-page mark is inlined as `components/ui/brand-mark.tsx` and draws in
+  `currentColor` precisely so it is not a third exception.
 - Left-aligned, generous whitespace, hairline rules. **The pricing block is
   the one deliberate exception** — it is centred, rounded and card-based
   because it was adopted as supplied. Don't spread that styling outward.

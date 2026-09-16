@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <title>MasjidOne icon</title>
+  <rect width="180" height="180" fill="#0C2A21"></rect>
+  <g transform="translate(30.005999999999997 50.004) scale(1.0000499999999999)" fill="none" stroke="#C0A46A" stroke-width="2.6" stroke-linecap="square">
+    <path d="M13.5 31a5 5 0 0 1 10 0"></path>
+    <path d="M14 31V57M23 31V57"></path>
+    <circle cx="18.5" cy="25" r="2.2" fill="#C0A46A" stroke="none"></circle>
+    <path d="M18.5 27V31"></path>
+    <path d="M36 44a24 24 0 0 1 48 0"></path>
+    <path d="M35 44v13M85 44v13"></path>
+    <circle cx="60" cy="14" r="3.2" fill="#C0A46A" stroke="none"></circle>
+    <path d="M60 17v3"></path>
+    <path d="M96.5 31a5 5 0 0 1 10 0"></path>
+    <path d="M97 31V57M106 31V57"></path>
+    <circle cx="101.5" cy="25" r="2.2" fill="#C0A46A" stroke="none"></circle>
+    <path d="M101.5 27V31"></path>
+    <path d="M8 58h104" stroke-width="3.6"></path>
+  </g>
+</svg>
