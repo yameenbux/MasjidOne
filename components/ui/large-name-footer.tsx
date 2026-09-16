@@ -20,20 +20,30 @@ import * as React from "react";
  *    sensible year with JS off.
  */
 
+// Absolute, basePath-aware: these links also render on 404.html, where a bare
+// "#join" would simply do nothing. On the home page the path is unchanged, so
+// the browser still treats it as a hash jump rather than a reload.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 type FooterLink = { href: string; label: string };
 
 const SECTIONS: FooterLink[] = [
-  { href: "#join", label: "The join" },
-  { href: "#what", label: "What it runs" },
-  { href: "#previews", label: "Previews" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#trust", label: "Your data" },
+  { href: BASE + "/#join", label: "The join" },
+  { href: BASE + "/#what", label: "What it runs" },
+  { href: BASE + "/#previews", label: "Previews" },
+  { href: BASE + "/#pricing", label: "Pricing" },
+  { href: BASE + "/#trust", label: "Your data" },
+];
+
+const LEGAL: FooterLink[] = [
+  { href: BASE + "/privacy/", label: "Privacy policy" },
+  { href: BASE + "/terms/", label: "Terms and conditions" },
 ];
 
 const TALK: FooterLink[] = [
-  { href: "#contact", label: "Request a demo" },
-  { href: "#pricing", label: "Published prices" },
-  { href: "#trust", label: "Leaving with your data" },
+  { href: BASE + "/#contact", label: "Request a demo" },
+  { href: BASE + "/#pricing", label: "Published prices" },
+  { href: BASE + "/#trust", label: "Leaving with your data" },
 ];
 
 function LinkColumn({ heading, links }: { heading: string; links: FooterLink[] }) {
@@ -57,7 +67,7 @@ export function Footer() {
       <div className="wrap ftr__in">
         <div className="ftr__cols">
           <div className="ftr__brandcol">
-            <a className="brand" href="#top">
+            <a className="brand" href={`${BASE}/#top`}>
               Masjid<i>One</i>
             </a>
             <p className="ftr__blurb">
@@ -75,6 +85,7 @@ export function Footer() {
           <div className="ftr__links">
             <LinkColumn heading="The site" links={SECTIONS} />
             <LinkColumn heading="Talk to us" links={TALK} />
+            <LinkColumn heading="Legal" links={LEGAL} />
           </div>
         </div>
 
@@ -84,7 +95,7 @@ export function Footer() {
           </span>
         </div>
 
-        <a className="to-top" href="#top">
+        <a className="to-top" href={`${BASE}/#top`}>
           Back to top <span aria-hidden="true">&uarr;</span>
         </a>
       </div>

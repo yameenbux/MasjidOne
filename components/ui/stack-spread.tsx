@@ -259,6 +259,7 @@ export function StackSpread({
   // therefore readable at rest and sits above every card; only a slight settle
   // is left on the scroll.
   const copyScale = useTransform(progress, [textFadeStart, 0.9], [0.97, 1]);
+  const scrimOpacity = useTransform(progress, [0, 0.55], [1, 0]);
   const hintOpacity = useTransform(progress, [0, SCATTER_START], [1, 0]);
 
   return (
@@ -268,6 +269,14 @@ export function StackSpread({
       style={{ height: `${scrollLength}vh` }}
     >
       <div className="stack__stage">
+        {/* The wash that keeps the headline legible over the clustered cards.
+            It is only needed while they are stacked behind the copy — left on,
+            it bleaches the screenshots, which are the point of the section. */}
+        <motion.div
+          className="stack__scrim"
+          style={{ opacity: reduce === true ? 0 : scrimOpacity }}
+          aria-hidden="true"
+        />
         <motion.div
           className="stack__copy"
           style={{

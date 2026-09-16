@@ -2,6 +2,9 @@ import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
 
+// The header renders on every page, so its links cannot be bare hashes.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 /**
  * The MasjidOne site sections, ported from the original single-file build.
  * Styling still comes from the design system in app/globals.css; behaviour is
@@ -12,7 +15,7 @@ export function SiteHeader() {
   return (
 <header className="hdr" id="hdr">
   <div className="wrap hdr__in">
-    <a className="brand" href="#top">Masjid<i>One</i></a>
+    <a className="brand" href={`${BASE}/#top`}>Masjid<i>One</i></a>
     <SectionNav />
     <div className="hdr__end">
       <button className="icon-btn" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark theme">
@@ -23,7 +26,7 @@ export function SiteHeader() {
           <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z"/>
         </svg>
       </button>
-      <SpinningBorderLink href="#contact">Request a demo</SpinningBorderLink>
+      <SpinningBorderLink href={`${BASE}/#contact`}>Request a demo</SpinningBorderLink>
     </div>
   </div>
 </header>
@@ -79,7 +82,7 @@ export function Hero() {
 
     <div className="hero__act">
       <div className="btn-row rv" style={{ "--i": "1" } as React.CSSProperties}>
-        <SpinningBorderLink href="#contact">Request a demo</SpinningBorderLink>
+        <SpinningBorderLink href={`${BASE}/#contact`}>Request a demo</SpinningBorderLink>
         <a className="btn btn--ghost" href="#pricing"><span className="btn__t">See the pricing</span></a>
       </div>
       <p className="hero__note rv" style={{ "--i": "2" } as React.CSSProperties}>
