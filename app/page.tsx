@@ -1,7 +1,9 @@
 import {
   SiteHeader,
   Join,
+  Stack,
   Modules,
+  Setup,
   Previews,
   Trust,
   SiteFooter,
@@ -21,11 +23,13 @@ export default function Home() {
         <span id="top" />
         <MasjidOneHero />
         <Join />
+        <Stack />
         <Modules />
         <Previews />
         <section className="sect wrap" id="pricing">
           <MasjidOnePricing />
         </section>
+        <Setup />
         <Trust />
       </main>
       <SiteFooter />

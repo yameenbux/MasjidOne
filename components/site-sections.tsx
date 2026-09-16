@@ -5,6 +5,8 @@ import { DEMO_MAILTO } from "@/lib/site";
 import { MasjidOneComparison } from "@/components/masjidone-comparison";
 import { MasjidOneModulesDiagram } from "@/components/masjidone-modules-diagram";
 import { FeaturesSection } from "@/components/ui/feature";
+import { MasjidOneStack } from "@/components/masjidone-stack";
+import { MasjidOneSetup } from "@/components/masjidone-setup";
 
 // The header renders on every page, so its links cannot be bare hashes.
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -137,6 +139,38 @@ export function Join() {
       <p>The man at Fajr and the man paying madrasah fees are the same man. No platform in either camp knows it.</p>
       <cite>The product thesis, in one line</cite>
     </blockquote>
+  </div>
+</section>
+  );
+}
+
+export function Stack() {
+  return (
+<section className="sect wrap" id="stack">
+  <p className="eyebrow eyebrow--brass rv">What you run instead</p>
+  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>Right now the masjid is the integration.</h2>
+  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
+    Not one of these is the wrong tool. The problem is that a volunteer is
+    holding them together by hand, and the joins are where families get lost.
+  </p>
+  <div className="rv" style={{ "--i": "3" } as React.CSSProperties}>
+    <MasjidOneStack />
+  </div>
+</section>
+  );
+}
+
+export function Setup() {
+  return (
+<section className="sect wrap" id="setup">
+  <p className="eyebrow eyebrow--brass rv">Setting up</p>
+  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>What the £499 actually buys.</h2>
+  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
+    One fee, once, at the start. It is the part a committee is right to ask
+    about, so here it is in full rather than in a footnote.
+  </p>
+  <div className="rv" style={{ "--i": "3" } as React.CSSProperties}>
+    <MasjidOneSetup />
   </div>
 </section>
   );
