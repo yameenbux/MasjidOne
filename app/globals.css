@@ -282,6 +282,29 @@ ul{margin:0;padding:0;list-style:none}
 .hdr__end{display:flex;align-items:center;gap:var(--s2)}
 .hdr__end .btn{display:none}
 @media (min-width:60em){.nav{display:flex}.hdr__end .btn{display:inline-flex}}
+/* The header CTA is a SpinningBorderLink, not a .btn, so the rule above that
+   hides the desktop button below 60em never matched it. Rather than hide it —
+   a persistent "request a demo" earns its place on a phone — tighten it so it
+   stops wrapping to two lines and crowding the wordmark. */
+@media (max-width:60em){
+  .hdr__end > a{flex:0 0 auto}
+  .hdr__end > a > span:last-child{
+    padding-inline:.8rem;letter-spacing:.06em;white-space:nowrap;
+  }
+}
+/* At 390px the row is mark + wordmark + toggle + CTA against roughly 342px of
+   usable width, and it overflowed. Tighten every part of it rather than drop
+   one: a persistent CTA and a visible mark both earn their place. */
+@media (max-width:30em){
+  .hdr__in{gap:var(--s2);min-height:3.6rem}
+  .brand{font-size:1rem;gap:.35rem}
+  .brand__mark{height:1.3em}
+  .hdr__end{gap:.5rem}
+  .hdr__end > a > span:last-child{
+    padding-inline:.6rem;font-size:.625rem;letter-spacing:.04em;gap:.35rem;
+  }
+  .hdr__end > a svg{width:12px;height:12px}
+}
 
 
 
@@ -365,6 +388,37 @@ html:not(.js) .stack-card{position:static !important;left:auto !important;top:au
   width:auto !important;height:16rem !important;translate:none !important;
   rotate:none !important;scale:none !important}
 html:not(.js) .stack__hint{display:none}
+
+/* Phones do not get the scroll stage at all. At 320vh it reserves about
+   2700px on a 390px screen for an effect that cannot be seen there: eight
+   cards 35-113px wide scattered behind the copy, then two viewports of empty
+   paper before anything else arrives. The static layout the no-JS path uses is
+   simply the better one here — headline and calls to action immediately, then
+   the devices at a size worth looking at, one per row. */
+@media (max-width:52em){
+  .stack{height:auto !important}
+  /* The header is sticky and about 68px tall, so the stage needs to clear it
+     or the headline starts underneath it. */
+  .stack__stage{position:static !important;height:auto !important;
+    overflow:visible !important;padding-block:5.5rem var(--s5)}
+  .stack__scrim{display:none}
+  .stack__copy{position:static !important;inset:auto !important;
+    opacity:1 !important;scale:none !important;transform:none !important;
+    margin-bottom:var(--s5)}
+  .stack__cards{position:static !important;inset:auto !important;
+    display:grid;gap:var(--s4);grid-template-columns:1fr;padding-inline:var(--s3)}
+  .stack-card--sm-hide{display:none !important}
+  .stack-card{position:static !important;left:auto !important;top:auto !important;
+    width:auto !important;height:auto !important;opacity:1 !important;
+    transform:none !important;translate:none !important;
+    rotate:none !important;scale:none !important}
+  /* An ordinary flow image, so each device keeps its own aspect ratio instead
+     of being forced into one card box. Capped so a 0.48:1 phone does not take
+     700px of a screen that is 844px tall. */
+  .stack-card__face img{position:static !important;width:100% !important;
+    height:auto !important;max-height:46vh}
+  .stack__hint{display:none}
+}
 
 @media (prefers-reduced-motion:reduce){.stack__hint{display:none}}
 
@@ -516,7 +570,7 @@ html:not(.js) .stack__hint{display:none}
    ============================================================ */
 /* Wide content scrolls inside its own container; the body never scrolls
    sideways. The region is focusable, so this is reachable without a mouse. */
-.cmp__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cmp__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;contain:paint}
 .cmp__hint{margin:0 0 var(--s2);font-size:var(--t-label);letter-spacing:.14em;
   text-transform:uppercase;font-variation-settings:"wdth" 82,"wght" 600;color:var(--ink-2)}
 @media (min-width:52em){.cmp__hint{display:none}}
@@ -651,6 +705,13 @@ html:not(.js) .stack__hint{display:none}
    PREVIEWS — tabs
    ============================================================ */
 .tabs{display:flex;flex-wrap:wrap;gap:0;margin-top:var(--s4);border-bottom:var(--hair) solid var(--rule)}
+/* Five tabs wrap to three ragged rows on a phone. One scrolling row reads as a
+   row; the container scrolls, the page never does. */
+@media (max-width:52em){
+  .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;flex:0 0 auto}
+}
 .tab{
   font:inherit;font-size:var(--t-small);font-variation-settings:"wght" 500,"wdth" 92;
   background:none;border:0;border-bottom:2px solid transparent;color:var(--ink-2);

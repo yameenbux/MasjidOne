@@ -59,6 +59,13 @@ export interface StackSpreadCard {
   item: StackSpreadItem;
   target: StackSpreadTarget;
   targetSm?: { x: number; y: number };
+  /**
+   * Drop this card on phones. The stage becomes a plain vertical gallery below
+   * 52em, and eight full-width devices is more hero than a phone should carry
+   * before it reaches the argument. The dropped ones all appear again further
+   * down the page, in the modules section or the previews tabs.
+   */
+  hideSm?: boolean;
   stackRotate?: number;
   stackOffset?: { x: number; y: number };
   z?: number;
@@ -200,7 +207,7 @@ function Card({
 
   return (
     <motion.div
-      className="stack-card"
+      className={card.hideSm ? "stack-card stack-card--sm-hide" : "stack-card"}
       style={{
         width: `${target.w}vw`,
         height: `${target.h}vh`,

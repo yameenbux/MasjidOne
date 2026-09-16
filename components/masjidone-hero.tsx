@@ -59,6 +59,7 @@ const CARDS: StackSpreadCard[] = [
     stackRotate: 15,
     target: { x: 36, y: -24, rotate: 0, scale: 1, w: 25, h: 23 },
     targetSm: { x: 22, y: -40 },
+    hideSm: true,
     z: 3,
   },
   // Managed website, laptop
@@ -101,6 +102,7 @@ const CARDS: StackSpreadCard[] = [
     stackRotate: 7,
     target: { x: 34, y: 14, rotate: 0, scale: 1, w: 9, h: 28 },
     targetSm: { x: 22, y: 20 },
+    hideSm: true,
     z: 6,
   },
   // App · giving
@@ -129,6 +131,7 @@ const CARDS: StackSpreadCard[] = [
     stackRotate: 3,
     target: { x: 16, y: 38, rotate: 0, scale: 1, w: 23, h: 23 },
     targetSm: { x: -22, y: 40 },
+    hideSm: true,
     z: 8,
   },
   // App · everyday duʿās
@@ -143,6 +146,7 @@ const CARDS: StackSpreadCard[] = [
     stackRotate: -8,
     target: { x: 14, y: -38, rotate: 0, scale: 1, w: 9, h: 28 },
     targetSm: { x: 22, y: 40 },
+    hideSm: true,
     z: 9,
   },
 
