@@ -27,7 +27,8 @@ import { AnimatedBeam } from "@/components/ui/animated-beam";
  *  - prefers-reduced-motion keeps the static path and drops the travelling
  *    gradient.
  *  - The status word under each label has to agree with the module cards below
- *    and the comparison table above.
+ *    and the comparison table above. It is also the only thing marking what is
+ *    not yet built, now that the caption underneath is gone.
  */
 
 type NodeSpec = { key: string; label: string; status: "Live" | "In development"; Icon: LucideIcon };
@@ -45,13 +46,13 @@ const CONGREGATION: NodeSpec[] = [
 
 /** Beam shape per spoke, mirroring the demo's -75 / 0 / +75 fan. */
 const LEFT_BEAMS = [
-  { curvature: -70, endYOffset: -10 },
-  { curvature: 70, endYOffset: 10 },
+  { curvature: -105, endYOffset: -14 },
+  { curvature: 105, endYOffset: 14 },
 ];
 const RIGHT_BEAMS = [
-  { curvature: -75, endYOffset: -10 },
+  { curvature: -115, endYOffset: -14 },
   { curvature: 0, endYOffset: 0 },
-  { curvature: 75, endYOffset: 10 },
+  { curvature: 115, endYOffset: 14 },
 ];
 
 const Node = React.forwardRef<HTMLDivElement, { spec: NodeSpec }>(({ spec }, ref) => (
@@ -134,11 +135,6 @@ export function MasjidOneModulesDiagram() {
           />
         ))}
       </div>
-      <figcaption className="dgm__cap">
-        Diagram, not a screenshot. Two modules are in development for the
-        September 2027 intake; the other three are running in a Bolton masjid
-        today.
-      </figcaption>
     </figure>
   );
 }
