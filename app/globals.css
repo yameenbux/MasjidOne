@@ -269,7 +269,12 @@ ul{margin:0;padding:0;list-style:none}
 .hdr.stuck{border-bottom-color:var(--rule)}
 .hdr__in{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:4.2rem}
 .brand{font-size:1.15rem;text-decoration:none;letter-spacing:-.01em;white-space:nowrap;
-  font-variation-settings:"wght" 600,"wdth" 92}
+  font-variation-settings:"wght" 600,"wdth" 92;
+  display:inline-flex;align-items:center;gap:.5rem}
+/* The mark inherits currentColor, so it takes the brand's colour on paper and
+   on the board without a second copy of the file. */
+.brand__mark{height:1.5em;width:auto;flex:0 0 auto;color:var(--brass)}
+.ftr .brand__mark{color:var(--board-brass)}
 .brand i{font-family:var(--font-newsreader),Georgia,serif;font-style:italic;font-weight:400;color:var(--brass);font-size:1.2em}
 .nav{display:none;gap:var(--s3);margin-left:auto;font-size:var(--t-small);color:var(--ink-2)}
 .nav a{text-decoration:none;transition:color .2s ease}
@@ -315,10 +320,14 @@ html:not(.js) .stack__scrim{display:none}
 
 .stack__cards{position:absolute;inset:0;z-index:1}
 .stack-card{position:absolute;left:50%;top:50%;will-change:transform}
-.stack-card__face{margin:0;height:100%;width:100%;position:relative;
-  border:var(--hair) solid var(--rule-2);background:var(--paper-2);overflow:hidden}
+/* No frame and no fill: every image carries its own device — a TV bezel, a
+   phone body, a browser chrome — on a transparent surround, so a card border
+   would draw a second frame around the first one. */
+.stack-card__face{margin:0;height:100%;width:100%;position:relative;background:none}
+/* contain, not cover. These are pictures of devices, and cover crops the
+   bezel off the top, which is exactly the part that says "this is a screen". */
 .stack-card__face img{position:absolute;inset:0;height:100%;width:100%;
-  object-fit:cover;display:block}
+  object-fit:contain;display:block}
 .stack-card__pending{
   position:absolute;inset:0;display:grid;place-items:center;padding:1rem;
   border:var(--hair) dashed var(--rule-2);background:var(--paper-2);
@@ -327,11 +336,11 @@ html:not(.js) .stack__scrim{display:none}
 }
 /* The caption sits inside the card. Below it, captions collided with the
    headline and with each other once the stack spread out. */
-.stack-card__cap{position:absolute;left:0;right:0;bottom:0;
+.stack-card__cap{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
   display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;justify-content:center;
-  padding:.5rem .6rem;font-size:var(--t-label);letter-spacing:.06em;
-  text-align:center;color:var(--board-ink);
-  background:linear-gradient(to top,var(--shade-1),var(--shade-2) 60%,transparent);
+  padding:.4rem .7rem;font-size:var(--t-label);letter-spacing:.06em;
+  text-align:center;color:var(--board-ink);max-width:100%;
+  background:var(--shade-1)
 }
 .stack-card__cap .tag{color:var(--board-brass);border-color:var(--board-brass)}
 
@@ -551,7 +560,7 @@ html:not(.js) .stack__hint{display:none}
 
 /* Preview figures — the imagery that replaced the hand-drawn SVG previews. */
 .shot-fig{margin:0;display:flex;flex-direction:column;gap:var(--s2)}
-.shot-img{display:block;width:100%;height:auto;border:var(--hair) solid var(--rule);background:var(--paper-2)}
+.shot-img{display:block;width:100%;height:auto;background:none}
 .shot-fig--tall .shot-img{max-width:22rem;margin-inline:auto}
 .shot-fig figcaption{font-size:var(--t-small);line-height:1.6;color:var(--ink-2);max-width:44rem}
 

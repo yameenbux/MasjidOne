@@ -3,15 +3,6 @@ import "./globals.css";
 
 import { BASE_PATH, SITE_ORIGIN } from "@/lib/site";
 
-/**
- * The favicon is an SVG data URI: three brass rules on the bottle green of a
- * prayer-time board. The house rule forbids hex outside globals.css, and names
- * this and <meta name="theme-color"> as the two unavoidable exceptions, since
- * neither can read a CSS custom property.
- */
-const FAVICON =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230C2A21'/%3E%3Crect x='7' y='9' width='18' height='2' fill='%239A7638'/%3E%3Crect x='7' y='15' width='18' height='2' fill='%239A7638'/%3E%3Crect x='7' y='21' width='18' height='2' fill='%239A7638'/%3E%3C/svg%3E";
-
 const TITLE = "MasjidOne — the madrasah and the congregation on one system";
 const DESCRIPTION =
   "MasjidOne runs a UK mosque's madrasah and its congregation on one system. Prayer times, a congregation app, your website, the hall screens and donations at 0% commission — with registers, fees and parent access joining the same record of the same family.";
@@ -33,11 +24,25 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  // Icons are emitted verbatim rather than resolved against metadataBase, so
+  // each of these carries the base path itself. Two SVG favicons, picked by
+  // prefers-color-scheme: the brass mark on the board for dark, the same mark
+  // on paper for light. apple-touch-icon stays a PNG because iOS does not take
+  // an SVG there.
   icons: {
-    icon: [{ url: FAVICON, type: "image/svg+xml" }],
-    shortcut: [{ url: FAVICON, type: "image/svg+xml" }],
-    // Icons are emitted verbatim rather than resolved against metadataBase,
-    // so this one carries the base path itself. 180x180, as iOS expects.
+    icon: [
+      {
+        url: `${BASE_PATH}/favicon-light-32.svg`,
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: `${BASE_PATH}/favicon-32.svg`,
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+    shortcut: [{ url: `${BASE_PATH}/favicon-32.svg`, type: "image/svg+xml" }],
     apple: [{ url: `${BASE_PATH}/apple-touch-icon.png`, sizes: "180x180" }],
   },
   openGraph: {

@@ -18,9 +18,11 @@ import { DEMO_MAILTO } from "@/lib/site";
  * screens — registers, fees and parent access — live in the previews section
  * instead, where each gets a full-size tab rather than a corner of this one.
  *
- * Card sizes are set so each one's vw/vh ratio roughly matches its image, since
- * `object-fit: cover` crops the difference. 16:9 display captures get wide
- * cards, 9:16 and phone captures get tall ones.
+ * Card sizes match each image's aspect ratio, because the images are rendered
+ * `object-fit: contain` rather than cover. Every one of them is a picture of a
+ * device on a transparent surround, and cover cropped the bezel off the top —
+ * the part that says "this is a screen". Landscape screens are about 1.7:1,
+ * the laptop and admin screens 1.57:1, and the phones 0.48:1.
  *
  * NEXT_PUBLIC_BASE_PATH is prefixed by hand. `next/image` is not in use here
  * (the export is unoptimised anyway) and a plain <img src="/devices/..."> would
@@ -41,7 +43,7 @@ const CARDS: StackSpreadCard[] = [
     },
     stackOffset: { x: -8, y: -10 },
     stackRotate: -12,
-    target: { x: -30, y: -30, rotate: 0, scale: 1, w: 30, h: 27 },
+    target: { x: -30, y: -30, rotate: 0, scale: 1, w: 29, h: 27 },
     targetSm: { x: -22, y: -40 },
     z: 2,
   },
@@ -50,12 +52,12 @@ const CARDS: StackSpreadCard[] = [
     item: {
       src: img("foyer-appeal.webp"),
       alt: "A foyer screen running an appeal: the total raised, the phases so far, and a QR code to give",
-      caption: "Foyer screen · appeals",
+      caption: "Foyer appeals",
       status: "live",
     },
     stackOffset: { x: 14, y: -10 },
     stackRotate: 15,
-    target: { x: 36, y: -24, rotate: 0, scale: 1, w: 26, h: 23 },
+    target: { x: 36, y: -24, rotate: 0, scale: 1, w: 25, h: 23 },
     targetSm: { x: 22, y: -40 },
     z: 3,
   },
@@ -78,12 +80,12 @@ const CARDS: StackSpreadCard[] = [
     item: {
       src: img("app-prayer-times.webp"),
       alt: "The congregation app showing beginning and jamāʿah times side by side, with a per-person reminder offset",
-      caption: "Congregation app · the masjid's own times",
+      caption: "Congregation app",
       status: "live",
     },
     stackOffset: { x: 1, y: -10 },
     stackRotate: -2,
-    target: { x: -14, y: -38, rotate: 0, scale: 1, w: 11, h: 28 },
+    target: { x: -14, y: -38, rotate: 0, scale: 1, w: 9, h: 28 },
     targetSm: { x: 22, y: -19 },
     z: 5,
   },
@@ -92,12 +94,12 @@ const CARDS: StackSpreadCard[] = [
     item: {
       src: img("app-notices.webp"),
       alt: "Notices in the app: janāzah today, Jumuʿah times, madrasah half term",
-      caption: "Notices · posted once, everywhere",
+      caption: "Notices",
       status: "live",
     },
     stackOffset: { x: 18, y: 2 },
     stackRotate: 7,
-    target: { x: 34, y: 14, rotate: 0, scale: 1, w: 11, h: 28 },
+    target: { x: 34, y: 14, rotate: 0, scale: 1, w: 9, h: 28 },
     targetSm: { x: 22, y: 20 },
     z: 6,
   },
@@ -106,12 +108,12 @@ const CARDS: StackSpreadCard[] = [
     item: {
       src: img("app-giving.webp"),
       alt: "Giving in the app, with Gift Aid added and Apple Pay and Google Pay, at 0% commission",
-      caption: "Donations · 0% commission",
+      caption: "Donations · 0%",
       status: "live",
     },
     stackOffset: { x: -6, y: 10 },
     stackRotate: 5,
-    target: { x: -18, y: 38, rotate: 0, scale: 1, w: 11, h: 28 },
+    target: { x: -18, y: 38, rotate: 0, scale: 1, w: 9, h: 28 },
     targetSm: { x: -22, y: 20 },
     z: 7,
   },
@@ -125,7 +127,7 @@ const CARDS: StackSpreadCard[] = [
     },
     stackOffset: { x: 8, y: 8 },
     stackRotate: 3,
-    target: { x: 16, y: 38, rotate: 0, scale: 1, w: 26, h: 23 },
+    target: { x: 16, y: 38, rotate: 0, scale: 1, w: 23, h: 23 },
     targetSm: { x: -22, y: 40 },
     z: 8,
   },
@@ -139,7 +141,7 @@ const CARDS: StackSpreadCard[] = [
     },
     stackOffset: { x: 20, y: 12 },
     stackRotate: -8,
-    target: { x: 14, y: -38, rotate: 0, scale: 1, w: 11, h: 28 },
+    target: { x: 14, y: -38, rotate: 0, scale: 1, w: 9, h: 28 },
     targetSm: { x: 22, y: 40 },
     z: 9,
   },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { DEMO_MAILTO } from "@/lib/site";
 
 /**
@@ -69,6 +70,7 @@ export function Footer() {
         <div className="ftr__cols">
           <div className="ftr__brandcol">
             <a className="brand" href={`${BASE}/#top`}>
+              <BrandMark className="brand__mark" />
               Masjid<i>One</i>
             </a>
             <p className="ftr__blurb">
