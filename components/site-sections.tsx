@@ -101,36 +101,59 @@ export function Join() {
 <section className="sect join wrap" id="join">
   <p className="eyebrow eyebrow--brass rv">The join</p>
   <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>Every mosque already runs two systems that have never met.</h2>
-  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties} >
+  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
     One keeps the children: registers, fees, progress. The other keeps the
     congregation: times, notices, giving. Both work. Neither knows the other
     exists, so the same family is entered twice, chased twice and counted twice.
   </p>
 
-  <div className="join__grid rv" style={{ "--i": "3" } as React.CSSProperties}>
-    <ul className="join__col">
-      <li className="hd">Madrasah</li>
-      <li>Students and classes</li>
-      <li>Daily registers</li>
-      <li>Hifz and sabaq progress</li>
-      <li>Fees and chasing</li>
-      <li>Reports and certificates</li>
-    </ul>
-    <div className="join__spine" aria-hidden="true"></div>
-    <ul className="join__col">
-      <li className="hd">Congregation</li>
-      <li>Prayer times and jamāʿah reminders</li>
-      <li>Announcements and janāzah notices</li>
-      <li>Website and hall screens</li>
-      <li>Donations and sadaqah</li>
-      <li className="dev">Parent access — the bridge</li>
-    </ul>
-  </div>
+  {/* A bento of unequal cells rather than five matching boxes: the two systems
+      are the tall pair, the cost of keeping them apart is the small cell, and
+      the bridge is the one inverted panel — the only claim this section is
+      making. Seamed with hairline gaps over --rule so the whole block reads as
+      a prayer-time board, not as the rounded cards of the pricing block. */}
+  <div className="bento rv" style={{ "--i": "3" } as React.CSSProperties}>
+    <article className="bento__cell bento__cell--madrasah">
+      <p className="bento__tag">System one</p>
+      <h3 className="bento__h">Madrasah</h3>
+      <ul className="bento__list">
+        <li>Students and classes</li>
+        <li>Daily registers</li>
+        <li>Hifz and sabaq progress</li>
+        <li>Fees and chasing</li>
+        <li>Reports and certificates</li>
+      </ul>
+    </article>
 
-  <blockquote className="join__quote rv" style={{ "--i": "4" } as React.CSSProperties}>
-    <p>The man at Fajr and the man paying madrasah fees are the same man. No platform in either camp knows it.</p>
-    <cite>The product thesis, in one line</cite>
-  </blockquote>
+    <article className="bento__cell bento__cell--congregation">
+      <p className="bento__tag">System two</p>
+      <h3 className="bento__h">Congregation</h3>
+      <ul className="bento__list">
+        <li>Prayer times and jamāʿah reminders</li>
+        <li>Announcements and janāzah notices</li>
+        <li>Website and hall screens</li>
+        <li>Donations and sadaqah</li>
+      </ul>
+    </article>
+
+    <article className="bento__cell bento__cell--cost">
+      <p className="bento__tag">The cost of the gap</p>
+      <h3 className="bento__h bento__h--sm">Two databases, two logins, two versions of the same family.</h3>
+      <p className="bento__p">Nothing on either side knows they are the same family, so nobody can answer a question that crosses the middle.</p>
+    </article>
+
+    <article className="bento__cell bento__cell--bridge">
+      <span className="bento__seam" aria-hidden="true"></span>
+      <p className="bento__tag">The bridge</p>
+      <h3 className="bento__h">Parent access <span className="tag tag--dev">In development</span></h3>
+      <p className="bento__p">A parent opens the app they already have for jamāʿah times and finds their own child: the register marked this evening, the sabaq heard this week, the fee due this month. One record of one family, reachable from both sides.</p>
+    </article>
+
+    <blockquote className="bento__cell bento__cell--quote join__quote">
+      <p>The man at Fajr and the man paying madrasah fees are the same man. No platform in either camp knows it.</p>
+      <cite>The product thesis, in one line</cite>
+    </blockquote>
+  </div>
 </section>
   );
 }
