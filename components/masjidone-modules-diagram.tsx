@@ -8,32 +8,29 @@ import { AnimatedBeam } from "@/components/ui/animated-beam";
 /**
  * "Five modules, one record of the family", drawn.
  *
- * The geometry is the argument, not decoration: the madrasah side sits on the
- * left, the congregation side on the right, and every beam runs through one
- * hub in the middle. That is the whole claim of the page in one picture.
+ * Geometry follows the Magic UI block's demo rather than being re-invented,
+ * because the sweep is the whole effect and it only exists when two things are
+ * true: the stage is much taller than the band the nodes occupy, so the curves
+ * have somewhere to travel, and the control point is pushed to the far side of
+ * the start (negative curvature for a node above the hub, positive for one
+ * below). Flatten the stage or flip those signs and the beams collapse into
+ * short straight stubs.
  *
- * It has to survive three things the rest of the site already requires:
+ * No container fill and no border: the beams read against the page, as in the
+ * original. Round nodes are a deliberate departure from the flat, hairline
+ * vernacular — a graph node is not a card, and this is the shape the block is.
  *
- *  - No JavaScript. The nodes, the hub and their labels are ordinary flow
- *    markup styled in CSS. Only the beams need JS, and AnimatedBeam renders
- *    nothing until it has measured, so without JS this degrades to the
- *    diagram's boxes with no lines — still legible, still labelled.
- *  - prefers-reduced-motion. AnimatedBeam draws the static path and skips the
- *    travelling gradient entirely.
- *  - 360px. The columns stack, the hub sits between them, and the beams
- *    re-measure because they are computed from live positions rather than
- *    fixed coordinates.
- *
- * The status word under each label is load-bearing: "In development" here has
- * to agree with the module cards below it and with the comparison table above.
+ * Three things the site requires and the supplied block did not do:
+ *  - Without JavaScript AnimatedBeam renders nothing, so the circles, icons and
+ *    labels are ordinary flow markup. The diagram loses its lines, not its
+ *    meaning.
+ *  - prefers-reduced-motion keeps the static path and drops the travelling
+ *    gradient.
+ *  - The status word under each label has to agree with the module cards below
+ *    and the comparison table above.
  */
 
-type NodeSpec = {
-  key: string;
-  label: string;
-  status: "Live" | "In development";
-  Icon: LucideIcon;
-};
+type NodeSpec = { key: string; label: string; status: "Live" | "In development"; Icon: LucideIcon };
 
 const MADRASAH: NodeSpec[] = [
   { key: "portal", label: "Madrasah portal", status: "In development", Icon: BookOpen },
@@ -46,70 +43,69 @@ const CONGREGATION: NodeSpec[] = [
   { key: "giving", label: "Donations and Gift Aid", status: "Live", Icon: HandCoins },
 ];
 
-// Control-point offset per spoke. AnimatedBeam puts the control point at
-// startY - curvature, so a node ABOVE the hub needs a positive value to bow
-// away from the centre line. Getting the sign backwards makes neighbouring
-// beams cross each other on their way in, which reads as a tangle rather than
-// a hub.
-const LEFT_CURVE = [26, -26];
-const RIGHT_CURVE = [34, 0, -34];
+/** Beam shape per spoke, mirroring the demo's -75 / 0 / +75 fan. */
+const LEFT_BEAMS = [
+  { curvature: -70, endYOffset: -10 },
+  { curvature: 70, endYOffset: 10 },
+];
+const RIGHT_BEAMS = [
+  { curvature: -75, endYOffset: -10 },
+  { curvature: 0, endYOffset: 0 },
+  { curvature: 75, endYOffset: 10 },
+];
 
-const Node = React.forwardRef<HTMLDivElement, { spec: NodeSpec }>(
-  ({ spec }, ref) => (
-    <div className="dgm__node" ref={ref}>
-      <span className="dgm__icon">
-        <spec.Icon className="dgm__glyph" aria-hidden="true" />
-      </span>
-      <span className="dgm__label">
-        {spec.label}
-        <span
-          className={
-            spec.status === "Live" ? "dgm__status is-live" : "dgm__status"
-          }
-        >
-          {spec.status}
-        </span>
-      </span>
+const Node = React.forwardRef<HTMLDivElement, { spec: NodeSpec }>(({ spec }, ref) => (
+  <div className="dgm__node">
+    <div className="dgm__circle" ref={ref}>
+      <spec.Icon className="dgm__glyph" aria-hidden="true" />
     </div>
-  ),
-);
+    <span className="dgm__label">
+      {spec.label}
+      <span className={spec.status === "Live" ? "dgm__status is-live" : "dgm__status"}>
+        {spec.status}
+      </span>
+    </span>
+  </div>
+));
 Node.displayName = "Node";
 
 export function MasjidOneModulesDiagram() {
   const container = React.useRef<HTMLDivElement>(null);
   const hub = React.useRef<HTMLDivElement>(null);
-  const left = [
-    React.useRef<HTMLDivElement>(null),
-    React.useRef<HTMLDivElement>(null),
-  ];
-  const right = [
-    React.useRef<HTMLDivElement>(null),
-    React.useRef<HTMLDivElement>(null),
-    React.useRef<HTMLDivElement>(null),
-  ];
+  const l0 = React.useRef<HTMLDivElement>(null);
+  const l1 = React.useRef<HTMLDivElement>(null);
+  const r0 = React.useRef<HTMLDivElement>(null);
+  const r1 = React.useRef<HTMLDivElement>(null);
+  const r2 = React.useRef<HTMLDivElement>(null);
+  const left = [l0, l1];
+  const right = [r0, r1, r2];
 
   return (
     <figure className="dgm">
       <div className="dgm__stage" ref={container}>
-        <div className="dgm__col dgm__col--left">
-          <p className="dgm__side">The madrasah</p>
-          {MADRASAH.map((spec, i) => (
-            <Node key={spec.key} spec={spec} ref={left[i]} />
-          ))}
-        </div>
+        <div className="dgm__band">
+          <div className="dgm__col dgm__col--left">
+            <p className="dgm__side">The madrasah</p>
+            {MADRASAH.map((spec, i) => (
+              <Node key={spec.key} spec={spec} ref={left[i]} />
+            ))}
+          </div>
 
-        <div className="dgm__hub" ref={hub}>
-          <span className="dgm__mark">
-            Masjid<i>One</i>
-          </span>
-          <span className="dgm__hubsub">One record of the family</span>
-        </div>
+          <div className="dgm__hubwrap">
+            <div className="dgm__hub" ref={hub}>
+              <span className="dgm__mark">
+                Masjid<i>One</i>
+              </span>
+            </div>
+            <span className="dgm__hubsub">One record of the family</span>
+          </div>
 
-        <div className="dgm__col dgm__col--right">
-          <p className="dgm__side">The congregation</p>
-          {CONGREGATION.map((spec, i) => (
-            <Node key={spec.key} spec={spec} ref={right[i]} />
-          ))}
+          <div className="dgm__col dgm__col--right">
+            <p className="dgm__side">The congregation</p>
+            {CONGREGATION.map((spec, i) => (
+              <Node key={spec.key} spec={spec} ref={right[i]} />
+            ))}
+          </div>
         </div>
 
         {left.map((ref, i) => (
@@ -118,8 +114,9 @@ export function MasjidOneModulesDiagram() {
             containerRef={container}
             fromRef={ref}
             toRef={hub}
-            curvature={LEFT_CURVE[i]}
-            delay={i * 0.8}
+            curvature={LEFT_BEAMS[i].curvature}
+            endYOffset={LEFT_BEAMS[i].endYOffset}
+            delay={i * 0.9}
             duration={5}
           />
         ))}
@@ -129,8 +126,9 @@ export function MasjidOneModulesDiagram() {
             containerRef={container}
             fromRef={ref}
             toRef={hub}
-            curvature={RIGHT_CURVE[i]}
-            delay={0.4 + i * 0.8}
+            curvature={RIGHT_BEAMS[i].curvature}
+            endYOffset={RIGHT_BEAMS[i].endYOffset}
+            delay={0.45 + i * 0.9}
             duration={5}
             reverse
           />
