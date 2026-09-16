@@ -33,7 +33,7 @@ const CARDS: StackSpreadCard[] = [
   // Prayer hall screen, landscape — 1920x1080
   {
     item: {
-      src: img("timetable_landscape_raw.png"),
+      src: img("timetable_landscape_raw.webp"),
       alt: "A prayer hall screen: the live clock, the next jamāʿah countdown, and today's beginning and jamāʿah times",
       caption: "Prayer hall screen",
       status: "live",
@@ -47,7 +47,7 @@ const CARDS: StackSpreadCard[] = [
   // The same timetable, portrait — 1080x1920
   {
     item: {
-      src: img("timetable_portrait_raw.png"),
+      src: img("timetable_portrait_raw.webp"),
       alt: "The same timetable on a portrait wall-mounted display",
       caption: "Hall screen · portrait",
       status: "live",
@@ -61,7 +61,7 @@ const CARDS: StackSpreadCard[] = [
   // Website on a laptop — 3000x2040
   {
     item: {
-      src: img("taiyabah-website-laptop.png"),
+      src: img("taiyabah-website-laptop.webp"),
       alt: "The managed mosque website on a laptop, with prayer times in the header",
       caption: "Managed website",
       status: "live",
@@ -75,7 +75,7 @@ const CARDS: StackSpreadCard[] = [
   // App · prayer times — 1179x2556
   {
     item: {
-      src: img("times.png"),
+      src: img("times.webp"),
       alt: "The congregation app showing beginning and jamāʿah times side by side",
       caption: "Congregation app · the masjid's own times",
       status: "live",
@@ -89,7 +89,7 @@ const CARDS: StackSpreadCard[] = [
   // Foyer appeal screen, landscape — 1920x1080
   {
     item: {
-      src: img("foyer_landscape_raw.png"),
+      src: img("foyer_landscape_raw.webp"),
       alt: "A foyer screen running the new build appeal, with the phases so far and how to give",
       caption: "Foyer screen · appeals",
       status: "live",
@@ -103,7 +103,7 @@ const CARDS: StackSpreadCard[] = [
   // App · giving — 1179x2556
   {
     item: {
-      src: img("donate.png"),
+      src: img("donate.webp"),
       alt: "Giving in the app, with Apple Pay and Google Pay, at 0% commission",
       caption: "Donations · 0% commission",
       status: "live",
@@ -117,7 +117,7 @@ const CARDS: StackSpreadCard[] = [
   // App · madrasah curriculum — 1179x2556
   {
     item: {
-      src: img("curriculum.png"),
+      src: img("curriculum.webp"),
       alt: "The madrasah curriculum in the app: what students learn, by subject",
       caption: "Madrasah · what is taught",
       status: "live",
@@ -131,7 +131,7 @@ const CARDS: StackSpreadCard[] = [
   // App · everyday duʿās — 1179x2556
   {
     item: {
-      src: img("duas.png"),
+      src: img("duas.webp"),
       alt: "Everyday duʿās in the app, by occasion, with transliteration",
       caption: "Everyday duʿās",
       status: "live",

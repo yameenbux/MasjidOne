@@ -11,12 +11,17 @@ import { VariableFontHover } from "@/components/ui/variable-font-hover";
  * `hover:text-foreground`, so the header keeps the palette it already had.
  */
 
+// Absolute and basePath-aware: the header also renders on /privacy/, /terms/
+// and 404.html, where a bare "#join" points at nothing. On the home page the
+// path is unchanged so the browser still treats it as a hash jump.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const NAV_LINKS = [
-  { href: "#join", label: "The join" },
-  { href: "#what", label: "What it runs" },
-  { href: "#previews", label: "Previews" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#trust", label: "Your data" },
+  { href: BASE + "/#join", label: "The join" },
+  { href: BASE + "/#what", label: "What it runs" },
+  { href: BASE + "/#previews", label: "Previews" },
+  { href: BASE + "/#pricing", label: "Pricing" },
+  { href: BASE + "/#trust", label: "Your data" },
 ];
 
 export function SectionNav() {
