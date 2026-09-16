@@ -61,14 +61,14 @@ export function Footer() {
               Masjid<i>One</i>
             </a>
             <p className="ftr__blurb">
-              The madrasah and the congregation, on one system. Built in Bolton
-              for UK masajid.
+              The madrasah and the congregation, on one system. Built for UK
+              masajid.
             </p>
             <p className="ftr__legal">
               &copy; <span className="num" id="yr">2026</span> YSB Ventures Ltd.
               All rights reserved.
               <br />
-              MasjidOne is a product of YSB Ventures Ltd, Bolton.
+              MasjidOne is a product of YSB Ventures Ltd.
             </p>
           </div>
 

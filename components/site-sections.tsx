@@ -1,3 +1,4 @@
+import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
 
@@ -12,13 +13,7 @@ export function SiteHeader() {
 <header className="hdr" id="hdr">
   <div className="wrap hdr__in">
     <a className="brand" href="#top">Masjid<i>One</i></a>
-    <nav className="nav" aria-label="Sections">
-      <a href="#join">The join</a>
-      <a href="#what">What it runs</a>
-      <a href="#previews">Previews</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#trust">Your data</a>
-    </nav>
+    <SectionNav />
     <div className="hdr__end">
       <button className="icon-btn" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark theme">
         <svg className="sun" viewBox="0 0 16 16" role="img" aria-label="Light theme" fill="none" stroke="currentColor" strokeWidth="1.2">
@@ -335,7 +330,7 @@ export function Trust() {
 export function Contact() {
   return (
 <section className="sect cta" id="contact">
-  <div className="wrap cta__grid">
+  <div className="wrap cta__grid cta__grid--single">
     <div>
       <p className="eyebrow rv">Request a demo</p>
       <h2 className="rv rv--blur measure" style={{ "--i": "1" } as React.CSSProperties}>Best seen between Maghrib and ʿIshāʾ, in your own masjid.</h2>
@@ -347,21 +342,6 @@ export function Contact() {
         <a className="btn btn--onboard" href="mailto:REPLACE-ME@masjidone.example?subject=MasjidOne%20demo%20request"><span className="btn__t">Email to arrange a visit <span className="arw" aria-hidden="true">→</span></span></a>
       </div>
     </div>
-    <dl className="rv" style={{ "--i": "3" } as React.CSSProperties}>
-      <div>
-        <dt>Email</dt>
-        <dd><a href="mailto:REPLACE-ME@masjidone.example" id="mail">REPLACE-ME@masjidone.example</a></dd>
-        <button className="copy-btn" id="copy" type="button">Copy address</button>
-      </div>
-      <div>
-        <dt>Telephone</dt>
-        <dd>Replace with the real number</dd>
-      </div>
-      <div>
-        <dt>Registered</dt>
-        <dd>YSB Ventures Ltd<br />Bolton, United Kingdom</dd>
-      </div>
-    </dl>
   </div>
 </section>
   );

@@ -1,6 +1,5 @@
 import {
   SiteHeader,
-  Hero,
   Join,
   Modules,
   Previews,
@@ -10,6 +9,7 @@ import {
 } from "@/components/site-sections";
 import { SiteBehaviour } from "@/components/site-behaviour";
 import { MasjidOnePricing } from "@/components/masjidone-pricing";
+import { MasjidOneHero } from "@/components/masjidone-hero";
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
       <SiteHeader />
       <main id="main">
         <span id="top" />
-        <Hero />
+        <MasjidOneHero />
         <Join />
         <Modules />
         <Previews />
