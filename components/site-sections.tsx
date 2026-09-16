@@ -1,3 +1,4 @@
+import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
 
@@ -12,13 +13,7 @@ export function SiteHeader() {
 <header className="hdr" id="hdr">
   <div className="wrap hdr__in">
     <a className="brand" href="#top">Masjid<i>One</i></a>
-    <nav className="nav" aria-label="Sections">
-      <a href="#join">The join</a>
-      <a href="#what">What it runs</a>
-      <a href="#previews">Previews</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#trust">Your data</a>
-    </nav>
+    <SectionNav />
     <div className="hdr__end">
       <button className="icon-btn" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark theme">
         <svg className="sun" viewBox="0 0 16 16" role="img" aria-label="Light theme" fill="none" stroke="currentColor" strokeWidth="1.2">
