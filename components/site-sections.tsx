@@ -330,7 +330,7 @@ export function Trust() {
 export function Contact() {
   return (
 <section className="sect cta" id="contact">
-  <div className="wrap cta__grid">
+  <div className="wrap cta__grid cta__grid--single">
     <div>
       <p className="eyebrow rv">Request a demo</p>
       <h2 className="rv rv--blur measure" style={{ "--i": "1" } as React.CSSProperties}>Best seen between Maghrib and ʿIshāʾ, in your own masjid.</h2>
@@ -342,21 +342,6 @@ export function Contact() {
         <a className="btn btn--onboard" href="mailto:REPLACE-ME@masjidone.example?subject=MasjidOne%20demo%20request"><span className="btn__t">Email to arrange a visit <span className="arw" aria-hidden="true">→</span></span></a>
       </div>
     </div>
-    <dl className="rv" style={{ "--i": "3" } as React.CSSProperties}>
-      <div>
-        <dt>Email</dt>
-        <dd><a href="mailto:REPLACE-ME@masjidone.example" id="mail">REPLACE-ME@masjidone.example</a></dd>
-        <button className="copy-btn" id="copy" type="button">Copy address</button>
-      </div>
-      <div>
-        <dt>Telephone</dt>
-        <dd>Replace with the real number</dd>
-      </div>
-      <div>
-        <dt>Registered</dt>
-        <dd>YSB Ventures Ltd<br />Bolton, United Kingdom</dd>
-      </div>
-    </dl>
   </div>
 </section>
   );

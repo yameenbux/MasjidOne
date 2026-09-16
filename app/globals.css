@@ -241,6 +241,8 @@ ul{margin:0;padding:0;list-style:none}
 }
 
 .btn-row{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s4)}
+/* The contact block lost its details column, so the grid collapses to one. */
+.cta__grid--single{grid-template-columns:minmax(0,1fr)}
 .hero__act .btn-row{margin-top:0}
 
 /* ============================================================
@@ -262,8 +264,87 @@ ul{margin:0;padding:0;list-style:none}
 .hdr__end .btn{display:none}
 @media (min-width:60em){.nav{display:flex}.hdr__end .btn{display:inline-flex}}
 
+
+
 /* ============================================================
-   HERO
+   HERO — stack spread
+   Cards cluster, then scatter on scroll. Everything positional is
+   JS-driven, so the html:not(.js) block at the end unwinds it into a
+   plain grid rather than leaving a heap of overlapping cards.
+   ============================================================ */
+.stack{position:relative;width:100%;background:var(--paper)}
+.stack__stage{position:sticky;top:0;height:100vh;width:100%;overflow:hidden}
+
+.stack__copy{
+  /* Above every card (cards run z 2-9) so the headline is never behind one. */
+  position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:var(--s2);
+  padding-inline:var(--s3);text-align:center;pointer-events:none;
+}
+.stack__copy > *{pointer-events:auto;position:relative;z-index:1}
+/* A soft wash of the page colour so the headline stays legible over the
+   clustered cards. Fades away as they scatter is unnecessary — it is the same
+   colour as the ground, so it is invisible once nothing sits behind it. */
+.stack__copy::before{
+  content:"";position:absolute;left:50%;top:50%;translate:-50% -50%;
+  width:min(74rem,120%);height:min(40rem,110%);z-index:0;pointer-events:none;
+  background:radial-gradient(closest-side,var(--paper) 0%,var(--paper) 58%,transparent 100%);
+}
+.stack__eyebrow{justify-content:center}
+.stack__eyebrow::after{display:none}
+.stack__h1{
+  font-family:var(--font-newsreader),Georgia,serif;font-weight:400;
+  font-size:clamp(1.9rem,5vw,4rem);line-height:1.04;letter-spacing:-.02em;
+  margin:0;max-width:18ch;text-wrap:balance;color:var(--ink);
+}
+.stack__h1 em{font-style:italic;color:var(--brass)}
+.stack__sub{margin:0;max-width:52ch;color:var(--ink-2);font-size:var(--t-small)}
+.stack__act{display:flex;flex-wrap:wrap;gap:var(--s2);justify-content:center;margin-top:var(--s1)}
+.stack__note{margin:0;color:var(--ink-2);font-size:var(--t-label);
+  letter-spacing:.1em;text-transform:uppercase;font-variation-settings:"wdth" 82,"wght" 600}
+
+.stack__cards{position:absolute;inset:0;z-index:1}
+.stack-card{position:absolute;left:50%;top:50%;will-change:transform}
+.stack-card__face{margin:0;height:100%;width:100%;display:flex;
+  flex-direction:column;gap:.5rem}
+.stack-card__face img{flex:1;min-height:0;width:100%;object-fit:cover;
+  border:var(--hair) solid var(--rule-2);background:var(--paper-2);display:block}
+.stack-card__pending{
+  flex:1;min-height:0;display:grid;place-items:center;padding:1rem;
+  border:var(--hair) dashed var(--rule-2);background:var(--paper-2);
+  color:var(--ink-2);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;text-align:center;font-variation-settings:"wdth" 82,"wght" 600;
+}
+.stack-card__cap{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  justify-content:center;font-size:var(--t-label);color:var(--ink-2);
+  letter-spacing:.06em;text-align:center}
+
+.stack__hint{
+  position:absolute;left:0;right:0;bottom:var(--s3);z-index:20;margin:0;
+  text-align:center;color:var(--ink-2);font-size:var(--t-label);
+  letter-spacing:.2em;text-transform:uppercase;
+  font-variation-settings:"wdth" 82,"wght" 600;pointer-events:none;
+}
+
+/* No JavaScript: framer has baked the clustered transform into the export, so
+   undo it and lay the cards out as an ordinary grid with the copy visible. */
+html:not(.js) .stack{height:auto !important}
+html:not(.js) .stack__stage{position:static !important;height:auto !important;
+  overflow:visible !important;padding-block:var(--s5)}
+html:not(.js) .stack__copy{position:static !important;inset:auto !important;
+  opacity:1 !important;scale:none !important;margin-bottom:var(--s4)}
+html:not(.js) .stack__cards{position:static !important;inset:auto !important;
+  display:grid;gap:var(--s3);grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));
+  padding-inline:var(--s3)}
+html:not(.js) .stack-card{position:static !important;left:auto !important;top:auto !important;
+  width:auto !important;height:16rem !important;translate:none !important;
+  rotate:none !important;scale:none !important}
+html:not(.js) .stack__hint{display:none}
+
+@media (prefers-reduced-motion:reduce){.stack__hint{display:none}}
+
+/* ============================================================
+   HERO (legacy)
    ============================================================ */
 .hero{padding-top:var(--s5);padding-bottom:var(--s6)}
 @media (max-width:52em){.hero{padding-top:var(--s3);padding-bottom:var(--s5)}}
