@@ -19,3 +19,14 @@ export const SITE_URL = (
 export const SITE_ORIGIN = `${SITE_URL}${BASE_PATH}`;
 
 export { BASE_PATH };
+
+/**
+ * Every "Request a demo" on the site opens an email here — there is no contact
+ * section and no form, so this is the only route in. It is still a placeholder:
+ * until it is replaced, all six CTAs open a message to an address that does not
+ * exist. One line to change, deliberately.
+ */
+export const CONTACT_EMAIL = "REPLACE-ME@masjidone.example";
+
+/** mailto with the subject prefilled, for the demo CTAs. */
+export const DEMO_MAILTO = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne demo request")}`;

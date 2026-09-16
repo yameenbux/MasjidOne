@@ -3,6 +3,7 @@
 import * as React from "react";
 import { StackSpread, type StackSpreadCard } from "@/components/ui/stack-spread";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
+import { DEMO_MAILTO } from "@/lib/site";
 
 /**
  * The opening screen. Eight cards cluster, then spread as you scroll, each one
@@ -147,7 +148,6 @@ const CARDS: StackSpreadCard[] = [
 export function MasjidOneHero() {
   return (
     <StackSpread cards={CARDS}>
-      <p className="eyebrow eyebrow--brass stack__eyebrow">YSB Ventures Ltd</p>
       <h1 className="stack__h1">
         The madrasah and the congregation, <em>on one system</em>.
       </h1>
@@ -157,7 +157,7 @@ export function MasjidOneHero() {
         same system, from the same record of the same family.
       </p>
       <div className="stack__act">
-        <SpinningBorderLink href="#contact">Request a demo</SpinningBorderLink>
+        <SpinningBorderLink href={DEMO_MAILTO}>Request a demo</SpinningBorderLink>
         <a className="btn btn--ghost" href="#pricing">
           <span className="btn__t">See the pricing</span>
         </a>

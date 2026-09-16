@@ -1,4 +1,5 @@
 import * as React from "react";
+import { DEMO_MAILTO } from "@/lib/site";
 
 /**
  * The supplied large-name footer, rebuilt for MasjidOne.
@@ -41,7 +42,7 @@ const LEGAL: FooterLink[] = [
 ];
 
 const TALK: FooterLink[] = [
-  { href: BASE + "/#contact", label: "Request a demo" },
+  { href: DEMO_MAILTO, label: "Request a demo" },
   { href: BASE + "/#pricing", label: "Published prices" },
   { href: BASE + "/#trust", label: "Leaving with your data" },
 ];
