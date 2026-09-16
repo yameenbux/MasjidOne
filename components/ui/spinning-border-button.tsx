@@ -18,6 +18,11 @@ import * as React from "react";
 
 const OUTER =
   "group relative isolate inline-flex items-center justify-center overflow-hidden " +
+  // The beam is inset-[-100%], so it is three times the button. overflow-hidden
+  // clips it visually but it still counts toward the document scroll width —
+  // on a 390px screen every CTA pushed the page content box out past the
+  // viewport, leaving body{overflow-x:hidden} as the only thing hiding it.
+  "[contain:paint] " +
   "p-px no-underline cursor-pointer border-0 bg-transparent " +
   "transition-transform duration-300 ease-out hover:-translate-y-0.5 active:translate-y-px " +
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
