@@ -23,12 +23,32 @@ const OUT = path.join(ROOT, "public/devices");
 
 /** Widest the card can render, doubled for retina and rounded up. */
 const TARGET_WIDTH = {
-  "taiyabah-website-laptop.png": 1400, // 28vw card
-  "timetable_landscape_raw.png": 1400, // 30vw
-  "foyer_landscape_raw.png": 1300, // 26vw
-  "timetable_portrait_raw.png": 700, // 12vw
+  // Interface previews (current). Landscape screens render up to ~700 CSS px
+  // in the previews section, phones to ~350, so these are roughly 2x.
+  "hall-screen.png": 1300,
+  "foyer-appeal.png": 1300,
+  "website.png": 1400,
+  "admin-committee.png": 1400,
+  "admin-register.png": 1400,
+  "admin-fees.png": 1400,
+  "app-prayer-times.png": 760,
+  "app-notices.png": 760,
+  "app-giving.png": 760,
+  "app-duas.png": 760,
+  "app-parent.png": 760,
+  "app-qibla-zakat.png": 760,
+
+  // Taiyabah Masjid captures. No longer referenced by the site — the hero and
+  // the previews both use the interface previews above — but kept here because
+  // the permission to use them stands and they are the only real-world
+  // evidence we hold. Re-running this script regenerates them into public/,
+  // where they would ship unused, so delete what you do not reference.
+  "taiyabah-website-laptop.png": 1400,
+  "timetable_landscape_raw.png": 1400,
+  "foyer_landscape_raw.png": 1300,
+  "timetable_portrait_raw.png": 700,
   "foyer_portrait_raw.png": 700,
-  "times.png": 640, // 11vw
+  "times.png": 640,
   "donate.png": 640,
   "curriculum.png": 640,
   "duas.png": 640,

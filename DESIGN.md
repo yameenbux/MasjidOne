@@ -345,8 +345,11 @@ Do not add these without asking:
 
 ## 12. Known open items
 
-- The three inline SVG **interface previews** are not screenshots and their
-  captions must say so until real ones replace them.
+- The hero and the previews section both use **interface previews** rather
+  than captures of a running masjid. Nothing on the page is a screenshot, no
+  masjid is named, and every figure is example data — the note under the hero
+  and the intro to the previews section both say so. If real captures ever go
+  back on the page, both of those lines have to change with them.
 - `CONTACT_EMAIL` in `lib/site.ts` is still the placeholder
   `REPLACE-ME@masjidone.example`. Every call to action on the site opens mail
   to it.

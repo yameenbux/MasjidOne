@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 
 /**
- * A grid of small tiles with an optional closing band, in the shape of the
- * "one system replaces all of this" pattern.
+ * A grid of small tiles, in the shape of the "one system replaces all of this"
+ * pattern.
  *
  * Deliberately data-driven and claim-free: the component renders what it is
  * given and asserts nothing. The commercial content lives in
@@ -28,12 +28,10 @@ export type Tile = {
 
 export interface TileGridProps {
   tiles: readonly Tile[];
-  /** Optional dark closing band under the grid. */
-  band?: { lead: React.ReactNode; sub?: React.ReactNode };
   className?: string;
 }
 
-export function TileGrid({ tiles, band, className }: TileGridProps) {
+export function TileGrid({ tiles, className }: TileGridProps) {
   return (
     <div className={className}>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -57,12 +55,6 @@ export function TileGrid({ tiles, band, className }: TileGridProps) {
         ))}
       </div>
 
-      {band && (
-        <div className="tile__band">
-          <p className="tile__band-lead">{band.lead}</p>
-          {band.sub && <p className="tile__band-sub">{band.sub}</p>}
-        </div>
-      )}
     </div>
   );
 }

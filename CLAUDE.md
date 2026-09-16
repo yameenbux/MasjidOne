@@ -100,8 +100,12 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 4. **Do not name competitors on the public site.** The comparison happens in
    the room, not on the page.
 5. **Taiyabah Masjid may now be named.** Permission to use their name, logo
-   and screenshots was given on 16 September 2026. The hero uses real captures
-   of their live site, app and hall screens. Two things still apply: get the
+   and screenshots was given on 16 September 2026. **The site no longer shows
+   their captures** — the hero and the previews both use MasjidOne interface
+   previews, and the note under the hero says so rather than claiming a
+   permission. Their captures are kept in `assets/devices-src/` and are the
+   only real-world evidence we hold, so if they go back on the page the note
+   has to change back with them. Two things still apply either way: get the
    permission in writing as part of the founding-customer agreement, and never
    publish a screen containing a real child's record or a real family's fee
    history — see `public/devices/README.md`. Other customers stay unnamed until

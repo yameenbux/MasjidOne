@@ -196,101 +196,64 @@ export function Previews() {
 <section className="sect wrap" id="previews">
   <p className="eyebrow eyebrow--brass rv">Previews</p>
   <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>What the committee will actually be looking at.</h2>
+  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
+    Interface previews, not photographs of a running masjid. Every figure is
+    example data, and no child&rsquo;s record or family&rsquo;s fee history appears in
+    any of them.
+  </p>
 
   <div className="tabs rv" style={{ "--i": "2" } as React.CSSProperties} role="tablist" aria-label="Interface previews">
     <button className="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" type="button">Hall screen</button>
     <button className="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabIndex={-1} type="button">Congregation app</button>
     <button className="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabIndex={-1} type="button">Madrasah register</button>
+    <button className="tab" role="tab" id="t4" aria-controls="p4" aria-selected="false" tabIndex={-1} type="button">Madrasah fees</button>
+    <button className="tab" role="tab" id="t5" aria-controls="p5" aria-selected="false" tabIndex={-1} type="button">Parent access</button>
   </div>
 
   <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p1" role="tabpanel" aria-labelledby="t1" tabIndex={0}>
-    <svg className="shot" viewBox="0 0 640 300" role="img" aria-label="Interface preview of a prayer hall screen: masjid name, a live clock, a five-prayer timetable with begins and jamāʿah columns, and an announcement strip.">
-      <rect width="640" height="300" fill="var(--board)"/>
-      <rect x="1" y="1" width="638" height="298" fill="none" stroke="var(--board-rule)"/>
-      <text x="28" y="44" fill="var(--board-brass)" fontFamily="Archivo,sans-serif" fontSize="11" letterSpacing="2.2">MASJID NAME</text>
-      <text x="612" y="48" fill="var(--board-ink)" fontFamily="Archivo,sans-serif" fontSize="26" textAnchor="end">18:42</text>
-      <line x1="28" y1="64" x2="612" y2="64" stroke="var(--board-rule)"/>
-      <g fontFamily="Archivo,sans-serif" fontSize="11" fill="var(--board-brass)" letterSpacing="1.6">
-        <text x="28" y="88">PRAYER</text><text x="430" y="88" textAnchor="end">BEGINS</text><text x="612" y="88" textAnchor="end">JAMĀʿAH</text>
-      </g>
-      <g fontFamily="Archivo,sans-serif" fontSize="15" fill="var(--board-ink)">
-        <text x="28" y="120">Fajr</text><text x="430" y="120" textAnchor="end">05:12</text><text x="612" y="120" textAnchor="end">05:45</text>
-        <text x="28" y="152">Ẓuhr</text><text x="430" y="152" textAnchor="end">13:04</text><text x="612" y="152" textAnchor="end">13:30</text>
-        <text x="28" y="184">ʿAṣr</text><text x="430" y="184" textAnchor="end">16:38</text><text x="612" y="184" textAnchor="end">17:15</text>
-        <text x="46" y="216" fill="var(--board-brass)">Maghrib</text><text x="430" y="216" textAnchor="end" fill="var(--board-brass)">19:26</text><text x="612" y="216" textAnchor="end" fill="var(--board-brass)">19:31</text>
-        <text x="28" y="248">ʿIshāʾ</text><text x="430" y="248" textAnchor="end">20:44</text><text x="612" y="248" textAnchor="end">21:00</text>
-      </g>
-      <rect x="28" y="206" width="6" height="6" fill="var(--board-brass)"/>
-      <g stroke="var(--board-rule)">
-        <line x1="28" y1="132" x2="612" y2="132"/><line x1="28" y1="164" x2="612" y2="164"/>
-        <line x1="28" y1="196" x2="612" y2="196"/><line x1="28" y1="228" x2="612" y2="228"/>
-        <line x1="28" y1="264" x2="612" y2="264"/>
-      </g>
-      <text x="28" y="284" fill="var(--board-ink-2)" fontFamily="Archivo,sans-serif" fontSize="11" letterSpacing="1.4">JANĀZAH AFTER ẒUHR TOMORROW</text>
-    </svg>
-    <p className="cap">Interface preview, not a screenshot. Unlimited screens run on any TV with a browser.</p>
+    <figure className="shot-fig">
+      <img className="shot-img" src={`${BASE}/devices/hall-screen.webp`} width={1300} height={766} loading="lazy" decoding="async"
+        alt="Interface preview of a prayer hall screen: a live clock, a timetable with beginning and jamāʿah columns, the next jamāʿah marked, and a strip carrying Jumuʿah and janāzah notices." />
+      <figcaption>Runs on any TV with a browser. Unlimited screens, live from the same timetable as the app.</figcaption>
+    </figure>
   </div>
 
-  <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p2" role="tabpanel" aria-labelledby="t2" tabIndex={0} hidden={true}>
-    <svg className="shot" viewBox="0 0 640 300" role="img" aria-label="Interface preview of the congregation app: next jamāʿah with a countdown, a reminder offset control, and shortcuts for giving, Qibla and Zakat.">
-      <rect width="640" height="300" fill="var(--paper-2)"/>
-      <rect x="1" y="1" width="638" height="298" fill="none" stroke="var(--rule)"/>
-      <rect x="200" y="24" width="240" height="252" fill="var(--paper)" stroke="var(--rule)"/>
-      <line x1="200" y1="60" x2="440" y2="60" stroke="var(--rule)"/>
-      <text x="216" y="47" fill="var(--ink-2)" fontFamily="Archivo,sans-serif" fontSize="10" letterSpacing="2">NEXT JAMĀʿAH</text>
-      <text x="216" y="96" fill="var(--ink)" fontFamily="Newsreader,Georgia,serif" fontSize="34">Maghrib</text>
-      <text x="216" y="122" fill="var(--brass)" fontFamily="Archivo,sans-serif" fontSize="14">19:31 &#183; in 24 min</text>
-      <line x1="216" y1="142" x2="424" y2="142" stroke="var(--rule)"/>
-      <text x="216" y="164" fill="var(--ink-2)" fontFamily="Archivo,sans-serif" fontSize="10" letterSpacing="2">REMIND ME</text>
-      <rect x="216" y="174" width="208" height="26" fill="none" stroke="var(--rule-2)"/>
-      <rect x="216" y="174" width="86" height="26" fill="var(--brass)"/>
-      <text x="259" y="191" fill="var(--paper)" fontFamily="Archivo,sans-serif" fontSize="11" textAnchor="middle">20 MIN BEFORE</text>
-      <g fontFamily="Archivo,sans-serif" fontSize="11" fill="var(--ink-2)">
-        <rect x="216" y="216" width="64" height="44" fill="none" stroke="var(--rule)"/><text x="248" y="242" textAnchor="middle">Give</text>
-        <rect x="288" y="216" width="64" height="44" fill="none" stroke="var(--rule)"/><text x="320" y="242" textAnchor="middle">Qibla</text>
-        <rect x="360" y="216" width="64" height="44" fill="none" stroke="var(--rule)"/><text x="392" y="242" textAnchor="middle">Zakat</text>
-      </g>
-    </svg>
-    <p className="cap">Interface preview, not a screenshot. Reminder offsets are set per person, not per mosque.</p>
+  <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p2" role="tabpanel" aria-labelledby="t2" tabIndex={0} hidden>
+    <figure className="shot-fig shot-fig--tall">
+      <img className="shot-img" src={`${BASE}/devices/app-prayer-times.webp`} width={760} height={1585} loading="lazy" decoding="async"
+        alt="Interface preview of the congregation app: the next jamāʿah, the masjid's own beginning and jamāʿah times, and a per-person reminder offset set to twenty minutes before." />
+      <figcaption>The masjid&rsquo;s own timetable, not a calculated one. The reminder offset is set per person, not per masjid.</figcaption>
+    </figure>
   </div>
 
-  <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p3" role="tabpanel" aria-labelledby="t3" tabIndex={0} hidden={true}>
-    <svg className="shot" viewBox="0 0 640 300" role="img" aria-label="Interface preview of the madrasah register: a class list with fictional example pupils, attendance marks for the week, and a fees status column.">
-      <rect width="640" height="300" fill="var(--paper)"/>
-      <rect x="1" y="1" width="638" height="298" fill="none" stroke="var(--rule)"/>
-      <text x="28" y="40" fill="var(--ink)" fontFamily="Newsreader,Georgia,serif" fontSize="20">Class 4B &#183; Register</text>
-      <text x="612" y="40" fill="var(--brass)" fontFamily="Archivo,sans-serif" fontSize="10" textAnchor="end" letterSpacing="1.8">IN DEVELOPMENT</text>
-      <line x1="28" y1="56" x2="612" y2="56" stroke="var(--rule-2)"/>
-      <g fontFamily="Archivo,sans-serif" fontSize="10" fill="var(--ink-2)" letterSpacing="1.6">
-        <text x="28" y="78">PUPIL (EXAMPLE DATA)</text>
-        <text x="330" y="78">M</text><text x="370" y="78">T</text><text x="410" y="78">W</text><text x="450" y="78">T</text><text x="490" y="78">F</text>
-        <text x="612" y="78" textAnchor="end">FEES</text>
-      </g>
-      <g fontFamily="Archivo,sans-serif" fontSize="13" fill="var(--ink)">
-        <text x="28" y="110">Pupil One</text><text x="28" y="146">Pupil Two</text><text x="28" y="182">Pupil Three</text><text x="28" y="218">Pupil Four</text><text x="28" y="254">Pupil Five</text>
-      </g>
-      <g fill="var(--brass)">
-        <rect x="328" y="102" width="9" height="9"/><rect x="368" y="102" width="9" height="9"/><rect x="408" y="102" width="9" height="9"/><rect x="448" y="102" width="9" height="9"/><rect x="488" y="102" width="9" height="9"/>
-        <rect x="328" y="138" width="9" height="9"/><rect x="368" y="138" width="9" height="9"/><rect x="448" y="138" width="9" height="9"/><rect x="488" y="138" width="9" height="9"/>
-        <rect x="328" y="174" width="9" height="9"/><rect x="368" y="174" width="9" height="9"/><rect x="408" y="174" width="9" height="9"/><rect x="448" y="174" width="9" height="9"/><rect x="488" y="174" width="9" height="9"/>
-        <rect x="328" y="210" width="9" height="9"/><rect x="408" y="210" width="9" height="9"/><rect x="448" y="210" width="9" height="9"/><rect x="488" y="210" width="9" height="9"/>
-        <rect x="328" y="246" width="9" height="9"/><rect x="368" y="246" width="9" height="9"/><rect x="408" y="246" width="9" height="9"/><rect x="448" y="246" width="9" height="9"/><rect x="488" y="246" width="9" height="9"/>
-      </g>
-      <g stroke="var(--ink-2)" strokeWidth="1.4">
-        <line x1="408" y1="142" x2="417" y2="151"/><line x1="417" y1="142" x2="408" y2="151"/>
-        <line x1="368" y1="214" x2="377" y2="223"/><line x1="377" y1="214" x2="368" y2="223"/>
-      </g>
-      <g fontFamily="Archivo,sans-serif" fontSize="11" fill="var(--ink-2)">
-        <text x="612" y="111" textAnchor="end">Paid</text><text x="612" y="147" textAnchor="end">Paid</text>
-        <text x="612" y="183" textAnchor="end" fill="var(--brass)">Due</text><text x="612" y="219" textAnchor="end">Paid</text>
-        <text x="612" y="255" textAnchor="end">Paid</text>
-      </g>
-      <g stroke="var(--rule)">
-        <line x1="28" y1="122" x2="612" y2="122"/><line x1="28" y1="158" x2="612" y2="158"/>
-        <line x1="28" y1="194" x2="612" y2="194"/><line x1="28" y1="230" x2="612" y2="230"/><line x1="28" y1="266" x2="612" y2="266"/>
-      </g>
-    </svg>
-    <p className="cap">Interface preview of a module in development, not a screenshot. Pupil names are fictional placeholders — no real child's record appears on this site.</p>
+  <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p3" role="tabpanel" aria-labelledby="t3" tabIndex={0} hidden>
+    <figure className="shot-fig">
+      <img className="shot-img" src={`${BASE}/devices/admin-register.webp`} width={1320} height={840} loading="lazy" decoding="async"
+        alt="Interface preview of a madrasah evening register: a week of attendance marks per pupil, the sabaq heard, and whether fees are paid. Pupil names are placeholders and no real child's record appears." />
+      <figcaption>
+        In development for the September 2027 intake. Pupil names are placeholders — no real child&rsquo;s record appears here.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p4" role="tabpanel" aria-labelledby="t4" tabIndex={0} hidden>
+    <figure className="shot-fig">
+      <img className="shot-img" src={`${BASE}/devices/admin-fees.webp`} width={1320} height={840} loading="lazy" decoding="async"
+        alt="Interface preview of madrasah fees, charged per family rather than per child: what is invoiced, what is collected, what is outstanding, and which families are due. Example data only." />
+      <figcaption>
+        In development for the September 2027 intake. Fees are per family rather than per child. Example data — no real family&rsquo;s fee history appears here.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p5" role="tabpanel" aria-labelledby="t5" tabIndex={0} hidden>
+    <figure className="shot-fig shot-fig--tall">
+      <img className="shot-img" src={`${BASE}/devices/app-parent.webp`} width={760} height={1585} loading="lazy" decoding="async"
+        alt="Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only." />
+      <figcaption>
+        In development for the September 2027 intake. The same app a parent already has for jamāʿah times — no second app to install. This is the bridge.
+      </figcaption>
+    </figure>
   </div>
 </section>
   );
