@@ -1,12 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, HandCoins, Smartphone, Tv, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, HandCoins, ShieldCheck, Smartphone, Tv, Users, type LucideIcon } from "lucide-react";
 
 import { AnimatedBeam } from "@/components/ui/animated-beam";
 
 /**
- * "Five modules, one record of the family", drawn.
+ * "Six modules, one record of the family", drawn.
  *
  * Geometry follows the Magic UI block's demo rather than being re-invented,
  * because the sweep is the whole effect and it only exists when two things are
@@ -42,6 +42,10 @@ const CONGREGATION: NodeSpec[] = [
   { key: "app", label: "Congregation app", status: "Live", Icon: Smartphone },
   { key: "screens", label: "Website and hall screens", status: "Live", Icon: Tv },
   { key: "giving", label: "Donations and Gift Aid", status: "Live", Icon: HandCoins },
+  // Committee and roles sits on the congregation side because that is the half
+  // that is live. It governs both once the portal lands, but the diagram shows
+  // what runs today.
+  { key: "roles", label: "Committee and roles", status: "Live", Icon: ShieldCheck },
 ];
 
 /** Beam shape per spoke, mirroring the demo's -75 / 0 / +75 fan. */
@@ -50,9 +54,10 @@ const LEFT_BEAMS = [
   { curvature: 105, endYOffset: 14 },
 ];
 const RIGHT_BEAMS = [
-  { curvature: -115, endYOffset: -14 },
-  { curvature: 0, endYOffset: 0 },
-  { curvature: 115, endYOffset: 14 },
+  { curvature: -125, endYOffset: -16 },
+  { curvature: -45, endYOffset: -6 },
+  { curvature: 45, endYOffset: 6 },
+  { curvature: 125, endYOffset: 16 },
 ];
 
 const Node = React.forwardRef<HTMLDivElement, { spec: NodeSpec }>(({ spec }, ref) => (
@@ -78,8 +83,9 @@ export function MasjidOneModulesDiagram() {
   const r0 = React.useRef<HTMLDivElement>(null);
   const r1 = React.useRef<HTMLDivElement>(null);
   const r2 = React.useRef<HTMLDivElement>(null);
+  const r3 = React.useRef<HTMLDivElement>(null);
   const left = [l0, l1];
-  const right = [r0, r1, r2];
+  const right = [r0, r1, r2, r3];
 
   return (
     <figure className="dgm">
