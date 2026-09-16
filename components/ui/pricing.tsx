@@ -1,13 +1,12 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, Star } from "lucide-react";
-import Link from "next/link";
+import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import { useState, useRef } from "react";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
@@ -326,21 +325,15 @@ export function Pricing({
 
               <hr className="w-full my-4" />
 
-              <Link
-                href={plan.href}
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                  }),
-                  "group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter",
-                  "transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:bg-primary hover:text-primary-foreground",
-                  plan.isPopular
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-foreground"
-                )}
-              >
+              {/* EDIT: was the shadcn outline button with its own hover ring.
+                  Now the same spinning-border CTA as the header and hero, so
+                  every "Request a demo" on the page is one control. The card's
+                  emphasis for the recommended plan is carried by its badge,
+                  its doubled border and its lift — it does not need a second
+                  button style to say the same thing a third time. */}
+              <SpinningBorderLink href={plan.href} className="w-full">
                 {plan.buttonText}
-              </Link>
+              </SpinningBorderLink>
               <p className="mt-6 text-xs leading-5 text-muted-foreground">
                 {plan.description}
               </p>
