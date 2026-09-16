@@ -9,14 +9,14 @@ import { DEMO_MAILTO } from "@/lib/site";
  * The opening screen. Eight cards cluster, then spread as you scroll, each one
  * a device MasjidOne runs on with what that device shows.
  *
- * Every card is a real screen of a shipped product, used with Taiyabah Masjid's
- * permission (given 16 September 2026). Filenames are exactly as uploaded —
- * do not rename them, the references here follow the files rather than the
- * other way round.
+ * Every card is an interface preview rather than a capture of a live masjid.
+ * No masjid is named and every figure is example data, which is why the note
+ * under the stack says so rather than claiming a permission.
  *
- * There are deliberately no madrasah-portal or parent-access cards: those
- * modules are not built, and an invented screen for them would be the page's
- * biggest untrue claim. They join the stack when they exist.
+ * Eight cards, which is what the geometry below is tuned for. Eleven collided
+ * with the headline and buried the note under the stack, so the madrasah
+ * screens — registers, fees and parent access — live in the previews section
+ * instead, where each gets a full-size tab rather than a corner of this one.
  *
  * Card sizes are set so each one's vw/vh ratio roughly matches its image, since
  * `object-fit: cover` crops the difference. 16:9 display captures get wide
@@ -31,11 +31,11 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const img = (file: string) => `${BASE}/devices/${file}`;
 
 const CARDS: StackSpreadCard[] = [
-  // Prayer hall screen, landscape — 1920x1080
+  // Hall screen, landscape
   {
     item: {
-      src: img("timetable_landscape_raw.webp"),
-      alt: "A prayer hall screen: the live clock, the next jamāʿah countdown, and today's beginning and jamāʿah times",
+      src: img("hall-screen.webp"),
+      alt: "A prayer hall screen: the live clock, today's beginning and jamāʿah times, and the next jamāʿah marked",
       caption: "Prayer hall screen",
       status: "live",
     },
@@ -45,25 +45,25 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: -40 },
     z: 2,
   },
-  // The same timetable, portrait — 1080x1920
+  // Foyer appeal screen, landscape
   {
     item: {
-      src: img("timetable_portrait_raw.webp"),
-      alt: "The same timetable on a portrait wall-mounted display",
-      caption: "Hall screen · portrait",
+      src: img("foyer-appeal.webp"),
+      alt: "A foyer screen running an appeal: the total raised, the phases so far, and a QR code to give",
+      caption: "Foyer screen · appeals",
       status: "live",
     },
     stackOffset: { x: 14, y: -10 },
     stackRotate: 15,
-    target: { x: 36, y: -24, rotate: 0, scale: 1, w: 12, h: 30 },
+    target: { x: 36, y: -24, rotate: 0, scale: 1, w: 26, h: 23 },
     targetSm: { x: 22, y: -40 },
     z: 3,
   },
-  // Website on a laptop — 3000x2040
+  // Managed website, laptop
   {
     item: {
-      src: img("taiyabah-website-laptop.webp"),
-      alt: "The managed mosque website on a laptop, with prayer times in the header",
+      src: img("website.webp"),
+      alt: "The managed masjid website, with the next jamāʿah in the header and today's times below the headline",
       caption: "Managed website",
       status: "live",
     },
@@ -73,11 +73,11 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: -19 },
     z: 4,
   },
-  // App · prayer times — 1179x2556
+  // App · prayer times
   {
     item: {
-      src: img("times.webp"),
-      alt: "The congregation app showing beginning and jamāʿah times side by side",
+      src: img("app-prayer-times.webp"),
+      alt: "The congregation app showing beginning and jamāʿah times side by side, with a per-person reminder offset",
       caption: "Congregation app · the masjid's own times",
       status: "live",
     },
@@ -87,25 +87,25 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: 22, y: -19 },
     z: 5,
   },
-  // Foyer appeal screen, landscape — 1920x1080
+  // App · notices
   {
     item: {
-      src: img("foyer_landscape_raw.webp"),
-      alt: "A foyer screen running the new build appeal, with the phases so far and how to give",
-      caption: "Foyer screen · appeals",
+      src: img("app-notices.webp"),
+      alt: "Notices in the app: janāzah today, Jumuʿah times, madrasah half term",
+      caption: "Notices · posted once, everywhere",
       status: "live",
     },
     stackOffset: { x: 18, y: 2 },
     stackRotate: 7,
-    target: { x: 34, y: 14, rotate: 0, scale: 1, w: 26, h: 23 },
+    target: { x: 34, y: 14, rotate: 0, scale: 1, w: 11, h: 28 },
     targetSm: { x: 22, y: 20 },
     z: 6,
   },
-  // App · giving — 1179x2556
+  // App · giving
   {
     item: {
-      src: img("donate.webp"),
-      alt: "Giving in the app, with Apple Pay and Google Pay, at 0% commission",
+      src: img("app-giving.webp"),
+      alt: "Giving in the app, with Gift Aid added and Apple Pay and Google Pay, at 0% commission",
       caption: "Donations · 0% commission",
       status: "live",
     },
@@ -115,24 +115,24 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: 20 },
     z: 7,
   },
-  // App · madrasah curriculum — 1179x2556
+  // Admin · committee and roles
   {
     item: {
-      src: img("curriculum.webp"),
-      alt: "The madrasah curriculum in the app: what students learn, by subject",
-      caption: "Madrasah · what is taught",
+      src: img("admin-committee.webp"),
+      alt: "The committee and roles screen: who can edit times, notices, money and users",
+      caption: "Committee & roles",
       status: "live",
     },
     stackOffset: { x: 8, y: 8 },
     stackRotate: 3,
-    target: { x: 16, y: 38, rotate: 0, scale: 1, w: 11, h: 28 },
+    target: { x: 16, y: 38, rotate: 0, scale: 1, w: 26, h: 23 },
     targetSm: { x: -22, y: 40 },
     z: 8,
   },
-  // App · everyday duʿās — 1179x2556
+  // App · everyday duʿās
   {
     item: {
-      src: img("duas.webp"),
+      src: img("app-duas.webp"),
       alt: "Everyday duʿās in the app, by occasion, with transliteration",
       caption: "Everyday duʿās",
       status: "live",
@@ -143,6 +143,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: 22, y: 40 },
     z: 9,
   },
+
 ];
 
 export function MasjidOneHero() {
@@ -163,7 +164,7 @@ export function MasjidOneHero() {
         </a>
       </div>
       <p className="stack__note">
-        Live screens from Taiyabah Masjid, Bolton · used with permission
+        Interface previews · example data, no masjid named
       </p>
     </StackSpread>
   );

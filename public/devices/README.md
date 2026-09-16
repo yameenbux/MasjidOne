@@ -1,40 +1,48 @@
-# Hero device screenshots
+# Device imagery
 
-The opening screen (`components/masjidone-hero.tsx`) expects these eight files.
-Until a file exists, that card shows a dashed frame with its caption instead of
-a broken image, so the page is never embarrassing while they are outstanding.
+Eleven WebP files, all of them **interface previews** rather than captures of a
+running masjid.
 
-All eight are captures of Taiyabah Masjid's live site, app and hall screens,
-used with their permission (given 16 September 2026).
+## The honesty rule that governs this folder
 
-| Filename                   | The screen you already have                                   |
-| -------------------------- | ------------------------------------------------------------- |
-| `hall-screen.png`          | Hall screen, **landscape** — big clock, next jamāʿah countdown, six prayers across |
-| `hall-screen-portrait.png` | The same hall screen **portrait**, for a wall-mounted display   |
-| `website.png`              | Website homepage on the laptop mockup, building photo behind    |
-| `newbuild-desktop.png`     | New build appeal, **landscape** — phases left, QR and bank details right |
-| `app-prayer-times.png`     | App · Prayer Times — Today, Beginning and Jamāʿah columns       |
-| `app-giving.png`           | App · new build appeal with the £250 / £500 giving tiers        |
-| `app-madrasah.png`         | App · "Our Curriculum — what students learn at the madrasah"     |
-| `app-duas.png`             | App · "Everyday Duʿās" category grid                            |
+- **Nothing here is a screenshot.** No masjid is named, every time and figure
+  is example data, and the pupil names in the madrasah screens are
+  placeholders — `admin-register` prints that on the screen itself.
+- The note under the hero says `Interface previews · example data, no masjid
+  named`, and the previews section opens by saying the same thing. **If the
+  imagery in this folder ever changes back to real captures, both of those
+  lines have to change with it.** The reverse is what matters more: a preview
+  described as a live capture is the worst claim this site could make.
+- **Never publish a screen containing a real child's record or a real family's
+  fee history.** This holds whoever the masjid is and whatever permission
+  exists. It is the one rule with a child on the other side of it.
 
-There is also a portrait new-build capture that is not currently used. Add it as
-a ninth card if you want it — the stack takes any number.
+## What is here
 
-## Rules these have to follow
+| File | Used by |
+| --- | --- |
+| `hall-screen` | hero, previews tab 1 |
+| `app-prayer-times` | hero, previews tab 2 |
+| `admin-register` | previews tab 3 |
+| `admin-fees` | previews tab 4 |
+| `app-parent` | previews tab 5 |
+| `foyer-appeal`, `website`, `app-notices`, `app-giving`, `app-duas`, `admin-committee` | hero |
 
-1. **Test data only where a person appears.** None of the eight above contain
-   personal data, which is why they were chosen. Never publish a screen showing
-   a real child's record, attendance, or a family's fee history.
-2. **No madrasah-portal or parent-access screens.** Those modules are not built.
-   An invented screen for them would be the largest untrue claim on the page.
-   They join the stack when they exist.
-3. If a capture ever shows another masjid, it needs that masjid's permission
-   too. Taiyabah's permission covers Taiyabah.
+`admin-register`, `admin-fees` and `app-parent` are the **madrasah portal and
+parent access — modules in development**. Each of their captions carries
+"In development for the September 2027 intake". Do not show them without it.
 
-## Format
+## Regenerating
 
-Roughly 2× the rendered size — about 1200px on the long edge is plenty. PNG.
-They are cropped with `object-fit: cover`, so keep the important part of each
-screen near the centre: the card aspect ratios are set per device (wide for the
-hall screen and laptop, tall for the phone shots) but they are not exact.
+PNG sources live in `assets/devices-src/`, deliberately outside `public/`
+because everything under `public/` is published verbatim and the sources are
+12MB. To re-encode after replacing one:
+
+```bash
+node scripts/optimise-devices.mjs
+```
+
+That script also knows the Taiyabah Masjid captures, which are still in
+`assets/devices-src/` but no longer referenced by the site. It will regenerate
+them into this folder, where they would ship unused — delete what you do not
+reference.

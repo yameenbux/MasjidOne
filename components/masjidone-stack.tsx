@@ -26,9 +26,9 @@ import { TileGrid, type Tile } from "@/components/ui/tile-grid";
  *    someone else charges means defending it, and a committee member on a free
  *    tier will know it is wrong. Rule 3 does not allow invented numbers.
  *
- * So the tiles name categories, and the band closes on the only claim that is
- * ours to make — fragmentation, not saving. The two figures in the band are
- * the ones already committed in the pricing section, nothing new.
+ * So the tiles name categories and nothing else. There is no closing band and
+ * no total: the section states what a masjid is holding together by hand and
+ * lets the join section, directly above it, carry the argument.
  */
 
 const TILES: readonly Tile[] = [
@@ -71,25 +71,7 @@ const TILES: readonly Tile[] = [
 ];
 
 export function MasjidOneStack() {
-  return (
-    <TileGrid
-      tiles={TILES}
-      band={{
-        lead: (
-          <>
-            Six things to keep current, and not one of them knows the family in
-            the next one along.
-          </>
-        ),
-        sub: (
-          <>
-            MasjidOne is one system and one price — £79 or £179 a month, and 0%
-            on donations.
-          </>
-        ),
-      }}
-    />
-  );
+  return <TileGrid tiles={TILES} />;
 }
 
 export default MasjidOneStack;
