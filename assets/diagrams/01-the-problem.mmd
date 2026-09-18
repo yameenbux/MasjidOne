@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph TODAY["❌ How it usually works"]
+        direction TB
+        A1[Paper register<br/>in a drawer]
+        A2[Fees in a<br/>spreadsheet]
+        A3[WhatsApp<br/>for parents]
+        A4[A website<br/>nobody can edit]
+        A5[Prayer times<br/>typed twice]
+        A6[Donations on<br/>a third-party page]
+    end
+
+    subgraph ONE["✅ MasjidOne"]
+        direction TB
+        B1[One record<br/>of the family]
+        B1 --> B2[Madrasah side]
+        B1 --> B3[Congregation side]
+    end
+
+    TODAY -.->|"the same family,<br/>six times over"| ONE
+
+    classDef bad fill:#EAE7DD,stroke:#B4AE9D,stroke-width:1px,color:#4E5F57
+    classDef good fill:#0C2A21,stroke:#C0A46A,stroke-width:1px,color:#F3F1EA
+    class A1,A2,A3,A4,A5,A6 bad
+    class B1,B2,B3 good

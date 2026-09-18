@@ -27,33 +27,7 @@ A typical masjid runs its week across half a dozen things that have never
 heard of each other. The office knows a family three separate times and
 can join them up only by remembering.
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"system-ui","fontSize":"14px"}}}%%
-flowchart LR
-    subgraph TODAY["❌ How it usually works"]
-        direction TB
-        A1[Paper register<br/>in a drawer]
-        A2[Fees in a<br/>spreadsheet]
-        A3[WhatsApp<br/>for parents]
-        A4[A website<br/>nobody can edit]
-        A5[Prayer times<br/>typed twice]
-        A6[Donations on<br/>a third-party page]
-    end
-
-    subgraph ONE["✅ MasjidOne"]
-        direction TB
-        B1[One record<br/>of the family]
-        B1 --> B2[Madrasah side]
-        B1 --> B3[Congregation side]
-    end
-
-    TODAY -.->|"the same family,<br/>six times over"| ONE
-
-    classDef bad fill:#EAE7DD,stroke:#B4AE9D,stroke-width:1px,color:#4E5F57
-    classDef good fill:#0C2A21,stroke:#C0A46A,stroke-width:1px,color:#F3F1EA
-    class A1,A2,A3,A4,A5,A6 bad
-    class B1,B2,B3 good
-```
+<img src="assets/diagrams/01-the-problem.svg" alt="How a masjid runs today, against one record of the family" width="100%">
 
 Plenty of products do the congregation side, and do it well. The part
 nobody else does is running the **madrasah's daily operations** — the
@@ -67,32 +41,7 @@ system, and then giving a parent a view of their own child.
 Every masjid on MasjidOne gets the same four things. Same layout, their
 colours, their domain.
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"system-ui","fontSize":"14px"}}}%%
-flowchart TD
-    CORE(("MasjidOne"))
-
-    CORE --> W["🌐 <b>Website</b><br/>Prayer times, notices,<br/>hall hire, nikāḥ, classes,<br/>donations"]
-    CORE --> S["🖥️ <b>In-masjid screens</b><br/>Hall and foyer boards,<br/>same published timetable<br/>as the website"]
-    CORE --> A["📱 <b>Congregation app</b><br/>One app, masjid picker.<br/>Push for janāzah and<br/>jamāʿah changes"]
-    CORE --> M["🎓 <b>Madrasah portal</b><br/>Registers, fees,<br/>parent access"]
-
-    W --- WL(["Live"])
-    S --- SL(["Live"])
-    A --- AL(["Live"])
-    M --- ML(["In development"])
-
-    classDef core fill:#0C2A21,stroke:#C0A46A,stroke-width:3px,color:#F3F1EA,font-size:16px
-    classDef live fill:#EAE7DD,stroke:#2F6B4F,stroke-width:2px,color:#12201A
-    classDef soon fill:#EAE7DD,stroke:#8A6314,stroke-width:2px,color:#12201A,stroke-dasharray:4 3
-    classDef tagok fill:#E2EDE5,stroke:#2F6B4F,color:#2F6B4F
-    classDef tagsoon fill:#F3EBD8,stroke:#8A6314,color:#8A6314
-    class CORE core
-    class W,S,A live
-    class M soon
-    class WL,SL,AL tagok
-    class ML tagsoon
-```
+<img src="assets/diagrams/02-four-surfaces.svg" alt="The four surfaces: website, in-masjid screens, congregation app, madrasah portal" width="100%">
 
 > **The madrasah portal and parent access are not built yet.** They are
 > tagged "in development" here, on the website and in the console, and
@@ -105,53 +54,7 @@ flowchart TD
 This is the technical picture. **This repository is only the top-left box** —
 the marketing website. The platform lives in its own repository.
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"system-ui","fontSize":"13px"}}}%%
-flowchart TB
-    subgraph BROWSE["What people open"]
-        direction LR
-        MKT["<b>Marketing site</b><br/>── this repo ──<br/>Next.js 15 · TypeScript<br/>Tailwind · shadcn/ui"]
-        SITE["<b>Masjid website</b><br/>Next.js · themed per masjid"]
-        SCREEN["<b>Hall screens</b><br/>Browser display"]
-        APP["<b>Congregation app</b><br/>React Native · Expo"]
-        CONSOLE["<b>Office portal</b><br/>+ MasjidOne console"]
-    end
-
-    MKT --> GHA["<b>GitHub Actions</b><br/>builds the static export"]
-    GHA --> PAGES["<b>GitHub Pages / CDN</b><br/>plain HTML, CSS, JS<br/>no server at request time"]
-
-    subgraph SUPA["Supabase — one project, one database"]
-        AUTH["<b>Auth</b><br/>email + two-step"]
-        PG[("<b>Postgres 17</b><br/>every table carries masjid_id")]
-        RLS["<b>Row Level Security</b><br/>+ SECURITY DEFINER functions<br/>scoped to one masjid"]
-        CRON["<b>pg_cron + pg_net</b><br/>overnight retention,<br/>weekly digest, health check"]
-        FN["<b>Edge Functions</b><br/>Deno · notify"]
-    end
-
-    SITE --> PG
-    SCREEN --> PG
-    APP --> PG
-    CONSOLE --> AUTH
-    AUTH --> PG
-    PG --- RLS
-    CRON --> PG
-    CRON --> FN
-    PG --> FN
-    FN --> SIGNAL["<b>OneSignal</b><br/>push, per masjid"]
-    STRIPE["<b>Stripe</b><br/>one account per masjid<br/>0% commission"] -.->|"webhook"| FN
-    FN -.-> PG
-
-    classDef repo fill:#C0A46A,stroke:#0C2A21,stroke-width:3px,color:#0C2A21
-    classDef ui fill:#EAE7DD,stroke:#B4AE9D,color:#12201A
-    classDef infra fill:#0C2A21,stroke:#2C4C40,color:#F3F1EA
-    classDef db fill:#2C4C40,stroke:#C0A46A,stroke-width:3px,color:#F3F1EA
-    classDef ext fill:#F3F1EA,stroke:#7D5F2D,stroke-width:2px,color:#12201A
-    class MKT repo
-    class SITE,SCREEN,APP,CONSOLE ui
-    class GHA,PAGES,AUTH,FN,CRON infra
-    class PG,RLS db
-    class STRIPE,SIGNAL ext
-```
+<img src="assets/diagrams/03-architecture.svg" alt="MasjidOne runtime architecture: clients, GitHub Pages, Supabase Postgres with row level security, edge functions, Stripe and OneSignal" width="100%">
 
 ### Why one database and not one per masjid
 
@@ -159,22 +62,7 @@ Every table carries a `masjid_id`. Every function and every security
 policy filters on it, and a person can only ever act for one masjid at a
 time.
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"system-ui","fontSize":"13px"}}}%%
-flowchart LR
-    U["Signed-in<br/>administrator"] --> CM{{"which masjid<br/>are they acting for?"}}
-    CM --> T["Taiyabah's rows"]
-    CM -.->|"never"| X["Another masjid's rows"]
-
-    classDef p fill:#EAE7DD,stroke:#B4AE9D,color:#12201A
-    classDef g fill:#0C2A21,stroke:#C0A46A,stroke-width:2px,color:#F3F1EA
-    classDef ok fill:#E2EDE5,stroke:#2F6B4F,stroke-width:2px,color:#12201A
-    classDef no fill:#F3F1EA,stroke:#B4AE9D,stroke-dasharray:4 3,color:#8A9A91
-    class U p
-    class CM g
-    class T ok
-    class X no
-```
+<img src="assets/diagrams/04-one-database.svg" alt="An administrator only ever reaches their own masjid rows" width="100%">
 
 A database each would mean a separate migration, a separate set of keys
 and a separate auth setup for every customer — and the whole point of the
@@ -260,6 +148,27 @@ Three that catch people out:
 
 British English throughout, and Arabic terms keep their diacritics:
 jamāʿah, Jumuʿah, janāzah, nikāḥ, Hifz, sadaqah, madrasah, masjid.
+
+---
+
+## The diagrams
+
+They are SVGs, and the connectors animate — the same travelling-beam idea the
+site uses on its modules diagram. GitHub renders mermaid but cannot animate it,
+so these are built rather than inlined.
+
+The sources stay in the repo as text, so a diagram is still something you can
+edit and diff rather than a picture nobody can change:
+
+```bash
+assets/diagrams/*.mmd          # the source, one file per diagram
+node scripts/build-diagrams.mjs # regenerates the SVGs
+```
+
+The build script holds the palette and the animation in one place. It declares
+the colours light-first and redefines them under `prefers-color-scheme`, so the
+diagrams follow GitHub's theme, and it keeps a `prefers-reduced-motion` guard —
+anybody who has asked their machine for less movement gets a still picture.
 
 ---
 

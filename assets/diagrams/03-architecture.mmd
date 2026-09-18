@@ -1,0 +1,44 @@
+flowchart TB
+    subgraph BROWSE["What people open"]
+        direction LR
+        MKT["<b>Marketing site</b><br/>── this repo ──<br/>Next.js 15 · TypeScript<br/>Tailwind · shadcn/ui"]
+        SITE["<b>Masjid website</b><br/>Next.js · themed per masjid"]
+        SCREEN["<b>Hall screens</b><br/>Browser display"]
+        APP["<b>Congregation app</b><br/>React Native · Expo"]
+        CONSOLE["<b>Office portal</b><br/>+ MasjidOne console"]
+    end
+
+    MKT --> GHA["<b>GitHub Actions</b><br/>builds the static export"]
+    GHA --> PAGES["<b>GitHub Pages / CDN</b><br/>plain HTML, CSS, JS<br/>no server at request time"]
+
+    subgraph SUPA["Supabase — one project, one database"]
+        AUTH["<b>Auth</b><br/>email + two-step"]
+        PG[("<b>Postgres 17</b><br/>every table carries masjid_id")]
+        RLS["<b>Row Level Security</b><br/>+ SECURITY DEFINER functions<br/>scoped to one masjid"]
+        CRON["<b>pg_cron + pg_net</b><br/>overnight retention,<br/>weekly digest, health check"]
+        FN["<b>Edge Functions</b><br/>Deno · notify"]
+    end
+
+    SITE --> PG
+    SCREEN --> PG
+    APP --> PG
+    CONSOLE --> AUTH
+    AUTH --> PG
+    PG --- RLS
+    CRON --> PG
+    CRON --> FN
+    PG --> FN
+    FN --> SIGNAL["<b>OneSignal</b><br/>push, per masjid"]
+    STRIPE["<b>Stripe</b><br/>one account per masjid<br/>0% commission"] -.->|"webhook"| FN
+    FN -.-> PG
+
+    classDef repo fill:#C0A46A,stroke:#0C2A21,stroke-width:3px,color:#0C2A21
+    classDef ui fill:#EAE7DD,stroke:#B4AE9D,color:#12201A
+    classDef infra fill:#0C2A21,stroke:#2C4C40,color:#F3F1EA
+    classDef db fill:#2C4C40,stroke:#C0A46A,stroke-width:3px,color:#F3F1EA
+    classDef ext fill:#F3F1EA,stroke:#7D5F2D,stroke-width:2px,color:#12201A
+    class MKT repo
+    class SITE,SCREEN,APP,CONSOLE ui
+    class GHA,PAGES,AUTH,FN,CRON infra
+    class PG,RLS db
+    class STRIPE,SIGNAL ext
