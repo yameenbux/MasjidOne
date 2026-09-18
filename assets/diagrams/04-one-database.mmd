@@ -1,0 +1,13 @@
+flowchart LR
+    U["Signed-in<br/>administrator"] --> CM{{"which masjid<br/>are they acting for?"}}
+    CM --> T["Taiyabah's rows"]
+    CM -.->|"never"| X["Another masjid's rows"]
+
+    classDef p fill:#EAE7DD,stroke:#B4AE9D,color:#12201A
+    classDef g fill:#0C2A21,stroke:#C0A46A,stroke-width:2px,color:#F3F1EA
+    classDef ok fill:#E2EDE5,stroke:#2F6B4F,stroke-width:2px,color:#12201A
+    classDef no fill:#F3F1EA,stroke:#B4AE9D,stroke-dasharray:4 3,color:#8A9A91
+    class U p
+    class CM g
+    class T ok
+    class X no
