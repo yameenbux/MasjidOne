@@ -5,3 +5,8 @@ next-env.d.ts
 .DS_Store
 *.tsbuildinfo
 .env*
+
+# Internal commercial analysis. This repository is PUBLIC — margins, break-even
+# counts, competitor notes and any tier described as a decoy must never be
+# pushed to it. The pricing-strategy skill writes here.
+founder/

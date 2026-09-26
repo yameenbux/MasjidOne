@@ -99,8 +99,18 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    falls, £499 → £0.
    In the yearly view each card also prints its monthly rate underneath, so
    a twelve-month total cannot be misread as a price rise. Keep that line.
+   **The `pricing-strategy` skill does not override any of this.** It is an
+   internal thinking aid and writes to `founder/`, which is gitignored
+   because **this repository is public** — margins, break-even counts and a
+   tier you privately call a decoy must never be pushed to it.
+   Nothing it proposes — new tiers, a free plan, a decoy, an annual discount
+   — reaches `components/masjidone-pricing.tsx`, the comparison table or any
+   public copy unless you have separately decided to change the price and
+   said so. Treat its output as an argument to weigh, not a source of truth.
+   It also assumes a self-serve dollar SaaS funnel, which this product is not.
 4. **Do not name competitors on the public site.** The comparison happens in
-   the room, not on the page.
+   the room, not on the page. Naming them in `founder/` analysis is fine —
+   the rule is about the page, not about what you are allowed to know.
 5. **Taiyabah Masjid may now be named.** Permission to use their name, logo
    and screenshots was given on 16 September 2026. **The site no longer shows
    their captures** — the hero and the previews both use MasjidOne interface
