@@ -198,10 +198,39 @@ export function Previews() {
   <p className="eyebrow eyebrow--brass rv">Previews</p>
   <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>What the committee will actually be looking at.</h2>
   <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
-    Interface previews, not photographs of a running masjid. Every figure is
-    example data, and no child&rsquo;s record or family&rsquo;s fee history appears in
-    any of them.
+    The film below is the madrasah portal itself, recorded at Taiyabah Masjid.
+    The stills under it are interface previews rather than photographs of a
+    running masjid. No child&rsquo;s record and no family&rsquo;s fee history appears
+    in any of them.
   </p>
+
+  {/* The walkthrough leads the section: it is the only moving evidence the
+      site has, and it carries the claims the tags above now make. preload is
+      "none" so none of the 10 MB is fetched until somebody presses play —
+      the poster is a rendered still, not a frame, so it promises nothing the
+      film does not show. Plain <video controls> needs no JavaScript. */}
+  <figure className="film rv" style={{ "--i": "2" } as React.CSSProperties}>
+    <video
+      className="film__video"
+      controls
+      preload="none"
+      playsInline
+      poster={`${BASE}/media/madrasah-portal-poster.jpg`}
+      width={1600}
+      height={900}
+      aria-label="A fifty-eight second walkthrough of the MasjidOne madrasah portal, recorded at Taiyabah Masjid: the daily register, madrasah fees, and one record of the family."
+    >
+      <source src={`${BASE}/media/madrasah-portal.mp4`} type="video/mp4" />
+      Your browser cannot play this video. It is a fifty-eight second
+      walkthrough of the madrasah portal — the register, the fees and one
+      record of the family.
+    </video>
+    <figcaption>
+      The madrasah portal running at Taiyabah Masjid — the register, the fees
+      and one record of the family. Fifty-eight seconds. Pupil names in the
+      recording are test data.
+    </figcaption>
+  </figure>
 
   <div className="tabs rv" style={{ "--i": "2" } as React.CSSProperties} role="tablist" aria-label="Interface previews">
     <button className="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" type="button">Hall screen</button>

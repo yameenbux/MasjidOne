@@ -171,7 +171,17 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 ## Open items
 
 - Replace the three SVG previews with live screenshots (test student data
-  only, never a real child's record).
+  only, never a real child's record). Partly done: `#previews` now leads with
+  a 58-second walkthrough of the madrasah portal recorded at Taiyabah
+  (`public/media/madrasah-portal.mp4`, confirmed free of real pupil data on
+  28 September 2026). The stills under it are still interface previews, and
+  the section's opening paragraph draws that distinction — if the stills are
+  ever replaced by real captures, that paragraph has to change with them.
+  The video is 10 MB and loads only on play (`preload="none"` behind a
+  rendered poster, `public/media/madrasah-portal-poster.jpg`). If it is ever
+  re-encoded to 720p it should drop to roughly 4 MB; do not add an autoplay
+  background video, which would download that weight before anyone has read
+  a word.
 - Fill in the real contact email and phone in `#contact` — currently the
   placeholder `REPLACE-ME@masjidone.example`.
 - Decide on a contact form. Static export can't process one; Formspree is the
