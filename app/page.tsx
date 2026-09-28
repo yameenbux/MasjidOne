@@ -1,5 +1,6 @@
 import {
   SiteHeader,
+  Walkthrough,
   Join,
   Stack,
   Modules,
@@ -22,6 +23,7 @@ export default function Home() {
       <main id="main">
         <span id="top" />
         <MasjidOneHero />
+        <Walkthrough />
         <Join />
         <Stack />
         <Modules />

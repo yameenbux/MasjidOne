@@ -169,6 +169,12 @@ export function MasjidOneHero() {
           <span className="btn__t">See the pricing</span>
         </a>
       </div>
+      {/* The device spread below runs long, so the walkthrough that follows it
+          is a good screen away. This puts it one tap from the hero without
+          dropping a video into the middle of a pinned, scroll-driven centre. */}
+      <p className="stack__watch">
+        <a href="#walkthrough">Watch it running at a Bolton masjid · 58 seconds</a>
+      </p>
       <p className="stack__note">
         Interface previews · example data, no masjid named
       </p>
