@@ -81,9 +81,19 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 
 These are commercial claims. Getting one wrong loses a sale and a referral.
 
-1. **Never claim a feature that isn't built.** The madrasah portal and parent
-   access are in development, not live. Everything tagged "In development"
-   must stay tagged.
+1. **Never claim a feature that isn't built.** Everything tagged "In
+   development" must stay tagged until the database says otherwise — check,
+   do not assume.
+   **Built and running at Taiyabah (verified 28 September 2026):** the
+   madrasah portal — 552 pupils, 48 classes, 41 staff, 330 households and 422
+   guardians, with 40 teachers on their own logins; daily registers (draft,
+   submit, lock, history, and chasing a missed one); fees per family (rates,
+   periods, charges, payments, balances, reminders, annual report).
+   **Still in development:** *parent access* — the machinery exists but
+   `user_roles` holds **zero** parent accounts, so no parent has ever signed
+   in. It stays tagged until they have. And *Hifz and sabaq progress* — there
+   is no table and no function for either; do not put them in a live claim,
+   an alt text or a caption.
 2. **Never claim "no competitor does the whole mosque."** It is false —
    several platforms do the congregation side. The true, defensible claim is
    narrower: *nobody joins the madrasah to the congregation.* Keep the copy

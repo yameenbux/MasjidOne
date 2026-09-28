@@ -120,9 +120,9 @@ export function Join() {
     <MasjidOneComparison />
   </div>
   <p className="join__foot rv" style={{ "--i": "3" } as React.CSSProperties}>
-    The last two rows are the product. They are why this exists, they are the
-    only rows nobody else fills, and they are not finished — both are in
-    development for the September 2027 intake.
+    The rows nobody else fills are the product, and the middle one is now
+    built: one record of the same family, reachable from both sides. The last
+    row is the half a parent sees, and it is still in development.
   </p>
 
   <div className="bento rv" style={{ "--i": "4" } as React.CSSProperties}>
@@ -230,9 +230,9 @@ export function Previews() {
   <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p3" role="tabpanel" aria-labelledby="t3" tabIndex={0} hidden>
     <figure className="shot-fig">
       <img className="shot-img" src={`${BASE}/devices/admin-register.webp`} width={1320} height={840} loading="lazy" decoding="async"
-        alt="Interface preview of a madrasah evening register: a week of attendance marks per pupil, the sabaq heard, and whether fees are paid. Pupil names are placeholders and no real child's record appears." />
+        alt="Interface preview of a madrasah evening register: a week of attendance marks per pupil, who is absent, and whether the register has been submitted. Pupil names are placeholders and no real child's record appears." />
       <figcaption>
-        In development for the September 2027 intake. Pupil names are placeholders — no real child&rsquo;s record appears here.
+        Running at Taiyabah Masjid. Pupil names are placeholders — no real child&rsquo;s record appears here.
       </figcaption>
     </figure>
   </div>
@@ -242,7 +242,7 @@ export function Previews() {
       <img className="shot-img" src={`${BASE}/devices/admin-fees.webp`} width={1320} height={840} loading="lazy" decoding="async"
         alt="Interface preview of madrasah fees, charged per family rather than per child: what is invoiced, what is collected, what is outstanding, and which families are due. Example data only." />
       <figcaption>
-        In development for the September 2027 intake. Fees are per family rather than per child. Example data — no real family&rsquo;s fee history appears here.
+        Running at Taiyabah Masjid. Fees are per family rather than per child. Example data — no real family&rsquo;s fee history appears here.
       </figcaption>
     </figure>
   </div>

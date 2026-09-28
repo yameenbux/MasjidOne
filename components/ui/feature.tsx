@@ -206,8 +206,8 @@ const CARDS: Card[] = [
   {
     key: "portal",
     title: "Madrasah portal",
-    status: "In development",
-    body: "Students, classes, daily registers, Hifz and sabaq progress, reports and certificates. Fees by direct debit and card with automatic chasing. Unlimited students and teachers — no per-pupil pricing, no paid add-ons.",
+    status: "Live",
+    body: "Pupils, classes, households and staff, with every teacher on their own login. Daily registers — drafted, submitted, locked, and chased when one is missed. Fees charged per family, with balances, payments and automatic reminders. Unlimited pupils and teachers — no per-pupil pricing, no paid add-ons.",
     Visual: RegisterTick,
   },
   {
