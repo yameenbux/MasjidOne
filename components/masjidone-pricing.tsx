@@ -24,18 +24,21 @@ const masjidOnePlans = [
     yearlyPrice: "948",
     period: "month",
     yearlyPeriod: "year",
-    // The whole plan is the madrasah portal, which is not built yet.
-    status: "dev" as const,
+    // The portal is built and running at Taiyabah. The two features below that
+    // are not built carry their own dev tag rather than the whole plan.
+    status: "live" as const,
     features: [
-      "Unlimited students and teachers",
-      "Daily registers, Hifz and sabaq progress",
-      "Reports and certificates",
-      "Fees by direct debit and card, chased automatically",
-      "Parent access inside the congregation app",
+      "Unlimited pupils and teachers",
+      "Daily registers — drafted, submitted, locked, and chased when one is missed",
+      "One record of the family, with siblings linked",
+      "Fees per family, with balances, payments and automatic reminders",
+      "Annual fee report and a family export for the office",
+      { text: "Hifz and sabaq progress", status: "dev" as const },
+      { text: "Parent access inside the congregation app", status: "dev" as const },
       "Phone support, no per-pupil pricing, no paid add-ons",
     ],
     description:
-      "For the September 2027 intake. Setup is charged at signing; the monthly starts at go-live.",
+      "Running in a Bolton masjid now. Setup is charged at signing; the monthly starts at go-live.",
     buttonText: "Request a demo",
     href: DEMO_MAILTO,
     isPopular: false,
@@ -53,11 +56,11 @@ const masjidOnePlans = [
       "Managed mosque website",
       "Unlimited prayer hall screens",
       "Donations and Gift Aid at 0% commission, permanently",
-      { text: "Everything in Madrasah", status: "dev" as const },
+      "Everything in Madrasah",
       { text: "Parent access — the join", status: "dev" as const },
     ],
     description:
-      "The congregation side runs in a Bolton masjid now. The madrasah portal joins it at no extra cost.",
+      "Both sides run in a Bolton masjid now. The half a parent sees is the last piece.",
     buttonText: "Request a demo",
     href: DEMO_MAILTO,
     isPopular: true,

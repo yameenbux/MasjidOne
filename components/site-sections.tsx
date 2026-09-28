@@ -120,9 +120,9 @@ export function Join() {
     <MasjidOneComparison />
   </div>
   <p className="join__foot rv" style={{ "--i": "3" } as React.CSSProperties}>
-    The last two rows are the product. They are why this exists, they are the
-    only rows nobody else fills, and they are not finished — both are in
-    development for the September 2027 intake.
+    The rows nobody else fills are the product, and the middle one is now
+    built: one record of the same family, reachable from both sides. The last
+    row is the half a parent sees, and it is still in development.
   </p>
 
   <div className="bento rv" style={{ "--i": "4" } as React.CSSProperties}>
@@ -198,10 +198,39 @@ export function Previews() {
   <p className="eyebrow eyebrow--brass rv">Previews</p>
   <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>What the committee will actually be looking at.</h2>
   <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
-    Interface previews, not photographs of a running masjid. Every figure is
-    example data, and no child&rsquo;s record or family&rsquo;s fee history appears in
-    any of them.
+    The film below is the madrasah portal itself, recorded at Taiyabah Masjid.
+    The stills under it are interface previews rather than photographs of a
+    running masjid. No child&rsquo;s record and no family&rsquo;s fee history appears
+    in any of them.
   </p>
+
+  {/* The walkthrough leads the section: it is the only moving evidence the
+      site has, and it carries the claims the tags above now make. preload is
+      "none" so none of the 10 MB is fetched until somebody presses play —
+      the poster is a rendered still, not a frame, so it promises nothing the
+      film does not show. Plain <video controls> needs no JavaScript. */}
+  <figure className="film rv" style={{ "--i": "2" } as React.CSSProperties}>
+    <video
+      className="film__video"
+      controls
+      preload="none"
+      playsInline
+      poster={`${BASE}/media/madrasah-portal-poster.jpg`}
+      width={1600}
+      height={900}
+      aria-label="A fifty-eight second walkthrough of the MasjidOne madrasah portal, recorded at Taiyabah Masjid: the daily register, madrasah fees, and one record of the family."
+    >
+      <source src={`${BASE}/media/madrasah-portal.mp4`} type="video/mp4" />
+      Your browser cannot play this video. It is a fifty-eight second
+      walkthrough of the madrasah portal — the register, the fees and one
+      record of the family.
+    </video>
+    <figcaption>
+      The madrasah portal running at Taiyabah Masjid — the register, the fees
+      and one record of the family. Fifty-eight seconds. Pupil names in the
+      recording are test data.
+    </figcaption>
+  </figure>
 
   <div className="tabs rv" style={{ "--i": "2" } as React.CSSProperties} role="tablist" aria-label="Interface previews">
     <button className="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" type="button">Hall screen</button>
@@ -230,9 +259,9 @@ export function Previews() {
   <div className="panel rv" style={{ "--i": "3" } as React.CSSProperties} id="p3" role="tabpanel" aria-labelledby="t3" tabIndex={0} hidden>
     <figure className="shot-fig">
       <img className="shot-img" src={`${BASE}/devices/admin-register.webp`} width={1320} height={840} loading="lazy" decoding="async"
-        alt="Interface preview of a madrasah evening register: a week of attendance marks per pupil, the sabaq heard, and whether fees are paid. Pupil names are placeholders and no real child's record appears." />
+        alt="Interface preview of a madrasah evening register: a week of attendance marks per pupil, who is absent, and whether the register has been submitted. Pupil names are placeholders and no real child's record appears." />
       <figcaption>
-        In development for the September 2027 intake. Pupil names are placeholders — no real child&rsquo;s record appears here.
+        Running at Taiyabah Masjid. Pupil names are placeholders — no real child&rsquo;s record appears here.
       </figcaption>
     </figure>
   </div>
@@ -242,7 +271,7 @@ export function Previews() {
       <img className="shot-img" src={`${BASE}/devices/admin-fees.webp`} width={1320} height={840} loading="lazy" decoding="async"
         alt="Interface preview of madrasah fees, charged per family rather than per child: what is invoiced, what is collected, what is outstanding, and which families are due. Example data only." />
       <figcaption>
-        In development for the September 2027 intake. Fees are per family rather than per child. Example data — no real family&rsquo;s fee history appears here.
+        Running at Taiyabah Masjid. Fees are per family rather than per child. Example data — no real family&rsquo;s fee history appears here.
       </figcaption>
     </figure>
   </div>

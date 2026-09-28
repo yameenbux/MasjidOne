@@ -81,9 +81,19 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 
 These are commercial claims. Getting one wrong loses a sale and a referral.
 
-1. **Never claim a feature that isn't built.** The madrasah portal and parent
-   access are in development, not live. Everything tagged "In development"
-   must stay tagged.
+1. **Never claim a feature that isn't built.** Everything tagged "In
+   development" must stay tagged until the database says otherwise — check,
+   do not assume.
+   **Built and running at Taiyabah (verified 28 September 2026):** the
+   madrasah portal — 552 pupils, 48 classes, 41 staff, 330 households and 422
+   guardians, with 40 teachers on their own logins; daily registers (draft,
+   submit, lock, history, and chasing a missed one); fees per family (rates,
+   periods, charges, payments, balances, reminders, annual report).
+   **Still in development:** *parent access* — the machinery exists but
+   `user_roles` holds **zero** parent accounts, so no parent has ever signed
+   in. It stays tagged until they have. And *Hifz and sabaq progress* — there
+   is no table and no function for either; do not put them in a live claim,
+   an alt text or a caption.
 2. **Never claim "no competitor does the whole mosque."** It is false —
    several platforms do the congregation side. The true, defensible claim is
    narrower: *nobody joins the madrasah to the congregation.* Keep the copy
@@ -99,8 +109,18 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    falls, £499 → £0.
    In the yearly view each card also prints its monthly rate underneath, so
    a twelve-month total cannot be misread as a price rise. Keep that line.
+   **The `pricing-strategy` skill does not override any of this.** It is an
+   internal thinking aid and writes to `founder/`, which is gitignored
+   because **this repository is public** — margins, break-even counts and a
+   tier you privately call a decoy must never be pushed to it.
+   Nothing it proposes — new tiers, a free plan, a decoy, an annual discount
+   — reaches `components/masjidone-pricing.tsx`, the comparison table or any
+   public copy unless you have separately decided to change the price and
+   said so. Treat its output as an argument to weigh, not a source of truth.
+   It also assumes a self-serve dollar SaaS funnel, which this product is not.
 4. **Do not name competitors on the public site.** The comparison happens in
-   the room, not on the page.
+   the room, not on the page. Naming them in `founder/` analysis is fine —
+   the rule is about the page, not about what you are allowed to know.
 5. **Taiyabah Masjid may now be named.** Permission to use their name, logo
    and screenshots was given on 16 September 2026. **The site no longer shows
    their captures** — the hero and the previews both use MasjidOne interface
@@ -151,7 +171,17 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 ## Open items
 
 - Replace the three SVG previews with live screenshots (test student data
-  only, never a real child's record).
+  only, never a real child's record). Partly done: `#previews` now leads with
+  a 58-second walkthrough of the madrasah portal recorded at Taiyabah
+  (`public/media/madrasah-portal.mp4`, confirmed free of real pupil data on
+  28 September 2026). The stills under it are still interface previews, and
+  the section's opening paragraph draws that distinction — if the stills are
+  ever replaced by real captures, that paragraph has to change with them.
+  The video is 10 MB and loads only on play (`preload="none"` behind a
+  rendered poster, `public/media/madrasah-portal-poster.jpg`). If it is ever
+  re-encoded to 720p it should drop to roughly 4 MB; do not add an autoplay
+  background video, which would download that weight before anyone has read
+  a word.
 - Fill in the real contact email and phone in `#contact` — currently the
   placeholder `REPLACE-ME@masjidone.example`.
 - Decide on a contact form. Static export can't process one; Formspree is the

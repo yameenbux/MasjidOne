@@ -34,7 +34,7 @@ import { AnimatedBeam } from "@/components/ui/animated-beam";
 type NodeSpec = { key: string; label: string; status: "Live" | "In development"; Icon: LucideIcon };
 
 const MADRASAH: NodeSpec[] = [
-  { key: "portal", label: "Madrasah portal", status: "In development", Icon: BookOpen },
+  { key: "portal", label: "Madrasah portal", status: "Live", Icon: BookOpen },
   { key: "parent", label: "Parent access", status: "In development", Icon: Users },
 ];
 
