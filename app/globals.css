@@ -1043,6 +1043,21 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-label); letter-spacing:.16em; text-transform:uppercase;
 }
 
+/* MasjidOne's credit, in the footer of every portal screen. One rule, one
+   component (components/ui/powered-by.tsx), so it cannot drift between
+   screens. Elevated above fine print on purpose: --t-small rather than the
+   --t-label size, brass, letterspaced, with the mark — a badge rather than a
+   disclaimer. The masjid's name owns the top of the screen; this owns the
+   bottom. Both footers sit on --board, so board-brass is the right brass. */
+.powered{
+  display:flex; align-items:center; gap:.5rem; margin:0;
+  color:var(--board-brass);
+  font-size:var(--t-small); letter-spacing:.1em; text-transform:uppercase;
+}
+.powered strong{font-weight:600; letter-spacing:.08em}
+.powered__mark{display:inline-flex; width:1.1rem; height:1.1rem; color:var(--board-brass)}
+.powered__mark svg{width:100%; height:100%}
+
 /* ---------- Sign-in ---------- */
 
 .mlogin{
@@ -1051,8 +1066,11 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
      shorter than 100vh and the form ends up underneath it. The strip above is
      sticky and takes its own height, hence the subtraction. */
   min-height:calc(100dvh - 2.6rem);
-  display:grid; place-items:center;
-  padding:var(--s4) var(--s2);
+  /* Two rows: the form takes the space and centres in it, the footer sits
+     under it at the bottom of the screen. The stage and the veil are
+     absolutely positioned, so they are out of flow and do not occupy a row. */
+  display:grid; grid-template-rows:1fr auto;
+  padding:var(--s4) var(--s2) var(--s3);
   background:var(--board); color:var(--board-ink);
   font-family:Archivo,system-ui,sans-serif;
 }
@@ -1088,22 +1106,21 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   100%{transform:translate(4vw,-8vh) scale(1.08)}
 }
 
-.mlogin__panel{position:relative; z-index:1; width:100%; max-width:30rem}
-.mlogin__head{margin-bottom:var(--s4)}
-
-/* MasjidOne's credit. "Slightly elevated" as asked: --t-small rather than the
-   --t-label size that fine print uses, in brass, letterspaced, with the mark
-   beside it — so it reads as a badge. It stays clearly subordinate to the
-   masjid's name below, which is the largest thing on the screen. */
-.mlogin__powered{
-  display:flex; align-items:center; gap:.5rem;
-  margin:0 0 var(--s2);
-  color:var(--board-brass);
-  font-size:var(--t-small); letter-spacing:.1em; text-transform:uppercase;
+.mlogin__panel{
+  position:relative; z-index:1; place-self:center;
+  width:100%; max-width:30rem;
 }
-.mlogin__powered strong{font-weight:600; letter-spacing:.08em}
-.mlogin__mark{display:inline-flex; width:1.1rem; height:1.1rem; color:var(--board-brass)}
-.mlogin__mark svg{width:100%; height:100%}
+.mlogin__foot{
+  /* justify-self centres it on the same axis as the panel above; align-self
+     end drops it to the bottom of its row. `place-self` takes align first,
+     which had these the wrong way round and pushed the credit to the right
+     edge, out of line with the form. */
+  position:relative; z-index:1;
+  justify-self:center; align-self:end;
+  width:100%; max-width:30rem; padding-top:var(--s3);
+  border-top:var(--hair) solid var(--board-rule);
+}
+.mlogin__head{margin-bottom:var(--s4)}
 
 .mlogin__name{
   margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
@@ -1183,6 +1200,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 
 .dadmin{
   min-height:calc(100dvh - 2.6rem);
+  display:flex; flex-direction:column;
   background:var(--paper); color:var(--ink);
   font-family:Archivo,system-ui,sans-serif;
 }
@@ -1192,14 +1210,6 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   padding:var(--s3) var(--s2);
   background:var(--board); color:var(--board-ink);
 }
-.dadmin__powered{
-  display:flex; align-items:center; gap:.45rem; margin:0 0 .4rem;
-  color:var(--board-brass);
-  font-size:var(--t-small); letter-spacing:.1em; text-transform:uppercase;
-}
-.dadmin__powered strong{font-weight:600}
-.dadmin__mark{display:inline-flex; width:1rem; height:1rem; color:var(--board-brass)}
-.dadmin__mark svg{width:100%; height:100%}
 .dadmin__name{
   margin:0; font-family:Newsreader,Georgia,serif;
   font-size:clamp(1.5rem,3.4vw,2.2rem); line-height:1.1;
@@ -1214,7 +1224,13 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .dadmin__out:hover{border-color:var(--board-brass); color:var(--board-brass)}
 
 .dadmin__body{
-  max-width:var(--wrap); margin:0 auto; padding:var(--s3) var(--s2) var(--s5);
+  flex:1;
+  width:100%; max-width:var(--wrap); margin:0 auto;
+  padding:var(--s3) var(--s2) var(--s4);
+}
+.dadmin__foot{
+  background:var(--board); color:var(--board-ink);
+  padding:var(--s3) var(--s2);
 }
 
 .dadmin__tiles{

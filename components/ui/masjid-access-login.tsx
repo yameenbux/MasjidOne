@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { BrandMark } from "@/components/ui/brand-mark";
+import { PoweredBy } from "@/components/ui/powered-by";
 
 /**
  * The masjid's sign-in screen.
@@ -164,21 +164,9 @@ export function MasjidAccessLogin({
 
       <main className="mlogin__panel">
         <header className="mlogin__head">
-          {/* The masjid's name is the largest thing on the screen, because the
-              masjid is whose building this is. MasjidOne's credit sits above
-              it, one notch up from fine print: brass, letterspaced and set at
-              the small-text size rather than the label size, so it is legibly
-              a badge and not a disclaimer. */}
-          <p className="mlogin__powered">
-            {/* BrandMark takes only className, so the decorative hiding goes on
-                a wrapper rather than being passed through as a prop. */}
-            <span className="mlogin__mark" aria-hidden="true">
-              <BrandMark />
-            </span>
-            <span>
-              Powered by <strong>MasjidOne</strong>
-            </span>
-          </p>
+          {/* The masjid's name is the only thing at the top, and the largest
+              thing on the screen, because the masjid is whose building this
+              is. MasjidOne's credit lives in the footer below. */}
           <h1 className="mlogin__name">{masjidName}</h1>
           <p className="mlogin__sub">Madrasah &amp; congregation portal</p>
         </header>
@@ -229,6 +217,10 @@ export function MasjidAccessLogin({
 
         {hint ? <div className="mlogin__hint">{hint}</div> : null}
       </main>
+
+      <footer className="mlogin__foot">
+        <PoweredBy />
+      </footer>
     </div>
   );
 }

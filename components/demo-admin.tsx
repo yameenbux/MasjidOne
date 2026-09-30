@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BrandMark } from "@/components/ui/brand-mark";
+import { PoweredBy } from "@/components/ui/powered-by";
 import {
   DEMO_TOTALS,
   DEMO_REGISTERS,
@@ -26,9 +26,9 @@ import {
  * Everything is read-only. Nothing here writes anywhere, because this is a
  * showcase and not the platform: see the note at the top of app/demo/page.tsx.
  *
- * The masjid's name sits in the header at display size with MasjidOne's credit
- * above it, matching the sign-in screen, so the white-label reads consistently
- * on every screen a committee is shown.
+ * The masjid's name sits alone in the header at display size; MasjidOne's
+ * credit sits in the footer, matching the sign-in screen, so the white-label
+ * reads the same way on every screen a committee is shown.
  */
 
 const money = (n: number) =>
@@ -60,17 +60,7 @@ export function DemoAdmin({
   return (
     <div className="dadmin">
       <header className="dadmin__top">
-        <div className="dadmin__brand">
-          <p className="dadmin__powered">
-            <span className="dadmin__mark" aria-hidden="true">
-              <BrandMark />
-            </span>
-            <span>
-              Powered by <strong>MasjidOne</strong>
-            </span>
-          </p>
-          <p className="dadmin__name">{masjidName}</p>
-        </div>
+        <p className="dadmin__name">{masjidName}</p>
         <button type="button" className="dadmin__out" onClick={onSignOut}>
           Sign out
         </button>
@@ -259,6 +249,10 @@ export function DemoAdmin({
           </section>
         ) : null}
       </div>
+
+      <footer className="dadmin__foot">
+        <PoweredBy />
+      </footer>
     </div>
   );
 }
