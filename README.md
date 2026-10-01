@@ -19,6 +19,27 @@ A product of **YSB Ventures Ltd**, Bolton.
 
 </div>
 
+<br/>
+
+> [!NOTE]
+> **Reading this without a technical background?** Start at *The problem*, *The
+> four surfaces* and *One evening, end to end*. Those three explain what
+> MasjidOne is and what it does for a masjid. Everything after *How the pieces
+> fit* is for whoever maintains the code.
+
+### How to read the diagrams
+
+Every picture in this file uses the same four colours, and they always mean the
+same thing. The connectors animate, so you can see which way the information
+actually travels.
+
+| | Means |
+| :--- | :--- |
+| ⬛ **Deep green, brass border** | MasjidOne itself — our code, our database |
+| 🟩 **Pale green** | Live, working, in a masjid today |
+| 🟨 **Sand, dashed border** | In development — not built, not sold as built |
+| ⬜ **Stone** | A person, or something outside the system |
+
 ---
 
 ## The problem, in one picture
@@ -43,6 +64,7 @@ colours, their domain.
 
 <img src="assets/diagrams/02-four-surfaces.svg" alt="The four surfaces: website, in-masjid screens, congregation app, madrasah portal" width="100%">
 
+> [!IMPORTANT]
 > **The madrasah portal is built. Parent access is not.** The portal holds a
 > masjid's roll, classes, staff and households, with registers and fees
 > configured. What is still in development is *parent access* — the half a
@@ -53,6 +75,23 @@ colours, their domain.
 > This paragraph said all three were unbuilt until October 2026, which was
 > wrong and had been wrong for a while. Before you change a status claim
 > anywhere, **check the database** — see the warning below.
+
+---
+
+## One evening, end to end
+
+The clearest way to explain the product is to follow a single Tuesday. A teacher
+marks a register at six; by Wednesday morning the office knows which class
+*didn't*; and the child in that register is the same record the congregation
+side already holds.
+
+<img src="assets/diagrams/06-one-evening.svg" alt="A Tuesday evening: a teacher marks a register, it locks, a missed register is flagged overnight, and the office sees the same child on the congregation side" width="100%">
+
+> [!TIP]
+> **The dashed sand box is the whole business.** Everything to the left of it is
+> a madrasah system; plenty of those exist. The parent seeing their own child in
+> the app they already use for prayer times is the part nobody else does — and
+> it is the part still in development.
 
 ---
 
@@ -79,6 +118,34 @@ and costs a great deal to run.
 
 ---
 
+## The stack, in four layers
+
+Left to right: what gets written, what it compiles to, where that runs, and the
+two outside services it talks to.
+
+<img src="assets/diagrams/05-tech-stack.svg" alt="The stack in four layers: TypeScript, Next.js, Tailwind and SQL; a static export and applied migrations; the Pages CDN, Supabase Postgres, Deno edge functions and React Native; Stripe and OneSignal" width="100%">
+
+| Layer | What and why |
+| :--- | :--- |
+| **TypeScript 5.7** | Every file. A mosque's fee ledger is not a place for `undefined` |
+| **Next.js 15** · React 18.3 | App Router, static export — no server at request time |
+| **Tailwind 3.4** + shadcn/ui | Driven by MasjidOne's own tokens, not Tailwind's defaults |
+| **Postgres 17** on Supabase | One database. Every table carries `masjid_id` |
+| **Row Level Security** | The database refuses the wrong rows; it is not an `if` statement in the app |
+| **Deno edge functions** | Notifications and webhooks |
+| **React Native · Expo** | The congregation app, iOS and Android |
+| **Stripe** | The masjid's own account. We never touch the money |
+| **OneSignal** | Push, scoped per masjid |
+| **GitHub Actions → Pages** | Builds and publishes. Nothing to patch at 2am |
+
+> [!IMPORTANT]
+> **`output: 'export'` is a constraint, not a preference.** The marketing site
+> compiles to plain files on a CDN. Adding anything that needs a Node server at
+> request time breaks the deploy — and removes the main reason this site cannot
+> go down.
+
+---
+
 ## This repository
 
 The marketing site. Its job is to give a masjid committee somewhere to
@@ -96,6 +163,7 @@ npm run build   # static export to out/
 `output: 'export'` writes plain HTML, CSS and JS to `out/`, so there is
 nothing to run at request time and nothing to keep patched.
 
+> [!WARNING]
 > **`CONTACT_EMAIL` in `lib/site.ts` is still `REPLACE-ME@masjidone.example`.**
 > It is one line, and until it is set every "Request a demo" on the site — and
 > the subject access route in the privacy policy — goes nowhere.
@@ -106,11 +174,13 @@ GitHub Actions builds and publishes to Pages
 (`.github/workflows/deploy.yml`). Pages cannot build a Next app from a
 branch, so **Settings → Pages → Source** must be **GitHub Actions**.
 
-**`public/CNAME` decides the URLs.** If it holds a domain, the base path is
-empty and the canonical origin is that domain — `next.config.mjs` reads the
-file and ignores a stale `NEXT_PUBLIC_BASE_PATH` rather than obeying it. This
-is not a preference: the live site once shipped every asset 404ing because the
-variable still said `/MasjidOne` while the custom domain served from the root.
+> [!CAUTION]
+> **`public/CNAME` decides the URLs.** If it holds a domain, the base path is
+> empty and the canonical origin is that domain — `next.config.mjs` reads the
+> file and ignores a stale `NEXT_PUBLIC_BASE_PATH` rather than obeying it. This
+> is not a preference: the live site once shipped with **every asset 404ing**
+> because the variable still said `/MasjidOne` while the custom domain served
+> from the root.
 
 | Variable | When you need it | Value |
 | --- | --- | --- |
@@ -192,6 +262,42 @@ child's record or family's fee history is ever published.
 
 ---
 
+## When something goes wrong
+
+Most things a masjid wants changed are not faults at all — they are the masjid's
+own content, and the masjid changes them itself without asking anybody. The
+small remainder comes to us, and a fix reaches every masjid rather than only the
+one that reported it.
+
+<img src="assets/diagrams/07-support.svg" alt="Support path: somebody spots an issue, tells the masjid office, and it is either the masjid's own settings to fix or a ticket to MasjidOne, which reproduces, fixes, deploys and reports back" width="100%">
+
+### Who fixes what
+
+| It is… | Who | How long |
+| :--- | :--- | :--- |
+| A wrong jamāʿah time, a notice, a fee rate, who has access | **The masjid**, in the portal | Immediately |
+| A pupil in the wrong class, a family to merge | **The masjid**, in the portal | Immediately |
+| A screen showing the wrong thing, a button that does nothing | **MasjidOne** | Reproduced against your own configuration |
+| Anything touching a child's record or money | **MasjidOne**, treated as urgent | Ahead of everything else |
+
+> [!IMPORTANT]
+> **A masjid never waits on us for its own content.** If the office has to open a
+> ticket to change Maghrib, the product has failed. Everything a committee
+> routinely needs to change is theirs to change, which is also why role-based
+> access matters: the person who should change it can, and nobody else can.
+
+> [!WARNING]
+> **The support address is not live yet.** `CONTACT_EMAIL` in `lib/site.ts` is
+> still `REPLACE-ME@masjidone.example`, so the route in this diagram does not
+> currently exist. Until it is set, the "log a ticket" link, every "request a
+> demo" button and the subject access route in the privacy policy all go
+> nowhere.
+
+MasjidOne is a product of **YSB Ventures Ltd**, Bolton. There is no overseas
+support desk and no ticket queue — a masjid talks to the people who wrote it.
+
+---
+
 ## What it costs
 
 | | |
@@ -208,8 +314,11 @@ Only the setup fee falls.
 
 ## Before you change any copy
 
-Read **`CLAUDE.md`** first. The prices, the competitive claim and the
-"in development" tags are commercial commitments, not wording choices.
+> [!CAUTION]
+> Read **`CLAUDE.md`** first. The prices, the competitive claim and the
+> "in development" tags are **commercial commitments, not wording choices**. A
+> wrong one loses a sale and the referral behind it.
+
 Three that catch people out:
 
 - **Never claim a feature that is not built, and never deny one that is.**
@@ -233,9 +342,9 @@ jamāʿah, Jumuʿah, janāzah, nikāḥ, Hifz, sadaqah, madrasah, masjid.
 
 ## The diagrams
 
-They are SVGs, and the connectors animate — the same travelling-beam idea the
-site uses on its modules diagram. GitHub renders mermaid but cannot animate it,
-so these are built rather than inlined.
+Seven SVGs, and the connectors animate — the same travelling-beam idea the site
+uses on its modules diagram. GitHub renders mermaid but cannot animate it, so
+these are built rather than inlined.
 
 The sources stay in the repo as text, so a diagram is still something you can
 edit and diff rather than a picture nobody can change:
@@ -249,6 +358,19 @@ The build script holds the palette and the animation in one place. It declares
 the colours light-first and redefines them under `prefers-color-scheme`, so the
 diagrams follow GitHub's theme, and it keeps a `prefers-reduced-motion` guard —
 anybody who has asked their machine for less movement gets a still picture.
+
+> [!NOTE]
+> **Do not add a `font-family` override to that stylesheet.** Mermaid measures
+> every label and sizes each box *before* the stylesheet is appended, so
+> changing the face afterwards reflows text inside boxes built for a different
+> font and silently clips the last line. It went unnoticed until a diagram had
+> narrow nodes. Mermaid embeds the face it measured with — leave it alone.
+
+Rendering needs a Chromium. If the machine has one already:
+
+```bash
+PUPPETEER_EXECUTABLE_PATH=/path/to/chrome node scripts/build-diagrams.mjs
+```
 
 ---
 

@@ -1,0 +1,28 @@
+flowchart LR
+    C["<b>Somebody spots<br/>something</b><br/>a wrong time, a<br/>notice that reads badly"]
+    O["<b>They tell the<br/>masjid office</b>"]
+    Q{{"Content and settings,<br/>or the platform?"}}
+    SELF["<b>The masjid<br/>fixes it</b><br/>times, notices,<br/>fees, roles<br/><i>most issues</i>"]
+    TKT["<b>A ticket to<br/>MasjidOne</b><br/>YSB Ventures Ltd<br/>Bolton"]
+    US["<b>We reproduce it</b><br/>against the masjid's<br/>own configuration"]
+    FIX["<b>Fixed and<br/>reviewed</b>"]
+    DEP["<b>Deployed</b><br/>nobody installs<br/>anything"]
+    ALL["<b>Every masjid<br/>gets it</b><br/>not only the one<br/>that reported it"]
+
+    C --> O --> Q
+    Q -->|"settings"| SELF
+    Q -->|"platform"| TKT
+    TKT --> US --> FIX --> DEP --> ALL
+    ALL -.->|"we come back<br/>and say so"| O
+    SELF -.-> C
+
+    classDef person fill:#EAE7DD,stroke:#B4AE9D,color:#12201A
+    classDef gate fill:#2C4C40,stroke:#C0A46A,stroke-width:2px,color:#F3F1EA
+    classDef selfserve fill:#E2EDE5,stroke:#2F6B4F,stroke-width:2px,color:#12201A
+    classDef us fill:#0C2A21,stroke:#C0A46A,stroke-width:3px,color:#F3F1EA
+    classDef ship fill:#2C4C40,stroke:#C0A46A,stroke-width:2px,color:#F3F1EA
+    class C,O person
+    class Q gate
+    class SELF selfserve
+    class TKT,US us
+    class FIX,DEP,ALL ship

@@ -4,12 +4,15 @@ flowchart TD
     CORE --> W["🌐 <b>Website</b><br/>Prayer times, notices,<br/>hall hire, nikāḥ, classes,<br/>donations"]
     CORE --> S["🖥️ <b>In-masjid screens</b><br/>Hall and foyer boards,<br/>same published timetable<br/>as the website"]
     CORE --> A["📱 <b>Congregation app</b><br/>One app, masjid picker.<br/>Push for janāzah and<br/>jamāʿah changes"]
-    CORE --> M["🎓 <b>Madrasah portal</b><br/>Registers, fees,<br/>parent access"]
+    CORE --> M["🎓 <b>Madrasah portal</b><br/>Registers, fees, classes,<br/>families and staff"]
 
     W --- WL(["Live"])
     S --- SL(["Live"])
     A --- AL(["Live"])
-    M --- ML(["In development"])
+    M --- ML(["Live"])
+
+    M -.-> P["👪 <b>Parent access</b><br/>A parent's view of<br/>their own child, inside<br/>the app they already have"]
+    P --- PL(["In development"])
 
     classDef core fill:#0C2A21,stroke:#C0A46A,stroke-width:3px,color:#F3F1EA,font-size:16px
     classDef live fill:#EAE7DD,stroke:#2F6B4F,stroke-width:2px,color:#12201A
@@ -17,7 +20,7 @@ flowchart TD
     classDef tagok fill:#E2EDE5,stroke:#2F6B4F,color:#2F6B4F
     classDef tagsoon fill:#F3EBD8,stroke:#8A6314,color:#8A6314
     class CORE core
-    class W,S,A live
-    class M soon
-    class WL,SL,AL tagok
-    class ML tagsoon
+    class W,S,A,M live
+    class P soon
+    class WL,SL,AL,ML tagok
+    class PL tagsoon

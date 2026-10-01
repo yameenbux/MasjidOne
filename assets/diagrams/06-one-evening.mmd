@@ -1,0 +1,37 @@
+flowchart TB
+    subgraph EVE["🌙 Tuesday evening"]
+        direction LR
+        T1["<b>18:04</b><br/>a teacher opens<br/>her own class"]
+        T2["Marks the register<br/>and submits"]
+        T3{{"Row Level Security:<br/>her class, her masjid"}}
+        T4["<b>Locked</b><br/>cannot now be<br/>quietly changed"]
+        T1 --> T2 --> T3 --> T4
+    end
+
+    subgraph MORN["☀️ Wednesday morning"]
+        direction LR
+        M1["<b>A class with<br/>no register</b>"]
+        M2["An overnight job<br/>notices and flags it"]
+        M3["The office sees<br/>one line:<br/><i>Nāẓirah 4B, not taken</i>"]
+        M1 --> M2 --> M3
+    end
+
+    subgraph JOIN["🔗 The join"]
+        direction LR
+        O1["<b>One record</b><br/>the same child, on the<br/>congregation side too"]
+        P1["<b>The parent</b> sees it<br/>in the app they<br/>already have"]
+        O1 -.-> P1
+    end
+
+    EVE --> MORN --> JOIN
+
+    classDef act fill:#EAE7DD,stroke:#B4AE9D,color:#12201A
+    classDef gate fill:#2C4C40,stroke:#C0A46A,stroke-width:2px,color:#F3F1EA
+    classDef done fill:#E2EDE5,stroke:#2F6B4F,stroke-width:2px,color:#12201A
+    classDef chase fill:#F3EBD8,stroke:#8A6314,stroke-width:2px,color:#12201A
+    classDef soon fill:#F3F1EA,stroke:#8A6314,stroke-width:2px,color:#4E5F57,stroke-dasharray:4 3
+    class T1,T2,O1 act
+    class T3 gate
+    class T4 done
+    class M1,M2,M3 chase
+    class P1 soon

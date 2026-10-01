@@ -51,7 +51,11 @@ const STYLE = `
     background: transparent !important; font-size: 12px !important;
   }
   .edgeLabel .labelBkg { fill: var(--paper) !important; }
-  .nodeLabel, .nodeLabel * { font-family: system-ui, sans-serif; }
+  /* NO font-family override here. Mermaid measures the text and sizes each
+     box before this stylesheet is appended, so swapping the face afterwards
+     reflows the labels inside boxes that were sized for a different font and
+     the last line is clipped. It showed up the moment a diagram had narrow
+     nodes. Mermaid embeds the face it measured with; leave it alone. */
 
   /* The travelling dash. One rule, every connector. */
   .flowchart-link {
