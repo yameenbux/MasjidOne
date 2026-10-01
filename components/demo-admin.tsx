@@ -207,7 +207,9 @@ export function DemoAdmin({
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Fees table, scrollable">
               <table className="dadmin__table">
                 <caption className="dadmin__cap">
-                  Charged per family, with the sibling rate applied. Sample data.
+                  The families behind, and those who have just settled — {DEMO_FEE_SUMMARY.shown} of{" "}
+                  {DEMO_TOTALS.households} households, not the whole ledger. Charged per family,
+                  with the sibling rate applied. Sample data.
                 </caption>
                 <thead>
                   <tr>
@@ -441,7 +443,7 @@ export function DemoAdmin({
                       <td>
                         {r.shared ? (
                           <>
-                            <span className="dcong__next" aria-hidden="true">\u25aa </span>
+                            <span className="dcong__next" aria-hidden="true">▪ </span>
                             Shared
                             {r.noteForParent ? (
                               <span className="dadmin__muted"> — &ldquo;{r.noteForParent}&rdquo;</span>
@@ -509,7 +511,7 @@ export function DemoAdmin({
                           <span className="dadmin__muted">{c.state}</span>
                         ) : (
                           <>
-                            <span className="dcong__next" aria-hidden="true">\u25aa </span>
+                            <span className="dcong__next" aria-hidden="true">▪ </span>
                             {c.state}
                           </>
                         )}

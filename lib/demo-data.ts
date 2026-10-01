@@ -88,12 +88,64 @@ export const DEMO_FEES: FeeRow[] = [
   { household: "Household 1074 · Haque", children: 2, monthly: 45, balance: 45, behind: 1, lastPaid: "August" },
 ];
 
-/** Derived, so the dashboard tiles cannot drift from the table beneath them. */
+/**
+ * How the 268 households divide by children on roll.
+ *
+ * This exists because the tiles above the fee table used to be the sum of the
+ * eight rows printed beneath them — £375 "billed this month" on a roll of 268
+ * households. A treasurer does that arithmetic in their head during the demo,
+ * and £375 across 268 families is the moment they stop believing the screen.
+ * The eight rows are a working list, not the ledger, so the tiles are now
+ * computed from the whole roll instead.
+ *
+ * Both totals are load-bearing: the households must sum to DEMO_TOTALS.households
+ * and the children to DEMO_TOTALS.pupils, or two tiles on the same screen
+ * disagree. There is an assertion below that says so.
+ */
+const HOUSEHOLD_MIX = [
+  { children: 1, households: 144 },
+  { children: 2, households: 86 },
+  { children: 3, households: 30 },
+  { children: 4, households: 8 },
+] as const;
+
+/** The published sibling rate, read off the rows above: £25, then +£20, +£15, +£10. */
+const MONTHLY_FOR = (children: number) => ({ 1: 25, 2: 45, 3: 60, 4: 70 })[children] ?? 70;
+
+/** Share of families behind, and what they owe on average. Both are ordinary
+ *  for a madrasah that chases, and neither is flattering enough to look staged. */
+const ARREARS_RATE = 0.12;
+const AVERAGE_ARREARS = 92;
+
+const HOUSEHOLDS_IN_ARREARS = Math.round(
+  HOUSEHOLD_MIX.reduce((n, g) => n + g.households, 0) * ARREARS_RATE,
+);
+
 export const DEMO_FEE_SUMMARY = {
-  outstanding: DEMO_FEES.reduce((n, f) => n + Math.max(0, f.balance), 0),
-  inArrears: DEMO_FEES.filter((f) => f.behind > 0).length,
-  billedMonthly: DEMO_FEES.reduce((n, f) => n + f.monthly, 0),
+  /** What the whole madrasah is behind, not what these eight families are. */
+  outstanding: HOUSEHOLDS_IN_ARREARS * AVERAGE_ARREARS,
+  inArrears: HOUSEHOLDS_IN_ARREARS,
+  billedMonthly: HOUSEHOLD_MIX.reduce(
+    (n, g) => n + g.households * MONTHLY_FOR(g.children),
+    0,
+  ),
+  /** The eight rows printed beneath the tiles, so the caption can say so. */
+  shown: DEMO_FEES.length,
 };
+
+/* The promise made above, enforced. If someone edits the roll or the mix and
+   the two stop agreeing, the build fails here rather than the demo quietly
+   showing a committee two tiles that contradict each other. */
+{
+  const households = HOUSEHOLD_MIX.reduce((n, g) => n + g.households, 0);
+  const pupils = HOUSEHOLD_MIX.reduce((n, g) => n + g.households * g.children, 0);
+  if (households !== DEMO_TOTALS.households || pupils !== DEMO_TOTALS.pupils) {
+    throw new Error(
+      `Fee mix disagrees with the roll: ${households} households and ${pupils} pupils, ` +
+        `but the tiles say ${DEMO_TOTALS.households} and ${DEMO_TOTALS.pupils}.`,
+    );
+  }
+}
 
 export type PupilRow = {
   ref: string;
@@ -278,7 +330,7 @@ export const DEMO_NOTICES: NoticeRow[] = [
   {
     topic: "Madrasah",
     title: "Madrasah half term",
-    body: "No classes Monday to Friday next week.",
+    body: "No classes Monday to Thursday next week.",
     when: "Published yesterday",
     published: true,
     reached: 1174,
@@ -371,7 +423,7 @@ export const DEMO_AUDIT: AuditRow[] = [
   { at: "Today 03:00", who: "The system", action: "hall_holds_purged", detail: "4 unpaid hall holds released after 48 hours", kind: "system" },
   { at: "Yesterday 16:40", who: "The system", action: "payment_without_reference", detail: "£60 received with no reference — needs matching to a family", kind: "flag" },
   { at: "Yesterday 03:00", who: "The system", action: "admission_applications_purged", detail: "11 unsuccessful applications deleted at the end of their retention window", kind: "system" },
-  { at: "3 days ago 09:22", who: "S. Patel (madrasah)", action: "fee_rate_changed", detail: "Second-child rate 24.00 → 22.00", kind: "person" },
+  { at: "3 days ago 09:22", who: "S. Patel (madrasah)", action: "fee_rate_changed", detail: "Second-child rate £22.00 → £20.00", kind: "person" },
   { at: "3 days ago 03:00", who: "The system", action: "donations_purged", detail: "Gift Aid records older than the statutory period removed", kind: "system" },
 ];
 
@@ -384,7 +436,7 @@ export type EventRow = { name: string; hijri: string; on: string; estimated: boo
  *  single-date field would make the office enter five rows for it. */
 export const DEMO_CLOSURES: ClosureRow[] = [
   { name: "Insert day", from: "1 Sep", to: "1 Sep", note: "Staff only — no pupils" },
-  { name: "Half term", from: "26 Oct", to: "30 Oct" },
+  { name: "Half term", from: "26 Oct", to: "29 Oct" },
   { name: "End of term break", from: "21 Dec", to: "1 Jan" },
   { name: "Ramaḍān holidays", from: "8 Feb", to: "12 Mar" },
   { name: "Summer half term", from: "31 May", to: "4 Jun" },
@@ -669,11 +721,11 @@ export type ParentNotice = {
 export const DEMO_PARENT_NOTICES: ParentNotice[] = [
   {
     title: "Closed next week — half term",
-    body: "No classes Monday 26th to Thursday 30th October. We reopen on Monday 2nd November at the usual time.",
+    body: "No classes Monday 26th to Thursday 29th October. We reopen on Monday 2nd November at the usual time.",
     when: "2 days ago", kind: "Closure", unread: true,
   },
   {
-    title: "Parents' evening, Thursday 16th",
+    title: "Parents' evening, Thursday 15th",
     body: "Ten minutes with your child's teacher. Reply to this message to pick a time, or speak to the office.",
     when: "5 days ago", kind: "Madrasah", unread: true,
   },

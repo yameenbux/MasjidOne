@@ -429,7 +429,7 @@ export function DemoOffice({
                           <span className="dadmin__muted">Valid · {p.dbsOn}</span>
                         ) : (
                           <>
-                            <span className="dcong__next" aria-hidden="true">\u25aa </span>
+                            <span className="dcong__next" aria-hidden="true">▪ </span>
                             {p.dbs}{p.dbsOn ? ` · ${p.dbsOn}` : ""}
                           </>
                         )}
