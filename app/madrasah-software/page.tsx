@@ -61,6 +61,23 @@ export default function MadrasahSoftwarePage() {
           ),
         },
         {
+          h: "And a parent who can see their own child",
+          img: "app-parent.webp",
+          alt: "Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only.",
+          caption: <>Interface preview. Example data only.</>,
+          p: (
+            <>
+              The office issues a login against a family, and that parent opens
+              the app they already have for jamāʿah times to find their own
+              child in it: the register marked this evening, what is owed, and
+              what the teacher heard. One household and nothing else — not the
+              class, not the roll, not another family. This is the half nobody
+              else joins up, and it is the reason the two sides are worth buying
+              together rather than separately.
+            </>
+          ),
+        },
+        {
           h: "Every teacher on their own login",
           img: "admin-committee.webp",
           alt: "Interface preview of the committee and roles screen: who can edit times, publish notices, see donation figures and manage users.",
@@ -123,26 +140,6 @@ export default function MadrasahSoftwarePage() {
           ),
         },
       ]}
-      pending={
-        <>
-          Hifz and sabaq progress, and parent access, are not built yet. Progress
-          is being designed with teachers rather than guessed at; parent access —
-          a parent opening the app they already have and finding their own
-          child&apos;s register, fee and progress — is targeted at the September
-          2027 intake. Both are tagged the same way everywhere on this site. You
-          are not buying either of them today.
-        </>
-      }
-      pendingShot={{
-        img: "app-parent.webp",
-        alt: "Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only.",
-        caption: (
-          <>
-            In development for the September 2027 intake. Interface preview,
-            example data only.
-          </>
-        ),
-      }}
       plan={{
         name: "Madrasah",
         pounds: PRICING.madrasah,

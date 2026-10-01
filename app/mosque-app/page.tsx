@@ -70,6 +70,22 @@ export default function MosqueAppPage() {
           ),
         },
         {
+          h: "A parent finds their own child in it",
+          img: "app-parent.webp",
+          alt: "Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only.",
+          caption: <>Interface preview. Example data only.</>,
+          p: (
+            <>
+              This is the half nobody else joins up. The madrasah issues a login
+              against a family, and the same app a father already checks for
+              ʿIshāʾ shows him his own child: the register marked this evening,
+              what is owed, and what the teacher heard. One household and
+              nothing else. No second app, no separate password, and no letter
+              home three weeks after the absence that prompted it.
+            </>
+          ),
+        },
+        {
           h: "The small things that keep it on the phone",
           img: "app-duas.webp",
           alt: "Interface preview of everyday duʿās in the app, by occasion, with transliteration.",
@@ -118,25 +134,6 @@ export default function MosqueAppPage() {
           ),
         },
       ]}
-      pending={
-        <>
-          Parent access inside this app is in development, targeted at the
-          September 2027 intake: this evening&apos;s attendance mark, the fee due
-          this month, and progress a parent can actually read. It is the half of
-          the product that joins the two sides, and it is the one thing on this
-          page you cannot use today.
-        </>
-      }
-      pendingShot={{
-        img: "app-parent.webp",
-        alt: "Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only.",
-        caption: (
-          <>
-            In development for the September 2027 intake. Interface preview,
-            example data only.
-          </>
-        ),
-      }}
       plan={{
         name: "Masjid Complete",
         pounds: PRICING.complete,

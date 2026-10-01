@@ -42,8 +42,8 @@ const masjidOnePlans = [
       "One record of the family, with siblings linked",
       "Fees per family, with balances, payments and automatic reminders",
       "Annual fee report and a family export for the office",
-      { text: "Hifz and sabaq progress", status: "dev" as const },
-      { text: "Parent access inside the congregation app", status: "dev" as const },
+      "Hifz and sabaq progress — sabaq, sabqi and manzil, shared with the parent or kept private",
+      "Parent access inside the congregation app — their own child only",
       "Phone support, no per-pupil pricing, no paid add-ons",
     ],
     description:
@@ -66,7 +66,7 @@ const masjidOnePlans = [
       "Unlimited prayer hall screens",
       "Donations and Gift Aid at 0% commission, permanently",
       "Everything in Madrasah",
-      { text: "Parent access — the join", status: "dev" as const },
+      "Parent access — the join",
     ],
     description:
       "Both sides are in a Bolton masjid now. The half a parent sees is the last piece.",

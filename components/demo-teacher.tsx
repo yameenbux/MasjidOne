@@ -213,10 +213,11 @@ export function DemoTeacher({
           <>
             <div className="dadmin__alert">
               <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
-                <span className="tag tag--dev">In development</span>
+                <span className="tag tag--live">Live</span>
               </p>
               <p style={{ margin: 0 }}>
-                Designed, not built. No teacher has written an entry yet.
+                Nobody at the founding masjid has written one yet — you would
+                be among the first.
               </p>
             </div>
             <h2 className="dadmin__h">What you heard</h2>

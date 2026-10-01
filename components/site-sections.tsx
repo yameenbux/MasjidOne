@@ -93,8 +93,8 @@ export function Hero() {
         <a className="btn btn--ghost" href="#pricing"><span className="btn__t">See the pricing</span></a>
       </div>
       <p className="hero__note rv" style={{ "--i": "2" } as React.CSSProperties}>
-        The congregation side is live in a Bolton masjid now. The madrasah
-        portal is in development for the September 2027 intake.
+        Both sides are in a Bolton masjid now — the congregation, the madrasah
+        portal, and the half a parent sees.
       </p>
     </div>
   </div>
@@ -158,16 +158,16 @@ export function Join() {
     <MasjidOneComparison />
   </div>
   <p className="join__foot rv" style={{ "--i": "3" } as React.CSSProperties}>
-    The rows nobody else fills are the product, and the middle one is now
-    built: one record of the same family, reachable from both sides. The last
-    row is the half a parent sees, and it is still in development.
+    The rows nobody else fills are the product, and they are built: one record
+    of the same family, reachable from both sides, and a parent who can open
+    the app they already have and find their own child in it.
   </p>
 
   <div className="bento rv" style={{ "--i": "4" } as React.CSSProperties}>
     <article className="bento__cell bento__cell--bridge">
       <span className="bento__seam" aria-hidden="true"></span>
       <p className="bento__tag">The bridge</p>
-      <h3 className="bento__h">Parent access <span className="tag tag--dev">In development</span></h3>
+      <h3 className="bento__h">Parent access</h3>
       <p className="bento__p">A parent opens the app they already have for
       jamāʿah times and finds their own child: the register marked this
       evening, the sabaq heard this week, the fee due this month. One record of
@@ -292,7 +292,7 @@ export function Previews() {
       <img className="shot-img" src={`${BASE}/devices/app-parent.webp`} width={760} height={1585} loading="lazy" decoding="async"
         alt="Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only." />
       <figcaption>
-        In development for the September 2027 intake. The same app a parent already has for jamāʿah times — no second app to install. This is the bridge.
+        Interface preview. The same app a parent already has for jamāʿah times — no second app to install. This is the bridge.
       </figcaption>
     </figure>
   </div>

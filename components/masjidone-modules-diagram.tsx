@@ -35,7 +35,7 @@ type NodeSpec = { key: string; label: string; status: "Live" | "In development";
 
 const MADRASAH: NodeSpec[] = [
   { key: "portal", label: "Madrasah portal", status: "Live", Icon: BookOpen },
-  { key: "parent", label: "Parent access", status: "In development", Icon: Users },
+  { key: "parent", label: "Parent access", status: "Live", Icon: Users },
 ];
 
 const CONGREGATION: NodeSpec[] = [

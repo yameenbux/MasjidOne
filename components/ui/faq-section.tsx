@@ -59,7 +59,7 @@ const QUESTIONS: readonly { q: string; a: string }[] = [
   },
   {
     q: "Is the madrasah portal built, or is it still coming?",
-    a: "Built, and in a masjid now. The roll, the classes and the staff are on it at Taiyabah in Bolton — every teacher on their own login, with the registers and the fee rates configured. What is not finished is the half a parent sees. Parent access is in development, targeted at the September 2027 intake, because madrasahs change systems before a new year rather than during one. We would rather tell you which half is which now than have you find it out after signing.",
+    a: "Built, and in a masjid now. The roll, the classes and the staff are on it at Taiyabah in Bolton — every teacher on their own login, with the registers and the fee rates configured. Parent access is built too: the office issues a login against a family, and that parent sees their own child — the register marked this evening, what is owed, and what the teacher heard. We will not pretend it has years of use behind it, because it does not. What we will say is that it is there and it works, rather than that it is coming next September.",
   },
 ];
 

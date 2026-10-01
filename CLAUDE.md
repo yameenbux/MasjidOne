@@ -81,19 +81,37 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 
 These are commercial claims. Getting one wrong loses a sale and a referral.
 
-1. **Never claim a feature that isn't built.** Everything tagged "In
-   development" must stay tagged until the database says otherwise — check,
-   do not assume.
-   **Built and running at Taiyabah (verified 28 September 2026):** the
-   madrasah portal — 552 pupils, 48 classes, 41 staff, 330 households and 422
-   guardians, with 40 teachers on their own logins; daily registers (draft,
-   submit, lock, history, and chasing a missed one); fees per family (rates,
-   periods, charges, payments, balances, reminders, annual report).
-   **Still in development:** *parent access* — the machinery exists but
-   `user_roles` holds **zero** parent accounts, so no parent has ever signed
-   in. It stays tagged until they have. And *Hifz and sabaq progress* — there
-   is no table and no function for either; do not put them in a live claim,
-   an alt text or a caption.
+1. **Never claim a feature that isn't built, and never deny one that is.**
+   Both halves have been broken here. Check the database — and check the
+   *right thing* in it.
+
+   **ZERO ROWS IS NOT "NOT BUILT". It means nobody has used it yet.** This
+   caused a real error on 1 October 2026: parent access and Hifz/sabaq were
+   tagged "In development" across eleven places on the site because their
+   tables were empty, while both were in fact complete and callable. Months of
+   telling committees a shipped feature was coming. Before tagging anything,
+   ask whether the *functions* exist and enforce, not whether rows do.
+
+   **Do not measure parent access by `user_roles`.** It does not live there.
+   `is_parent()` reads `madrasah_parent_logins`, and `create_parent_login`
+   writes that row — so a parent with zero `user_roles` entries is still a
+   parent. This file previously said the opposite and it was wrong.
+
+   **Built and verified against the live database on 1 October 2026:**
+   the madrasah portal — 553 pupils, 49 classes, 41 staff, 331 households, 423
+   guardians, 43 accounts; registers and fees; *parent access* (16 functions,
+   `record_parent_absence` and `create_parent_login` among them, all
+   enforcing); *Hifz and sabaq progress* (`madrasah_progress` plus six
+   functions including `progress_save`, with `shared` and a private note).
+
+   **Nothing currently carries the tag.** The mechanism stays in the code for
+   the next thing that genuinely is unbuilt.
+
+   **What is still true, and is a usage fact rather than a capability one:**
+   no register has been submitted, no fee paid, no progress entry written and
+   no parent has signed in at Taiyabah. So *"built"*, *"in a masjid"* and
+   *"it works"* are all defensible; *"running"*, *"every evening"* and *"in
+   daily use"* are not, until that changes.
 2. **Never claim "no competitor does the whole mosque."** It is false —
    several platforms do the congregation side. The true, defensible claim is
    narrower: *nobody joins the madrasah to the congregation.* Keep the copy

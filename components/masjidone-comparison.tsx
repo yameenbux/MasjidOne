@@ -47,13 +47,13 @@ const ROWS: readonly ComparisonRow[] = [
   { label: "Daily registers and attendance history", cells: [true, true, false] },
   {
     label: "Hifz and sabaq progress",
-    cells: [true, { label: "In development", emphasis: "pending" }, false],
+    cells: [true, true, false],
   },
   { label: "Madrasah fees and automatic chasing", cells: [true, true, false] },
   { label: "One record of the same family on both sides", cells: [false, true, false] },
   {
     label: "Parents use the app they already have",
-    cells: [false, { label: "In development", emphasis: "pending" }, false],
+    cells: [false, true, false],
   },
 ];
 

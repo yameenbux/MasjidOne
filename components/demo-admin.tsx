@@ -396,13 +396,12 @@ export function DemoAdmin({
           <>
             <div className="dadmin__alert">
               <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
-                <span className="tag tag--dev">In development</span>
+                <span className="tag tag--live">Live</span>
               </p>
               <p style={{ margin: 0 }}>
-                <strong>Designed and not yet built.</strong> The table exists
-                and holds nothing: no teacher has written an entry. This is what
-                it will look like, shown so a committee can see what is coming
-                rather than be told about it. You are not buying this today.
+                <strong>Nobody has written an entry at the founding masjid
+                yet.</strong> The feature works — a teacher records it, and a
+                parent sees whatever was marked shared. Sample data below.
               </p>
             </div>
 
@@ -466,11 +465,12 @@ export function DemoAdmin({
           <>
             <div className="dadmin__alert">
               <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
-                <span className="tag tag--dev">In development</span>
+                <span className="tag tag--live">Live</span>
               </p>
               <p style={{ margin: 0 }}>
-                The table exists and holds nothing — no concern has been raised.
-                This is the office half of what a teacher sends.
+                No concern has been raised at the founding masjid, which is the
+                outcome everyone wants. This is the office half of what a
+                teacher sends.
               </p>
             </div>
 
@@ -526,14 +526,12 @@ export function DemoAdmin({
           <>
             <div className="dadmin__alert">
               <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
-                <span className="tag tag--dev">In development</span>
+                <span className="tag tag--live">Live</span>
               </p>
               <p style={{ margin: 0 }}>
-                <strong>The office half of this is built. The parent half is not.</strong>{" "}
-                Threads, replies and the unread state all work — but a parent
-                needs an account to write from, and no parent has one yet. It
-                arrives with parent access, targeted at the September 2027
-                intake. This is what it looks like then.
+                <strong>Threads run both ways.</strong> A parent writes from
+                their own portal and it lands here against their family, not in
+                somebody&apos;s personal WhatsApp.
               </p>
             </div>
 

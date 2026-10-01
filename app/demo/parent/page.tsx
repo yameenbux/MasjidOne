@@ -42,8 +42,8 @@ export default function DemoParentPage() {
       <p className="dstrip">
         <strong>Demonstration</strong>
         <span>
-          Sample data, and a design rather than a working portal — parent
-          access is still in development.
+          Sample data. Invented children, invented balances — not a real
+          family and not a real sign-in.
         </span>
       </p>
 

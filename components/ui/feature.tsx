@@ -213,7 +213,7 @@ const CARDS: Card[] = [
   {
     key: "parent",
     title: "Parent access",
-    status: "In development",
+    status: "Live",
     body: "Absence alerts the same evening, fees paid in two taps, progress a parent can actually read — inside the congregation app they already have. No second app to install. This is the bridge, and it is the whole claim.",
     Visual: ParentPing,
   },

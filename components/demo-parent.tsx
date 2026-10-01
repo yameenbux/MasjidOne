@@ -86,7 +86,7 @@ function ChildDetail({ child, onBack }: { child: ParentChildRow; onBack: () => v
       <section className="pfee" aria-label="Progress">
         <div className="pdet__tagrow">
           <h3 className="pdet__h" style={{ margin: 0 }}>Hifz and sabaq</h3>
-          <span className="tag tag--dev">In development</span>
+          <span className="tag tag--live">Live</span>
         </div>
         <p className="dadmin__muted pdet__note">
           What the teacher heard, and chose to share. Sabaq is the new lesson,
