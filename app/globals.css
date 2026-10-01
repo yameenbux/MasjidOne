@@ -1329,84 +1329,140 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 
 /* ==========================================================================
-   PORTAL CHOOSER
+   PORTAL CHOOSER  ·  one markup, two layouts
    --------------------------------------------------------------------------
-   The screen between signing in and a portal. Two full-height halves, board
-   against paper, each with its device bleeding off the bottom edge — a choice
-   of two worlds with no card chrome in between. Chosen from three drafts; the
-   grid of cards and the prayer-board of rows are gone, and so are their rules.
+   Wide    two full-height halves, board against paper, each device bleeding
+           off the bottom edge.
+   Narrow  the masjid's own prayer board: one dark ground, brass hairlines, an
+           index numeral and a small inset per row.
 
-   Every device image is drawn `contain`, never `cover`. The files are pictures
-   of a device on a transparent surround, so cover crops the bezel off the top
-   — the part that says "this is a screen". Same reason the hero does it.
+   The split is the better desktop screen and the worse phone one. At 360px its
+   halves run about 700px each, so the second option sits below the fold and a
+   committee member has to scroll to discover there is a choice at all. Rows
+   put both on one screen.
 
-   Tokens only, as everywhere. Nothing to add to the dark blocks.
+   Same DOM either way — see the note in components/demo-chooser.tsx for why
+   that matters. Narrow is the base here and wide is the override, so the
+   phone, which is where most of these screens get opened, gets the simpler
+   stylesheet rather than a pile of undone desktop rules.
+
+   Every device image is drawn `contain`, never `cover`: the files are devices
+   on a transparent surround, and cover crops the bezel off the top.
+
+   Tokens only. Nothing to add to the dark blocks.
    ========================================================================== */
 
 .pick{
   min-height:calc(100dvh - 2.6rem);
   font-family:Archivo,system-ui,sans-serif;
-  display:grid; grid-template-rows:auto 1fr;
-  grid-template-areas:"head head" "a b"; grid-template-columns:1fr 1fr;
-  background:var(--board);
+  background:var(--board); color:var(--board-ink);
+  display:flex; flex-direction:column;
 }
 
-/* The masjid's name is the page's heading; the question under it is what the
-   person is here to answer, so it is set in brass rather than left to read as
-   a caption. */
-.psplit__head{
-  grid-area:head; text-align:center;
-  padding:var(--s3) var(--s2);
-  background:var(--board); color:var(--board-ink);
+.pick__head{
+  text-align:center; padding:var(--s3) var(--s2);
   border-bottom:var(--hair) solid var(--board-rule);
 }
-.psplit__masjid{
+.pick__masjid{
   margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
   font-size:clamp(1.5rem,3.4vw,2.2rem); line-height:1.08;
   overflow-wrap:break-word;
 }
-.psplit__ask{
+.pick__ask{
   margin:.5rem 0 0; color:var(--board-brass);
   font-size:var(--t-label); letter-spacing:.16em; text-transform:uppercase;
 }
 
-.psplit__half{
-  /* Centred as a group, not space-between: on a tall viewport space-between
-     pushed the title to the ceiling and the device to the floor and left a
-     dead hole between them that read as a loading state. */
-  display:flex; flex-direction:column; justify-content:center;
-  gap:var(--s3); padding:var(--s4) var(--s3) 0;
-  cursor:pointer; text-align:left; font:inherit; border:0; overflow:hidden;
-  transition:background-color .3s ease;
+/* ---------- Narrow: the board ---------- */
+
+.pchoose{
+  display:grid; align-items:center; gap:var(--s2);
+  grid-template-columns:auto 1fr auto auto;
+  grid-template-areas:"no text shot go";
+  width:100%; padding:var(--s3) var(--s2);
+  background:transparent; color:inherit; font:inherit; border:0;
+  border-bottom:var(--hair) solid var(--board-brass);
+  cursor:pointer; text-align:left;
+  transition:background-color .25s ease;
 }
-.psplit__half--madrasah{grid-area:a; background:var(--board); color:var(--board-ink)}
-.psplit__half--congregation{grid-area:b; background:var(--paper); color:var(--ink)}
-.psplit__half--madrasah:hover,.psplit__half--madrasah:focus-visible{background:var(--board-rule)}
-.psplit__half--congregation:hover,.psplit__half--congregation:focus-visible{background:var(--paper-2)}
-.psplit__text{display:flex; flex-direction:column; gap:.5rem; max-width:22rem}
-.psplit__title{
-  font-family:Newsreader,Georgia,serif; font-size:clamp(1.6rem,3.2vw,2.4rem);
-  line-height:1.08;
+/* Auto margins on the outer two rows centre the pair in whatever space is
+   left under the head, which stays at the top. Without them the rows sit
+   against the head with a tall empty board beneath, which reads as a page
+   that failed to finish loading rather than a deliberate one. */
+.pchoose:first-of-type{border-top:var(--hair) solid var(--board-brass); margin-top:auto}
+.pchoose:last-of-type{margin-bottom:auto}
+.pchoose:hover,.pchoose:focus-visible{background:var(--board-rule)}
+.pchoose__no{
+  color:var(--board-brass); font-variant-numeric:tabular-nums;
+  font-size:var(--t-small); letter-spacing:.1em;
 }
-.psplit__blurb{font-size:var(--t-small); opacity:.78}
-.psplit__go{
-  margin-top:var(--s1);
-  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+.pchoose__text{display:flex; flex-direction:column; gap:.3rem; min-width:0}
+.pchoose__title{
+  font-family:Newsreader,Georgia,serif; font-size:var(--t-h3); line-height:1.2;
 }
-.psplit__half--madrasah .psplit__go{color:var(--board-brass)}
-.psplit__half--congregation .psplit__go{color:var(--brass)}
-.psplit__arrow{display:inline-block; transition:transform .25s ease}
-.psplit__half:hover .psplit__arrow,.psplit__half:focus-visible .psplit__arrow{transform:translateX(4px)}
-/* The shot sits low and runs off the bottom edge, so the half reads as a scene
-   rather than a card with a picture in it. */
-.psplit__shot{display:block; margin-bottom:calc(var(--s4) * -1)}
-.psplit__shot img{
-  display:block; width:100%; height:min(30vh,14rem); object-fit:contain;
-  object-position:center bottom;
-  transition:transform .4s cubic-bezier(.2,1,.3,1);
+.pchoose__blurb{color:var(--board-ink-2); font-size:var(--t-small)}
+/* The word belongs to the wide layout; here the arrow carries it alone. */
+.pchoose__goword{display:none}
+.pchoose__go{color:var(--board-brass); font-size:var(--t-h3); line-height:1}
+.pchoose__arrow{display:inline-block; transition:transform .25s ease}
+.pchoose:hover .pchoose__arrow,
+.pchoose:focus-visible .pchoose__arrow{transform:translateX(4px)}
+.pchoose__shot{display:block; background:var(--board-rule); padding:.3rem}
+.pchoose__shot img{display:block; width:5.5rem; height:3.4rem; object-fit:contain}
+
+.pchoose__no{grid-area:no}
+.pchoose__text{grid-area:text}
+.pchoose__shot{grid-area:shot}
+.pchoose__go{grid-area:go}
+
+/* ---------- Wide: the split ---------- */
+
+@media (min-width:52rem){
+  .pick{
+    display:grid; grid-template-rows:auto 1fr;
+    grid-template-areas:"head head" "a b"; grid-template-columns:1fr 1fr;
+  }
+  .pick__head{grid-area:head}
+
+  .pchoose{
+    /* Centred as a group, not space-between: on a tall viewport space-between
+       pushed the title to the ceiling and the device to the floor and left a
+       dead hole between them that read as a loading state. */
+    display:flex; flex-direction:column; justify-content:center;
+    gap:var(--s3); padding:var(--s4) var(--s3) 0;
+    border:0; overflow:hidden;
+    transition:background-color .3s ease;
+  }
+  .pchoose:first-of-type{border-top:0; margin-top:0}
+  .pchoose:last-of-type{margin-bottom:0}
+  .pchoose--madrasah{grid-area:a; background:var(--board); color:var(--board-ink)}
+  .pchoose--congregation{grid-area:b; background:var(--paper); color:var(--ink)}
+  .pchoose--madrasah:hover,.pchoose--madrasah:focus-visible{background:var(--board-rule)}
+  .pchoose--congregation:hover,.pchoose--congregation:focus-visible{background:var(--paper-2)}
+
+  .pchoose__no{display:none}
+  .pchoose__text{gap:.5rem; max-width:22rem}
+  .pchoose__title{font-size:clamp(1.6rem,3.2vw,2.4rem); line-height:1.08}
+  .pchoose__blurb{color:inherit; opacity:.78; font-size:var(--t-small)}
+  .pchoose__goword{display:inline}
+  .pchoose__go{
+    margin-top:var(--s1); line-height:inherit;
+    font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+  }
+  .pchoose--madrasah .pchoose__go{color:var(--board-brass)}
+  .pchoose--congregation .pchoose__go{color:var(--brass)}
+
+  /* The shot sits low and runs off the bottom edge, so the half reads as a
+     scene rather than a card with a picture in it. */
+  .pchoose__shot{background:transparent; padding:0; margin-bottom:calc(var(--s4) * -1)}
+  .pchoose__shot img{
+    width:100%; height:min(30vh,14rem);
+    object-position:center bottom;
+    transition:transform .4s cubic-bezier(.2,1,.3,1);
+  }
+  .pchoose:hover .pchoose__shot img,
+  .pchoose:focus-visible .pchoose__shot img{transform:scale(1.04)}
 }
-.psplit__half:hover .psplit__shot img,
-.psplit__half:focus-visible .psplit__shot img{transform:scale(1.04)}
 
 /* ---------- Congregation portal ---------- */
 
@@ -1427,14 +1483,12 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .dnotice__detail{margin:0; color:var(--ink-2); font-size:var(--t-small)}
 
 @media (max-width:52rem){
-  /* Two halves become two bands, the head still spanning the top. */
-  .pick{grid-template-areas:"head" "a" "b"; grid-template-columns:1fr}
   .dcong{grid-template-columns:1fr}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .psplit__half,.psplit__shot img,.psplit__arrow{transition:none}
-  .psplit__half:hover .psplit__arrow,.psplit__half:focus-visible .psplit__arrow{transform:none}
-  .psplit__half:hover .psplit__shot img,
-  .psplit__half:focus-visible .psplit__shot img{transform:none}
+  .pchoose,.pchoose__shot img,.pchoose__arrow{transition:none}
+  .pchoose:hover .pchoose__arrow,.pchoose:focus-visible .pchoose__arrow{transform:none}
+  .pchoose:hover .pchoose__shot img,
+  .pchoose:focus-visible .pchoose__shot img{transform:none}
 }
