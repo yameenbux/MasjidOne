@@ -21,16 +21,37 @@ running masjid.
 
 | File | Used by |
 | --- | --- |
-| `hall-screen` | hero, previews tab 1 |
-| `app-prayer-times` | hero, previews tab 2 |
-| `admin-register` | previews tab 3 |
-| `admin-fees` | previews tab 4 |
-| `app-parent` | previews tab 5 |
-| `foyer-appeal`, `website`, `app-notices`, `app-giving`, `app-duas`, `admin-committee` | hero |
+| `hall-screen` | hero, previews tab 1, `/mosque-prayer-times-screens/`, `/mosque-website/` |
+| `app-prayer-times` | hero, previews tab 2, `/mosque-app/` |
+| `admin-register` | previews tab 3, `/madrasah-software/` |
+| `admin-fees` | previews tab 4, `/madrasah-software/` |
+| `app-parent` | previews tab 5, `/madrasah-software/`, `/mosque-app/` |
+| `foyer-appeal` | hero, `/mosque-prayer-times-screens/`, `/mosque-donations/` |
+| `website` | hero, `/mosque-website/`, `/mosque-prayer-times-screens/` |
+| `app-notices` | hero, `/mosque-app/`, `/mosque-website/`, `/mosque-prayer-times-screens/` |
+| `app-giving` | hero, `/mosque-donations/`, `/mosque-app/` |
+| `app-duas` | hero, `/mosque-app/` |
+| `admin-committee` | hero, `/madrasah-software/`, `/mosque-donations/` |
 
-`admin-register`, `admin-fees` and `app-parent` are the **madrasah portal and
-parent access — modules in development**. Each of their captions carries
-"In development for the September 2027 intake". Do not show them without it.
+### Which of these carry a development tag
+
+**`app-parent` only.** Its caption must always say "In development for the
+September 2027 intake", because no parent has ever signed in — `user_roles`
+holds zero parent accounts.
+
+`admin-register` and `admin-fees` **do not**. This file used to group them with
+`app-parent` as "modules in development", which was wrong and had gone stale:
+the madrasah portal is built, and the home page has carried a Live badge and a
+"Running at Taiyabah Masjid" caption on both screens for some time, so this
+README was contradicting the site it governs.
+
+What is defensible about them, checked against the production database rather
+than assumed: the portal holds Taiyabah's full roll — pupils, classes, staff,
+households and guardians, with teachers assigned to classes and fee rates set —
+and several thousand logged admin actions. It holds **no submitted register and
+no payment**. So "built, and configured in a masjid" is supported; "registers
+are taken every evening" is not, and no caption should imply it. The FAQ on the
+home page is worded to that line and these captions should stay on it too.
 
 ## Regenerating
 

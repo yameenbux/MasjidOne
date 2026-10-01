@@ -33,7 +33,62 @@ import { BASE_PATH, SITE_ORIGIN, DEMO_MAILTO, PRICING } from "@/lib/site";
  * written to be worth reading on its own.
  */
 
+/**
+ * Real pixel dimensions of every file in public/devices, so each <img> can
+ * carry width and height and the page does not jump as the pictures arrive.
+ * `tall` is derived rather than typed, because getting it wrong is the one
+ * mistake that shows: a phone screenshot stretched to a desktop column.
+ */
+const SHOT: Record<string, [number, number]> = {
+  "admin-committee.webp": [1320, 840],
+  "admin-fees.webp": [1320, 840],
+  "admin-register.webp": [1320, 840],
+  "app-duas.webp": [760, 1585],
+  "app-giving.webp": [760, 1585],
+  "app-notices.webp": [760, 1585],
+  "app-parent.webp": [760, 1585],
+  "app-prayer-times.webp": [760, 1585],
+  "foyer-appeal.webp": [1300, 766],
+  "hall-screen.webp": [1300, 766],
+  "website.webp": [1320, 840],
+};
+
+export type ModuleShot = {
+  /** Filename in public/devices. */
+  img: string;
+  alt: string;
+  /** Every caption says "interface preview" or names what is in development —
+   *  see public/devices/README.md. A preview described as a live capture is
+   *  the worst claim this site could make. */
+  caption: React.ReactNode;
+};
+
+/** One image and the paragraph it belongs to. Bands alternate side on wide
+ *  screens and stack image-first on a phone. */
+export type ModuleBand = ModuleShot & { h: string; p: React.ReactNode };
+
 export type ModulePoint = { h: string; p: React.ReactNode };
+
+/** One preview, sized from SHOT so nothing reflows and nothing is stretched. */
+function Shot({ img, alt, caption }: ModuleShot) {
+  const [w, h] = SHOT[img] ?? [1320, 840];
+  const tall = h > w;
+  return (
+    <figure className={`shot-fig${tall ? " shot-fig--tall" : ""} mshot`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        className="shot-img"
+        src={`${BASE_PATH}/devices/${img}`}
+        width={w}
+        height={h}
+        loading="lazy"
+        decoding="async"
+        alt={alt}
+      />
+      <figcaption>{caption}</figcaption>
+    </figure>
+  );
+}
 
 export function ModulePage({
   slug,
@@ -41,8 +96,11 @@ export function ModulePage({
   title,
   status,
   lede,
+  hero,
+  bands,
   points,
   pending,
+  pendingShot,
   plan,
   children,
 }: {
@@ -52,9 +110,15 @@ export function ModulePage({
   /** Matches the tag the same module carries on the home page. */
   status: "live" | "dev";
   lede: React.ReactNode;
+  /** The signature screen, beside the headline. */
+  hero: ModuleShot;
+  /** The substance of the page: a picture per argument, not a wall of prose. */
+  bands: ModuleBand[];
+  /** The shorter points, kept as text because not everything earns a picture. */
   points: ModulePoint[];
   /** What is honestly not built yet on this page's subject. Omit if nothing. */
   pending?: React.ReactNode;
+  pendingShot?: ModuleShot;
   plan: { name: string; pounds: number; note: React.ReactNode };
   children?: React.ReactNode;
 }) {
@@ -81,6 +145,8 @@ export function ModulePage({
             <span aria-current="page">{title}</span>
           </nav>
 
+          <div className="mhero">
+          <div className="mhero__body">
           <p className="eyebrow eyebrow--brass">{eyebrow}</p>
           <h1 className="measure" style={{ marginTop: "1rem" }}>
             {title}
@@ -104,10 +170,33 @@ export function ModulePage({
               <span className="btn__t">See the pricing</span>
             </a>
           </div>
+          </div>
+
+          <div className="mhero__media">
+            <Shot {...hero} />
+          </div>
+          </div>
         </section>
 
+        {bands.map((band, i) => (
+          <section className="sect wrap" key={band.h}>
+            {/* Alternating sides on a wide screen; on a phone every band
+                stacks picture first, because the picture is the thing that
+                makes somebody stop scrolling and read the paragraph. */}
+            <div className={`mband${i % 2 ? " mband--flip" : ""}`}>
+              <div className="mband__media">
+                <Shot img={band.img} alt={band.alt} caption={band.caption} />
+              </div>
+              <div className="mband__body">
+                <h2>{band.h}</h2>
+                <p>{band.p}</p>
+              </div>
+            </div>
+          </section>
+        ))}
+
         <section className="sect wrap">
-          <h2 className="measure">What it does</h2>
+          <h2 className="measure">And the rest of it</h2>
           <div className="modp__points">
             {points.map((pt) => (
               <div className="modp__point" key={pt.h}>
@@ -119,10 +208,17 @@ export function ModulePage({
 
           {pending ? (
             <div className="modp__pending">
-              <p className="modp__tag" style={{ marginTop: 0 }}>
-                <span className="tag tag--dev">In development</span>
-              </p>
-              <p>{pending}</p>
+              <div className="modp__pending__body">
+                <p className="modp__tag" style={{ marginTop: 0 }}>
+                  <span className="tag tag--dev">In development</span>
+                </p>
+                <p>{pending}</p>
+              </div>
+              {pendingShot ? (
+                <div className="modp__pending__media">
+                  <Shot {...pendingShot} />
+                </div>
+              ) : null}
             </div>
           ) : null}
 

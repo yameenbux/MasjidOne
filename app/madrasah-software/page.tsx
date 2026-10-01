@@ -27,6 +27,56 @@ export default function MadrasahSoftwarePage() {
           masjid now.
         </>
       }
+      hero={{
+        img: "admin-register.webp",
+        alt: "Interface preview of a madrasah evening register: a week of attendance marks per pupil, who is absent, and whether the register has been submitted. Pupil names are placeholders and no real child's record appears.",
+        caption: (
+          <>
+            The evening register. Interface preview — pupil names are
+            placeholders and no real child&apos;s record appears here.
+          </>
+        ),
+      }}
+      bands={[
+        {
+          h: "Fees charged per family, not per child",
+          img: "admin-fees.webp",
+          alt: "Interface preview of madrasah fees, charged per family rather than per child: what is invoiced, what is collected, what is outstanding, and which families are due. Example data only.",
+          caption: (
+            <>
+              Interface preview. Example data — no real family&apos;s fee
+              history appears here.
+            </>
+          ),
+          p: (
+            <>
+              A household with three children is one bill and one conversation,
+              not three of each. Rates, periods, charges, payments and balances
+              sit against the family, reminders go out without anybody
+              remembering to send them, and the office gets an annual report
+              and a family export at the end of it. The screen answers the
+              question a treasurer actually has — <em>who is behind, and by how
+              much</em> — without anybody adding up a column.
+            </>
+          ),
+        },
+        {
+          h: "Every teacher on their own login",
+          img: "admin-committee.webp",
+          alt: "Interface preview of the committee and roles screen: who can edit times, publish notices, see donation figures and manage users.",
+          caption: <>Interface preview. Access is set by role, not by a shared password.</>,
+          p: (
+            <>
+              Not one password taped inside a cupboard. A teacher sees their own
+              classes. The committee sees committee-level data. Nobody sees
+              everything by default, and every change is attributable — which
+              matters most on the day somebody asks who marked a child absent,
+              and matters again when a volunteer moves away and their access
+              has to go with them.
+            </>
+          ),
+        },
+      ]}
       points={[
         {
           h: "Daily registers, with a state",
@@ -52,17 +102,6 @@ export default function MadrasahSoftwarePage() {
           ),
         },
         {
-          h: "Fees charged per family, not per child",
-          p: (
-            <>
-              A household with three children is one bill and one conversation.
-              Rates, periods, charges, payments and balances sit against the
-              family, with reminders sent automatically, and an annual report
-              and a family export for the office at the end of it.
-            </>
-          ),
-        },
-        {
           h: "One record of the family, siblings linked",
           p: (
             <>
@@ -70,16 +109,6 @@ export default function MadrasahSoftwarePage() {
               entered three times with three slightly different addresses. This
               is the same record the congregation side reads, which is the whole
               reason the two halves are worth buying together.
-            </>
-          ),
-        },
-        {
-          h: "Every teacher on their own login",
-          p: (
-            <>
-              Not a shared password taped inside a cupboard. A teacher sees
-              their own classes; the committee sees committee-level data; nobody
-              sees everything by default, and you can see who changed what.
             </>
           ),
         },
@@ -104,6 +133,16 @@ export default function MadrasahSoftwarePage() {
           are not buying either of them today.
         </>
       }
+      pendingShot={{
+        img: "app-parent.webp",
+        alt: "Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only.",
+        caption: (
+          <>
+            In development for the September 2027 intake. Interface preview,
+            example data only.
+          </>
+        ),
+      }}
       plan={{
         name: "Madrasah",
         pounds: PRICING.madrasah,

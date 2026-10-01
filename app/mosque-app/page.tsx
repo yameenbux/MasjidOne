@@ -27,6 +27,64 @@ export default function MosqueAppPage() {
           needs today gets opened.
         </>
       }
+      hero={{
+        img: "app-prayer-times.webp",
+        alt: "Interface preview of the congregation app: the next jamāʿah, the masjid's own beginning and jamāʿah times, and a per-person reminder offset set to twenty minutes before.",
+        caption: (
+          <>
+            Interface preview. The masjid&apos;s own timetable, with the
+            reminder offset set per person rather than per masjid.
+          </>
+        ),
+      }}
+      bands={[
+        {
+          h: "Announcements and janāzah notices",
+          img: "app-notices.webp",
+          alt: "Interface preview of notices in the congregation app: a janāzah today, Jumuʿah times, and a madrasah half term.",
+          caption: <>Interface preview. Published once, reaching the phone and the hall together.</>,
+          p: (
+            <>
+              This is the reason an app is worth having at all. A death known at
+              eleven and a burial after Zuhr cannot wait for the next newsletter
+              or for somebody to remember a WhatsApp list. Published once, it
+              reaches the phones and the hall screens together — and it reaches
+              the people who are actually in your congregation, rather than
+              whichever numbers were in someone&apos;s broadcast group.
+            </>
+          ),
+        },
+        {
+          h: "Giving at the moment somebody means to give",
+          img: "app-giving.webp",
+          alt: "Interface preview of giving in the app, with Gift Aid added and Apple Pay and Google Pay, at 0% commission.",
+          caption: <>Interface preview. Gift Aid at the point of giving, 0% commission.</>,
+          p: (
+            <>
+              Card, Apple Pay and Google Pay, with the Gift Aid declaration
+              captured as the donation is made rather than chased afterwards.
+              Sadaqah tends to be an impulse — the gap between meaning to give
+              and finding a card reader is where most of it is lost. We take 0%
+              commission, permanently.
+            </>
+          ),
+        },
+        {
+          h: "The small things that keep it on the phone",
+          img: "app-duas.webp",
+          alt: "Interface preview of everyday duʿās in the app, by occasion, with transliteration.",
+          caption: <>Interface preview. Everyday duʿās by occasion, with transliteration.</>,
+          p: (
+            <>
+              Qibla, a Zakat calculator, everyday duʿās by occasion. None of
+              these is why a committee buys the system, and none is why somebody
+              installs it. They are why the second app comes off the phone — and
+              an app that stays on the phone is the one your janāzah notice
+              arrives on.
+            </>
+          ),
+        },
+      ]}
       points={[
         {
           h: "The masjid's own timetable",
@@ -50,37 +108,6 @@ export default function MosqueAppPage() {
           ),
         },
         {
-          h: "Announcements and janāzah notices",
-          p: (
-            <>
-              Published once and reaching the phone and the hall screens
-              together. Not a WhatsApp broadcast to whichever numbers somebody
-              remembered to add, and not a bulk text nobody can correct.
-            </>
-          ),
-        },
-        {
-          h: "One-tap giving",
-          p: (
-            <>
-              Card, Apple Pay and Google Pay, with Gift Aid added at the point of
-              giving and 0% commission taken by us. Sadaqah at the moment
-              somebody means to give it, rather than at the moment they next find
-              a card reader.
-            </>
-          ),
-        },
-        {
-          h: "Qibla and a Zakat calculator",
-          p: (
-            <>
-              The small things people currently keep a second app for. Not the
-              reason anybody adopts it, but the reason the second app comes off
-              the phone.
-            </>
-          ),
-        },
-        {
           h: "Nothing to install twice",
           p: (
             <>
@@ -100,6 +127,16 @@ export default function MosqueAppPage() {
           page you cannot use today.
         </>
       }
+      pendingShot={{
+        img: "app-parent.webp",
+        alt: "Interface preview of parent access inside the congregation app: this evening's attendance mark, the sabaq heard this week, and the fee due this month, for one child. Example data only.",
+        caption: (
+          <>
+            In development for the September 2027 intake. Interface preview,
+            example data only.
+          </>
+        ),
+      }}
       plan={{
         name: "Masjid Complete",
         pounds: PRICING.complete,

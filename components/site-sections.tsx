@@ -270,7 +270,8 @@ export function Previews() {
       <img className="shot-img" src={`${BASE}/devices/admin-register.webp`} width={1320} height={840} loading="lazy" decoding="async"
         alt="Interface preview of a madrasah evening register: a week of attendance marks per pupil, who is absent, and whether the register has been submitted. Pupil names are placeholders and no real child's record appears." />
       <figcaption>
-        Running at Taiyabah Masjid. Pupil names are placeholders — no real child&rsquo;s record appears here.
+        Built, and holding a Bolton masjid&rsquo;s full roll. Interface preview — pupil
+        names are placeholders and no real child&rsquo;s record appears here.
       </figcaption>
     </figure>
   </div>
@@ -280,7 +281,8 @@ export function Previews() {
       <img className="shot-img" src={`${BASE}/devices/admin-fees.webp`} width={1320} height={840} loading="lazy" decoding="async"
         alt="Interface preview of madrasah fees, charged per family rather than per child: what is invoiced, what is collected, what is outstanding, and which families are due. Example data only." />
       <figcaption>
-        Running at Taiyabah Masjid. Fees are per family rather than per child. Example data — no real family&rsquo;s fee history appears here.
+        Built, with the masjid&rsquo;s own fee rates set. Fees are per family rather than
+        per child. Interface preview — no real family&rsquo;s fee history appears here.
       </figcaption>
     </figure>
   </div>
