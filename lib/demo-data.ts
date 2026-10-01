@@ -129,14 +129,27 @@ export const DEMO_CREDENTIALS = { user: "demo", pass: "demo" } as const;
    committee has to see that both halves exist before "one system" means
    anything, and a chooser that leads to a dead end makes the opposite point.
 
-   Prayer times carry begins and jamāʿah as two columns because that is the
-   rhythm a UK prayer board uses, and because it is the distinction that
-   matters: a calculated time is a beginning, a jamāʿah time is a decision the
-   masjid made. Tabular numerals, per the design system.
+   Every shape below mirrors a table that is actually built, because a demo
+   that shows a screen the platform cannot produce is a promise that comes due
+   in week three:
+
+     prayer_times        one row per day, begins and jamāʿah per prayer
+     notices             published is a boolean, so drafts are a real state
+     app_notifications   carries recipients, status and error per send
+     donations           gift_aid and claimed_at, so unclaimed is answerable
+     hall_bookings       reference, status, office_notes, deposit_status
+     nikah_requests      reference, status, agreed_date, fee_status
+     charity_collections reference, status, org_name
+     admission_applications  a madrasah admission arriving through the public
+                         site — the join, in one row
+
+   Deliberately NOT modelled: hall screens as devices, and appeals with running
+   totals. Neither has a table, so neither gets a panel.
    ------------------------------------------------------------------------- */
 
 export type PrayerRow = { name: string; begins: string; jamaah: string };
 
+/** Begins and jamāʿah as two columns, the rhythm a UK prayer board uses. */
 export const DEMO_PRAYERS: PrayerRow[] = [
   { name: "Fajr", begins: "05:42", jamaah: "06:15" },
   { name: "Sunrise", begins: "07:14", jamaah: "—" },
@@ -151,25 +164,151 @@ export const DEMO_JUMUAH = [
   { label: "Second Jumuʿah", time: "14:00" },
 ];
 
-export type NoticeRow = { title: string; detail: string; when: string; urgent?: boolean };
+/** Which prayer the page should mark as next. Keeps the table and the banner
+ *  from drifting apart when either is edited. */
+export const DEMO_NEXT_JAMAAH = { name: "ʿAsr", at: "16:15", remindAt: "15:45" };
+
+/* ---- The inbox: what the public asked for and the office has not answered ---- */
+
+export type RequestKind = "Hall" | "Nikah" | "Collection" | "Admission" | "Course";
+export type RequestRow = {
+  kind: RequestKind;
+  reference: string;
+  who: string;
+  detail: string;
+  submitted: string;
+  status: "New" | "Held" | "In progress";
+  /** Set where the row carries money, as hall and nikah rows do. */
+  money?: string;
+  /** True for the admission, which is the one that crosses into the madrasah. */
+  crosses?: boolean;
+};
+
+export const DEMO_REQUESTS: RequestRow[] = [
+  {
+    kind: "Hall",
+    reference: "HH-26-0184",
+    who: "A. Patel",
+    detail: "Main hall + kitchen, Saturday evening",
+    submitted: "2 hours ago",
+    status: "Held",
+    money: "Deposit unpaid · hold expires in 46h",
+  },
+  {
+    kind: "Admission",
+    reference: "AD-26-0031",
+    who: "The Dawood household",
+    detail: "Two children, September intake",
+    submitted: "Yesterday",
+    status: "New",
+    crosses: true,
+  },
+  {
+    kind: "Nikah",
+    reference: "NK-26-0012",
+    who: "I. Rahman",
+    detail: "Preferred 14 March, afternoon, ~60 guests",
+    submitted: "Yesterday",
+    status: "New",
+    money: "Fee unpaid",
+  },
+  {
+    kind: "Collection",
+    reference: "CC-26-0007",
+    who: "Al-Imdaad Trust",
+    detail: "Chanda after Jumuʿah, certificate attached",
+    submitted: "3 days ago",
+    status: "In progress",
+  },
+  {
+    kind: "Course",
+    reference: "CR-26-0066",
+    who: "S. Begum",
+    detail: "Tajwīd for sisters, Tuesday cohort",
+    submitted: "4 days ago",
+    status: "New",
+  },
+];
+
+/* ---- Notices, which are drafts until somebody presses Publish ---- */
+
+export type NoticeRow = {
+  topic: string;
+  title: string;
+  body: string;
+  when: string;
+  published: boolean;
+  /** Set once it has gone to the app. Mirrors app_notifications.recipients. */
+  reached?: number;
+  urgent?: boolean;
+};
 
 export const DEMO_NOTICES: NoticeRow[] = [
   {
-    title: "Janāzah after Zuhr",
-    detail: "Burial to follow at the cemetery. Lifts leaving from the car park.",
-    when: "Today",
+    topic: "Janāzah",
+    title: "Janāzah after Zuhr today",
+    body: "Burial to follow at the cemetery. Lifts leaving from the car park.",
+    when: "Sent 11:04",
+    published: true,
+    reached: 1180,
     urgent: true,
   },
-  { title: "Madrasah half term", detail: "No classes Monday to Friday next week.", when: "Today" },
-  { title: "Roof appeal update", detail: "£18,400 raised of the £45,000 target.", when: "2 days ago" },
-  { title: "Winter timetable", detail: "ʿIshāʾ moves to 19:45 from the first of next month.", when: "5 days ago" },
+  {
+    topic: "Madrasah",
+    title: "Madrasah half term",
+    body: "No classes Monday to Friday next week.",
+    when: "Published yesterday",
+    published: true,
+    reached: 1174,
+  },
+  {
+    topic: "Appeal",
+    title: "Roof appeal update",
+    body: "£18,400 raised of the £45,000 target. Jazākum Allāhu khayran.",
+    when: "Draft",
+    published: false,
+  },
+  {
+    topic: "Timetable",
+    title: "Winter timetable",
+    body: "ʿIshāʾ moves to 19:45 from the first of next month.",
+    when: "Draft",
+    published: false,
+  },
 ];
 
-/** Headline figures for the congregation dashboard. Invented, like the rest. */
+/* ---- Giving. Unclaimed Gift Aid is real money a committee can go and get ---- */
+
+export type DonationRow = {
+  reference: string;
+  purpose: string;
+  amount: number;
+  giftAid: boolean;
+  claimed: boolean;
+  when: string;
+};
+
+export const DEMO_DONATIONS: DonationRow[] = [
+  { reference: "DN-26-1841", purpose: "Roof appeal", amount: 500, giftAid: true, claimed: false, when: "Today" },
+  { reference: "DN-26-1840", purpose: "General", amount: 50, giftAid: true, claimed: false, when: "Today" },
+  { reference: "DN-26-1839", purpose: "Roof appeal", amount: 1000, giftAid: true, claimed: true, when: "Yesterday" },
+  { reference: "DN-26-1838", purpose: "Sadaqah", amount: 20, giftAid: false, claimed: false, when: "Yesterday" },
+  { reference: "DN-26-1837", purpose: "General", amount: 250, giftAid: true, claimed: false, when: "2 days ago" },
+];
+
+/** Derived, so the tiles cannot drift from the tables beneath them. */
+export const DEMO_GIVING = {
+  month: 4280,
+  /** Gift Aid on donations that carry a declaration and have not been claimed.
+   *  25p in the pound, the HMRC rate. */
+  unclaimed: Math.round(
+    DEMO_DONATIONS.filter((d) => d.giftAid && !d.claimed).reduce((n, d) => n + d.amount, 0) * 0.25,
+  ),
+  commission: "0%",
+};
+
 export const DEMO_CONGREGATION = {
-  appInstalls: 1246,
-  remindersSent: 3810,
-  givenThisMonth: 4280,
-  giftAidClaimable: 920,
-  hallScreens: 4,
+  needsYou: DEMO_REQUESTS.length,
+  drafts: DEMO_NOTICES.filter((n) => !n.published).length,
+  lastReach: DEMO_NOTICES.find((n) => n.reached)?.reached ?? 0,
 } as const;

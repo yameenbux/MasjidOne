@@ -1497,16 +1497,64 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
 }
 .dadmin__acts{display:flex; gap:var(--s1); flex-wrap:wrap}
-.dcong{display:grid; gap:var(--s3); grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-.dnotice{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:var(--s2)}
-.dnotice__item{padding:var(--s2); background:var(--paper-2); border:var(--hair) solid var(--rule)}
-.dnotice__top{
-  display:flex; align-items:baseline; justify-content:space-between;
-  gap:var(--s2); margin:0 0 .3rem;
+/* The bar above each tab's content: the one thing an administrator most often
+   comes to this tab to do, and a line of context beside it. */
+.dcong__bar{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2);
+  margin-bottom:var(--s2);
 }
-.dnotice__title{font-weight:600; font-size:var(--t-small)}
-.dnotice__when{color:var(--ink-2); font-size:var(--t-label); white-space:nowrap}
-.dnotice__detail{margin:0; color:var(--ink-2); font-size:var(--t-small)}
+.dcong__do{
+  background:var(--cta-bg); color:var(--cta-fg);
+  border:var(--hair) solid var(--cta-bg); border-radius:2px;
+  padding:.55rem var(--s2); cursor:pointer;
+  font:inherit; font-size:var(--t-label);
+  letter-spacing:.12em; text-transform:uppercase;
+  transition:opacity .2s ease;
+}
+.dcong__do:hover{opacity:.88}
+.dcong__do--small{
+  margin-top:var(--s1); align-self:flex-start;
+  background:transparent; color:var(--brass); border-color:var(--rule-2);
+}
+.dcong__do--small:hover{border-color:var(--brass)}
+
+/* What the pressed button would have done. Reserves its line so the content
+   below does not jump the first time one is pressed. */
+.dcong__said{
+  min-height:1.5rem; margin:0 0 var(--s2);
+  color:var(--brass); font-size:var(--t-small);
+}
+
+.dcong__next{color:var(--brass); font-weight:600}
+
+.dcong__list{margin:0; padding:0; list-style:none; display:grid; gap:var(--s2)}
+.dcong__item{
+  display:flex; flex-direction:column;
+  padding:var(--s2); background:var(--paper-2);
+  border:var(--hair) solid var(--rule); border-left:3px solid var(--rule-2);
+}
+.dcong__itemTop{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--s1);
+  margin:0 0 .35rem;
+}
+.dcong__kind{
+  color:var(--brass);
+  font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+}
+.dcong__ref{color:var(--ink-2); font-size:var(--t-label); font-variant-numeric:tabular-nums}
+.dcong__who{margin:0; font-weight:600; font-size:var(--t-small)}
+.dcong__detail{margin:.15rem 0 0; color:var(--ink-2); font-size:var(--t-small)}
+.dcong__meta{
+  display:flex; flex-wrap:wrap; gap:var(--s1) var(--s2);
+  margin:.4rem 0 0; font-size:var(--t-label);
+}
+/* The admission is the one row that crosses to the other portal, so it is the
+   one row that says so. */
+.dcong__join{color:var(--brass)}
+
+@media (min-width:52rem){
+  .dcong__list{grid-template-columns:repeat(auto-fit,minmax(20rem,1fr))}
+}
 
 @media (max-width:52rem){
   .dcong{grid-template-columns:1fr}
