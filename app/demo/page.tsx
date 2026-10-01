@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
-import { DemoChooser, type ChooserVariant, type PortalKey } from "@/components/demo-chooser";
+import { DemoChooser, type PortalKey } from "@/components/demo-chooser";
 import { DemoAdmin } from "@/components/demo-admin";
 import { DemoCongregation } from "@/components/demo-congregation";
 import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
@@ -30,24 +30,20 @@ import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
  * come back. Both halves lead somewhere real: a chooser whose second door
  * opens onto nothing would undercut the one claim the product rests on.
  *
- * TWO QUERY PARAMETERS, both read from window.location rather than
- * useSearchParams, which forces a Suspense boundary and a client-side bailout
- * under static export for values this page can pick up after mount:
+ * ?masjid= IS THE WHITE-LABEL SLOT. Open /demo/?masjid=Masjid%20e%20Taqwa
+ * before a call and the committee sees their own name above the form. The
+ * "Demonstration · sample data" strip stays regardless, so a screenshot can
+ * never be passed around as evidence that they are a customer.
  *
- *   ?masjid=   the white-label slot. Open /demo/?masjid=Masjid%20e%20Taqwa
- *              before a call and the committee sees their own name above the
- *              form. The "Demonstration · sample data" strip stays regardless,
- *              so a screenshot can never be passed around as evidence that
- *              they are a customer.
- *   ?chooser=  a|b|c, while three drafts of the portal chooser are being
- *              weighed. This comes out once one is chosen.
+ * It is read from window.location rather than useSearchParams, which forces a
+ * Suspense boundary and a client-side bailout under static export for a value
+ * this page can perfectly well pick up after mount.
  */
 
 type Stage = "login" | "pick" | "madrasah" | "congregation";
 
 export default function DemoPage() {
   const [masjid, setMasjid] = React.useState(DEMO_MASJID_DEFAULT);
-  const [variant, setVariant] = React.useState<ChooserVariant>("a");
   const [stage, setStage] = React.useState<Stage>("login");
 
   React.useEffect(() => {
@@ -61,9 +57,6 @@ export default function DemoPage() {
       const name = raw.replace(/\s+/g, " ").trim().slice(0, 48);
       if (name) setMasjid(name);
     }
-
-    const v = (q.get("chooser") ?? "").toLowerCase();
-    if (v === "a" || v === "b" || v === "c") setVariant(v);
   }, []);
 
   return (
@@ -101,11 +94,7 @@ export default function DemoPage() {
       ) : null}
 
       {stage === "pick" ? (
-        <DemoChooser
-          masjidName={masjid}
-          variant={variant}
-          onChoose={(k: PortalKey) => setStage(k)}
-        />
+        <DemoChooser masjidName={masjid} onChoose={(k: PortalKey) => setStage(k)} />
       ) : null}
 
       {stage === "madrasah" ? (
