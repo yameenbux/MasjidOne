@@ -37,6 +37,16 @@ const SECTIONS: FooterLink[] = [
   { href: BASE + "/#trust", label: "Your data" },
 ];
 
+/** The module pages. Listed here so every one of them is reachable from every
+ *  page on the site — an orphan page is a page Google treats as an accident. */
+const MODULES: FooterLink[] = [
+  { href: BASE + "/madrasah-software/", label: "Madrasah software" },
+  { href: BASE + "/mosque-prayer-times-screens/", label: "Prayer times and screens" },
+  { href: BASE + "/mosque-app/", label: "Congregation app" },
+  { href: BASE + "/mosque-website/", label: "Mosque website" },
+  { href: BASE + "/mosque-donations/", label: "Donations and Gift Aid" },
+];
+
 const LEGAL: FooterLink[] = [
   { href: BASE + "/privacy/", label: "Privacy policy" },
   { href: BASE + "/terms/", label: "Terms and conditions" },
@@ -87,6 +97,7 @@ export function Footer() {
 
           <div className="ftr__links">
             <LinkColumn heading="The site" links={SECTIONS} />
+            <LinkColumn heading="What it runs" links={MODULES} />
             <LinkColumn heading="Talk to us" links={TALK} />
             <LinkColumn heading="Legal" links={LEGAL} />
           </div>

@@ -6,11 +6,12 @@ import { SiteBehaviour } from "@/components/site-behaviour";
  * Shared shell for the privacy and terms pages. They are documents, so they get
  * a single measured column rather than the home page's full-bleed sections.
  *
- * CONTACT_EMAIL is deliberately exported from here rather than written into
- * each page: it is still a placeholder, and when the real address exists there
- * should be exactly one line to change.
+ * CONTACT_EMAIL is re-exported, not redeclared. It used to be its own literal
+ * here while lib/site.ts held a second copy, and both comments claimed to be
+ * the one line to change — so the placeholder would have survived in whichever
+ * file was not opened. The legal pages keep importing it from here.
  */
-export const CONTACT_EMAIL = "REPLACE-ME@masjidone.example";
+export { CONTACT_EMAIL } from "@/lib/site";
 
 export function LegalPage({
   eyebrow,

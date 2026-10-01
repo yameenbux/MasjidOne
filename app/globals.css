@@ -1691,3 +1691,50 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-label); letter-spacing:.06em;
 }
 .hallscr__ticker{color:var(--board-brass); text-transform:uppercase}
+
+/* ---------------------------------------------------------------------------
+   Module pages — one page per thing a committee searches for. Built from the
+   existing section rhythm (.sect, .wrap, .eyebrow, .measure) so they read as
+   part of the site rather than as landing pages bolted on the side.
+   --------------------------------------------------------------------------- */
+.modp__crumb{
+  margin:0 0 var(--s3); color:var(--ink-2); font-size:var(--t-small);
+}
+.modp__crumb a{color:var(--ink-2); text-decoration:none;
+  box-shadow:inset 0 -1px 0 0 var(--rule)}
+.modp__crumb a:hover{color:var(--brass); box-shadow:inset 0 -1px 0 0 var(--brass)}
+.modp__tag{margin:var(--s2) 0 0}
+.modp__lede{margin-top:var(--s2); color:var(--ink-2); max-width:60ch}
+
+.modp__points{
+  display:grid; gap:var(--s3) var(--s4); margin-top:var(--s4);
+  grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));
+}
+.modp__point > *{min-width:0}
+.modp__point h3{
+  margin:0; font-size:1.0625rem; line-height:1.3;
+  padding-top:var(--s2); border-top:var(--hair) solid var(--rule);
+}
+.modp__point p{margin:.6rem 0 0; color:var(--ink-2)}
+
+.modp__pending{
+  margin-top:var(--s4); padding:var(--s3);
+  background:var(--paper-2);
+  border:var(--hair) solid var(--rule); border-left:3px solid var(--brass);
+  max-width:60ch;
+}
+.modp__pending p:last-child{margin:.4rem 0 0; color:var(--ink-2)}
+
+.modp__rel{
+  display:grid; gap:0; margin:var(--s4) 0 0; padding:0; list-style:none;
+  grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));
+}
+.modp__rel a{
+  display:grid; gap:.3rem; height:100%;
+  padding:var(--s3) var(--s2) var(--s3) 0;
+  border-top:var(--hair) solid var(--rule);
+  color:var(--ink); text-decoration:none;
+  transition:color .2s ease;
+}
+.modp__rel a:hover{color:var(--brass)}
+.modp__rel span{color:var(--ink-2); font-size:var(--t-small)}

@@ -58,8 +58,8 @@ const QUESTIONS: readonly { q: string; a: string }[] = [
     a: "No. 0%, permanently, in writing. Payment processing fees are charged by the card provider and go to them, not to us — we take nothing from what the congregation gives.",
   },
   {
-    q: "When is the madrasah portal ready?",
-    a: "It is in development now, targeted at the September 2027 intake, because madrasahs change systems before a new year rather than during one. Early partner mosques go on first and help shape it. Until then we will not pretend it is shipping — the congregation modules are what is live today.",
+    q: "Is the madrasah portal built, or is it still coming?",
+    a: "Built, and in a masjid now. The roll, the classes and the staff are on it at Taiyabah in Bolton — every teacher on their own login, with the registers and the fee rates configured. What is not finished is the half a parent sees. Parent access is in development, targeted at the September 2027 intake, because madrasahs change systems before a new year rather than during one. We would rather tell you which half is which now than have you find it out after signing.",
   },
 ];
 
