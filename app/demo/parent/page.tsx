@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
+import { DemoParent } from "@/components/demo-parent";
 import {
   DEMO_MASJID_DEFAULT,
   DEMO_PARENT_CREDENTIALS,
@@ -50,13 +51,7 @@ export default function DemoParentPage() {
       </p>
 
       {signedIn ? (
-        <section className="sect wrap">
-          <h1 className="measure">Signed in</h1>
-          <p className="modp__lede measure">
-            This is where {masjid}&apos;s parents will land. The screens behind
-            this door are the next thing to build.
-          </p>
-        </section>
+        <DemoParent masjidName={masjid} onSignOut={() => setSignedIn(false)} />
       ) : (
         <MasjidAccessLogin
           masjidName={masjid}

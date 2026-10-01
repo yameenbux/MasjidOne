@@ -1830,3 +1830,62 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-small); line-height:1.6;
 }
 .dimport__carried{margin-bottom:0}
+
+/* ---------------------------------------------------------------------------
+   The parents' portal. Phone first: a parent checks this standing in a
+   kitchen, for one of two reasons — was my child marked in, and what do I owe.
+   --------------------------------------------------------------------------- */
+.pchild,.pfee{
+  margin:0 0 var(--s3); padding:var(--s3);
+  background:var(--paper-2);
+  border:var(--hair) solid var(--rule);
+}
+.pchild__head{margin-bottom:var(--s2)}
+.pchild__name{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:var(--t-h3); line-height:1.15;
+}
+.pchild__class{margin:.2rem 0 0; color:var(--ink-2); font-size:var(--t-small)}
+
+/* This week, as four marks. Wide enough to tap, legible at arm's length. */
+.pweek{
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:var(--s1); margin:0 0 var(--s2); padding:0; list-style:none;
+}
+.pmark{
+  display:grid; gap:.2rem; justify-items:center;
+  padding:.5rem .2rem;
+  border:var(--hair) solid var(--rule);
+  background:var(--paper);
+}
+.pmark__day{
+  font-size:var(--t-label); letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-2);
+}
+.pmark__glyph{font-size:1.25rem; line-height:1.1; min-height:1.4em}
+.pmark--in      .pmark__glyph{color:var(--brass)}
+.pmark--absent  {border-color:var(--brass)}
+.pmark--absent  .pmark__glyph{color:var(--ink)}
+.pmark--late    .pmark__glyph{color:var(--ink-2); font-size:.95rem; font-weight:600}
+.pmark--closed  .pmark__glyph{color:var(--ink-2)}
+.pmark--upcoming{opacity:.5}
+
+.pchild__rate{margin:0 0 var(--s2); font-size:var(--t-small)}
+.pchild__note{color:var(--ink-2)}
+
+/* What is owed, as one figure somebody can read without counting. */
+.pfee__sum{display:flex; align-items:baseline; gap:var(--s2); flex-wrap:wrap; margin:0 0 .4rem}
+.pfee__big{
+  font-family:Newsreader,Georgia,serif; font-size:var(--t-h2); line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.pfee__lab{color:var(--ink-2); font-size:var(--t-small)}
+
+@media (min-width:52rem){
+  /* On a wide screen the cards would otherwise run the full column width and
+     the four day marks would stretch to the size of a hand. Cap them at a
+     readable measure instead — this screen is a phone screen that happens to
+     also open on a laptop. */
+  .pchild,.pfee{max-width:34rem}
+  .pweek{max-width:22rem}
+}

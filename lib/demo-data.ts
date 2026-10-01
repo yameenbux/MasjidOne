@@ -450,3 +450,59 @@ export const DEMO_THREADS: ThreadRow[] = [
   { subject: "Fee instalment for this term", household: "The Rahman household", last: "Yesterday", state: "Answered", unread: false, openedByParent: true },
   { subject: "Half term dates", household: "The Begum household", last: "4 days ago", state: "Answered", unread: false, openedByParent: false },
 ];
+
+/* ---- What one parent sees ---- */
+
+/**
+ * The household the demonstration parent signs in as: 1108 · Bashir, chosen
+ * because it already exists everywhere else in this file. Two children on the
+ * roll, £90 outstanding and two months behind in DEMO_FEES, and attendance of
+ * 99% and 84% in DEMO_PUPILS. Every figure below is derived from those rows
+ * rather than typed again, so the parent's view and the office's view of the
+ * same family can never disagree — which is the entire product thesis, and
+ * would be an embarrassing thing to get wrong in the demo of it.
+ *
+ * The 84% child is deliberate. A portal that only ever shows a perfect record
+ * demonstrates nothing: the reason a parent opens this is the week something
+ * was missed.
+ */
+export type ParentChildRow = {
+  ref: string;
+  name: string;
+  className: string;
+  teacher: string;
+  attendance: number;
+  /** Monday to Thursday of this week. */
+  week: ("in" | "absent" | "late" | "closed" | "upcoming")[];
+  note?: string;
+};
+
+const BASHIR = DEMO_FEES.find((f) => f.household.includes("Bashir"))!;
+const BASHIR_CHILDREN = DEMO_PUPILS.filter((p) => p.guardian === "Household 1108");
+
+export const DEMO_PARENT = {
+  household: "Household 1108 · Bashir",
+  guardian: "A. Bashir",
+  children: BASHIR_CHILDREN.map((p, i): ParentChildRow => ({
+    ref: p.ref,
+    name: p.name,
+    className: p.className,
+    teacher: i === 0 ? "Ustādh Y." : "Apa S.",
+    attendance: p.attendance,
+    week: i === 0
+      ? ["in", "in", "in", "upcoming"]
+      : ["in", "absent", "late", "upcoming"],
+    note: i === 1 ? "Marked absent on Tuesday. Nobody told the madrasah why." : undefined,
+  })),
+  fees: {
+    monthly: BASHIR.monthly,
+    outstanding: BASHIR.balance,
+    monthsBehind: BASHIR.behind,
+    lastPaid: BASHIR.lastPaid,
+  },
+  /** The thread already in DEMO_THREADS, from the parent's side. */
+  openThread: "Collecting early on Thursdays",
+} as const;
+
+/** The evening's session times, so "next session" is not invented twice. */
+export const DEMO_PARENT_SESSION = { days: "Monday to Thursday", from: "17:30", to: "19:00" } as const;
