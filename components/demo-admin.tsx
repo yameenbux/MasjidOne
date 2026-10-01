@@ -45,9 +45,11 @@ type Tab = "registers" | "fees" | "pupils";
 
 export function DemoAdmin({
   masjidName,
+  onSwitch,
   onSignOut,
 }: {
   masjidName: string;
+  onSwitch: () => void;
   onSignOut: () => void;
 }) {
   const [tab, setTab] = React.useState<Tab>("registers");
@@ -60,10 +62,18 @@ export function DemoAdmin({
   return (
     <div className="dadmin">
       <header className="dadmin__top">
-        <p className="dadmin__name">{masjidName}</p>
-        <button type="button" className="dadmin__out" onClick={onSignOut}>
-          Sign out
-        </button>
+        <div>
+          <p className="dadmin__portal">Madrasah Portal</p>
+          <p className="dadmin__name">{masjidName}</p>
+        </div>
+        <div className="dadmin__acts">
+          <button type="button" className="dadmin__out" onClick={onSwitch}>
+            Switch portal
+          </button>
+          <button type="button" className="dadmin__out" onClick={onSignOut}>
+            Sign out
+          </button>
+        </div>
       </header>
 
       <div className="dadmin__body">
