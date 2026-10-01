@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { PoweredBy } from "@/components/ui/powered-by";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
  * The screen between signing in and the portal itself: madrasah, or congregation.
@@ -14,13 +16,12 @@ import * as React from "react";
  *
  *   Wide    two full-height halves, board against paper, each device bleeding
  *           off the bottom edge. A choice of two worlds, no card chrome.
- *   Narrow  the masjid's own prayer board: one dark ground, brass hairlines,
- *           an index numeral and a small inset per row.
+ *   Narrow  two cards stacked down the middle, the device above the words.
  *
- * The split is the better desktop screen and the worse phone one — at 360px
+ * The split is the better desktop screen and the worse phone one — at 390px
  * its two halves run about 700px each, so the second option sits below the
  * fold and a committee member has to scroll to discover there is a choice at
- * all. Rows put both on one screen. That is the whole reason for the swap.
+ * all. Stacked cards put both on one screen. That is the reason for the swap.
  *
  * It is one DOM either way. Rendering two component trees and hiding one would
  * double the markup, load both images twice, and leave a screen reader
@@ -86,16 +87,13 @@ export function DemoChooser({
         <p className="pick__ask">Where would you like to go?</p>
       </header>
 
-      {PORTALS.map((p, i) => (
+      {PORTALS.map((p) => (
         <button
           key={p.key}
           type="button"
           className={`pchoose pchoose--${p.key}`}
           onClick={() => onChoose(p.key)}
         >
-          <span className="pchoose__no" aria-hidden="true">
-            {String(i + 1).padStart(2, "0")}
-          </span>
           <span className="pchoose__text">
             <span className="pchoose__title">{p.title}</span>
             <span className="pchoose__blurb">{p.blurb}</span>
@@ -114,6 +112,20 @@ export function DemoChooser({
           </span>
         </button>
       ))}
+
+      {/* The credit was missing from this screen entirely, which broke the
+          rule that it sits in the footer of every portal screen. The support
+          line goes with it: a committee that cannot find the way to report a
+          problem reports it by stopping using the thing. */}
+      <footer className="pick__foot">
+        <p className="pick__help">
+          Having issues?{" "}
+          <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne support")}`}>
+            Log a ticket
+          </a>
+        </p>
+        <PoweredBy />
+      </footer>
     </div>
   );
 }
