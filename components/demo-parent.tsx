@@ -9,6 +9,8 @@ import {
   DEMO_TERM,
   DEMO_LEDGER,
   DEMO_ABSENCE_REASONS,
+  DEMO_PARENT_NOTICES,
+  DEMO_PARENT_THREAD,
   type ParentChildRow,
 } from "@/lib/demo-data";
 
@@ -153,6 +155,44 @@ function AbsenceForm({
   );
 }
 
+
+/** The thread, both sides, with a reply box. Previously this told a parent
+ *  they could write to the office; now they can. */
+function OfficeThread({ onBack, onSend }: { onBack: () => void; onSend: () => void }) {
+  const [draft, setDraft] = React.useState("");
+  return (
+    <>
+      <button type="button" className="dnav__btn pback" onClick={onBack}>
+        <span aria-hidden="true">←</span> Back
+      </button>
+      <section className="pfee" aria-label="Your thread with the office">
+        <h2 className="pchild__name">{DEMO_PARENT_THREAD.subject}</h2>
+        <ul className="pthread">
+          {DEMO_PARENT_THREAD.messages.map((m, i) => (
+            <li key={i} className={`pmsg pmsg--${m.from}`}>
+              <p className="pmsg__who">{m.who} · {m.at}</p>
+              <p className="pmsg__body">{m.body}</p>
+            </li>
+          ))}
+        </ul>
+        <form
+          onSubmit={(e) => { e.preventDefault(); onSend(); }}
+        >
+          <div className="pform__field pform__field--wide">
+            <label htmlFor="reply">Your reply</label>
+            <textarea
+              id="reply" rows={3} value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="dcong__do">Send</button>
+        </form>
+      </section>
+    </>
+  );
+}
+
 export function DemoParent({
   masjidName,
   onSignOut,
@@ -163,6 +203,7 @@ export function DemoParent({
   const [said, setSaid] = React.useState("");
   const [open, setOpen] = React.useState<ParentChildRow | null>(null);
   const [absence, setAbsence] = React.useState<ParentChildRow | null>(null);
+  const [thread, setThread] = React.useState(false);
   const { fees, children } = DEMO_PARENT;
 
   const act = (message: string) => () => setSaid(message);
@@ -201,6 +242,14 @@ export function DemoParent({
               setSaid(
                 `${absence.name} reported absent — ${day.toLowerCase()}, ${reason.toLowerCase()}. ${absence.teacher} sees it before the register opens, the office sees it on their screen, and nobody had to telephone the masjid.`,
               );
+            }}
+          />
+        ) : thread ? (
+          <OfficeThread
+            onBack={() => setThread(false)}
+            onSend={() => {
+              setThread(false);
+              setSaid("Sent. It arrives on the office's Masjid office screen as a thread against your family, not in somebody's personal WhatsApp.");
             }}
           />
         ) : open ? (
@@ -277,21 +326,47 @@ export function DemoParent({
           </button>
         </section>
 
+        {/* ── From the madrasah ────────────────────────────────────── */}
+        <section className="pfee" aria-label="Notices">
+          <h2 className="pchild__name">
+            From the madrasah
+            {DEMO_PARENT_NOTICES.some((n) => n.unread) ? (
+              <span className="pnew">
+                {DEMO_PARENT_NOTICES.filter((n) => n.unread).length} new
+              </span>
+            ) : null}
+          </h2>
+          <ul className="pnotices">
+            {DEMO_PARENT_NOTICES.map((n) => (
+              <li className="pnotice" key={n.title}>
+                <p className="pnotice__top">
+                  <span className="pnotice__kind">{n.kind}</span>
+                  <span className="dadmin__muted">{n.when}</span>
+                </p>
+                <p className="pnotice__title">
+                  {n.unread ? <span className="dcong__next" aria-hidden="true">▪ </span> : null}
+                  {n.title}
+                  {n.unread ? <span className="u-visually-hidden"> — unread</span> : null}
+                </p>
+                <p className="pnotice__body">{n.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         {/* ── The office ───────────────────────────────────────────────── */}
         <section className="pfee" aria-label="Messages">
           <h2 className="pchild__name">Your message to the office</h2>
           <p className="dadmin__muted">
-            <strong>{DEMO_PARENT.openThread}</strong> — open, the office has not
-            replied yet.
+            <strong>{DEMO_PARENT_THREAD.subject}</strong> — the office has
+            replied.
           </p>
           <button
             type="button"
             className="dcong__do dcong__do--small"
-            onClick={act(
-              "Message sent to the office. It arrives in their Masjid office screen as a thread against your family rather than in somebody's personal WhatsApp.",
-            )}
+            onClick={() => { setThread(true); setSaid(""); }}
           >
-            Write to the office
+            Open the conversation
           </button>
         </section>
         </>

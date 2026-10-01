@@ -3,7 +3,7 @@
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
-import { DEMO_ROLES, DEMO_AUDIT } from "@/lib/demo-data";
+import { DEMO_ROLES, DEMO_AUDIT, DEMO_STAFF, DEMO_STAFF_SUMMARY, DEMO_LOGIN_STATE } from "@/lib/demo-data";
 import {
   DEMO_REQUESTS,
   DEMO_NOTICES,
@@ -309,6 +309,52 @@ export function DemoOffice({
               the usual answer is one shared password in a drawer.
             </p>
 
+            {/* The screen that unblocks the product. Parent access is not
+                waiting on code so much as on somebody pressing this. */}
+            <div className="dimport" style={{ marginTop: 0 }}>
+              <h2 className="dadmin__h">Give somebody an account</h2>
+              <ul className="dimport__nums">
+                <li>
+                  <span className="dadmin__tileN">
+                    {DEMO_LOGIN_STATE.teachersWithLogin}/{DEMO_LOGIN_STATE.teachersTotal}
+                  </span>
+                  <span className="dadmin__tileL">teachers have a login</span>
+                </li>
+                <li>
+                  <span className="dadmin__tileN">
+                    {DEMO_LOGIN_STATE.parentsWithLogin}/{DEMO_LOGIN_STATE.householdsTotal}
+                  </span>
+                  <span className="dadmin__tileL">households have a login</span>
+                </li>
+              </ul>
+              <div className="dcong__bar">
+                <button
+                  type="button"
+                  className="dcong__do"
+                  onClick={act(
+                    "Account created and an invitation sent. They set their own password from the link — nobody at the masjid ever types or knows it, and nobody has to telephone anyone a password.",
+                  )}
+                >
+                  Create a teacher login
+                </button>
+                <button
+                  type="button"
+                  className="dcong__do dcong__do--small"
+                  onClick={act(
+                    "Invitations sent to every household with an email on file — 256 of 268. The twelve without one get an office-issued sign-in on paper instead, so no family is left out.",
+                  )}
+                >
+                  Invite the parents
+                </button>
+              </div>
+              <p className="dimport__carried">
+                An account is always issued, never self-registered. The office
+                decides who is a parent of which family, because that is the
+                one question a stranger must not be able to answer for
+                themselves.
+              </p>
+            </div>
+
             <h2 className="dadmin__h">Roles</h2>
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Roles, scrollable">
               <table className="dadmin__table">
@@ -348,6 +394,51 @@ export function DemoOffice({
               parent has an account. It is listed rather than hidden — a role
               that exists in the system should be visible in the system.
             </p>
+
+            <h2 className="dadmin__h">
+              Staff and DBS
+              {DEMO_STAFF_SUMMARY.attention > 0 ? (
+                <span className="dadmin__muted">
+                  {" "}· {DEMO_STAFF_SUMMARY.attention} need attention
+                </span>
+              ) : null}
+            </h2>
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Staff, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  A trustee asks about DBS before they ask about anything else,
+                  and the honest answer is a list rather than a reassurance.
+                  Missing and expiring are shown, not hidden. Sample data.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" className="dadmin__num">Classes</th>
+                    <th scope="col">DBS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_STAFF.map((p) => (
+                    <tr key={p.name}>
+                      <th scope="row">{p.name}</th>
+                      <td>{p.role}</td>
+                      <td className="dadmin__num">{p.classes}</td>
+                      <td>
+                        {p.dbs === "Valid" ? (
+                          <span className="dadmin__muted">Valid · {p.dbsOn}</span>
+                        ) : (
+                          <>
+                            <span className="dcong__next" aria-hidden="true">\u25aa </span>
+                            {p.dbs}{p.dbsOn ? ` · ${p.dbsOn}` : ""}
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <h2 className="dadmin__h">What has been done</h2>
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Audit log, scrollable">

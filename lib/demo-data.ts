@@ -649,3 +649,112 @@ export const DEMO_CONCERN_KINDS = [
   "Something a parent told me",
   "Other",
 ] as const;
+
+/* ---- What the madrasah tells parents, and what they say back ---- */
+
+/**
+ * Notices a parent receives. Shaped from madrasah_parent_notices, and these
+ * are the reason an app stays installed: a closure the evening before, and a
+ * janāzah the same morning. A parent who only ever opens this for a fee stops
+ * opening it.
+ */
+export type ParentNotice = {
+  title: string;
+  body: string;
+  when: string;
+  kind: "Closure" | "Madrasah" | "Masjid";
+  unread?: boolean;
+};
+
+export const DEMO_PARENT_NOTICES: ParentNotice[] = [
+  {
+    title: "Closed next week — half term",
+    body: "No classes Monday 26th to Thursday 30th October. We reopen on Monday 2nd November at the usual time.",
+    when: "2 days ago", kind: "Closure", unread: true,
+  },
+  {
+    title: "Parents' evening, Thursday 16th",
+    body: "Ten minutes with your child's teacher. Reply to this message to pick a time, or speak to the office.",
+    when: "5 days ago", kind: "Madrasah", unread: true,
+  },
+  {
+    title: "Janāzah after Zuhr today",
+    body: "Brother Ismāʿīl, father of a family in the madrasah. Janāzah after Zuhr at the masjid.",
+    when: "Last week", kind: "Masjid",
+  },
+];
+
+/** One thread, both sides, so a parent can read and answer rather than be told they could. */
+export type ThreadMessage = { from: "parent" | "office"; who: string; at: string; body: string };
+
+export const DEMO_PARENT_THREAD: { subject: string; messages: ThreadMessage[] } = {
+  subject: "Collecting early on Thursdays",
+  messages: [
+    {
+      from: "parent", who: "You", at: "Monday, 19:12",
+      body: "Asalāmu ʿalaykum. From this Thursday I need to collect both children at 18:30 rather than 19:00 — my shift changed. Is that alright?",
+    },
+    {
+      from: "office", who: "The office", at: "Tuesday, 09:40",
+      body: "Wa ʿalaykum as-salām. That is fine. I have told both teachers so they are not marked as leaving without permission. It will show on the register as an agreed early collection.",
+    },
+  ],
+};
+
+/* ---- What the office does about people ---- */
+
+/**
+ * The concerns inbox — the other half of the teacher's raise_concern. It is
+ * the most sensitive screen in the system and the demo says so plainly: only
+ * the designated person reaches it, not the committee and not the other
+ * teachers. Nothing here is ever deleted, only closed with a note, because a
+ * safeguarding record that can be removed is not a safeguarding record.
+ *
+ * STILL IN DEVELOPMENT. madrasah_concerns exists and holds zero rows.
+ */
+export type ConcernRow = {
+  ref: string;
+  pupil: string;
+  kind: string;
+  raisedBy: string;
+  at: string;
+  state: "Open" | "With the designated person" | "Closed";
+};
+
+export const DEMO_CONCERNS: ConcernRow[] = [
+  { ref: "SC-26-0004", pupil: "Pupil C. Jamal", kind: "Repeated absence", raisedBy: "H. Choudhury", at: "Today 18:22", state: "Open" },
+  { ref: "SC-26-0003", pupil: "Pupil B. Iqbal", kind: "A change in behaviour", raisedBy: "F. Khatun", at: "3 days ago", state: "With the designated person" },
+  { ref: "SC-26-0002", pupil: "Pupil A. Bashir", kind: "Something a parent told me", raisedBy: "Qārī Y. Ismail", at: "Last week", state: "Closed" },
+];
+
+/** Staff, and the one column a trustee always asks about. */
+export type StaffRow = {
+  name: string;
+  role: string;
+  classes: number;
+  dbs: "Valid" | "Expires soon" | "Missing";
+  dbsOn?: string;
+};
+
+export const DEMO_STAFF: StaffRow[] = [
+  { name: "Qārī Y. Ismail", role: "Teacher", classes: 1, dbs: "Valid", dbsOn: "Mar 2029" },
+  { name: "F. Khatun", role: "Teacher", classes: 2, dbs: "Valid", dbsOn: "Sep 2028" },
+  { name: "H. Choudhury", role: "Teacher", classes: 2, dbs: "Expires soon", dbsOn: "Nov 2026" },
+  { name: "S. Begum", role: "Teacher", classes: 1, dbs: "Valid", dbsOn: "Jan 2029" },
+  { name: "A. Patel", role: "Teacher", classes: 1, dbs: "Missing" },
+  { name: "R. Ali", role: "Madrasah lead", classes: 1, dbs: "Valid", dbsOn: "Jun 2030" },
+];
+
+export const DEMO_STAFF_SUMMARY = {
+  total: DEMO_STAFF.length,
+  valid: DEMO_STAFF.filter((s) => s.dbs === "Valid").length,
+  attention: DEMO_STAFF.filter((s) => s.dbs !== "Valid").length,
+};
+
+/** Who has an account and who does not — the screen that unblocks everything. */
+export const DEMO_LOGIN_STATE = {
+  teachersWithLogin: 31,
+  teachersTotal: 31,
+  parentsWithLogin: 0,
+  householdsTotal: 268,
+} as const;

@@ -9,6 +9,7 @@ import {
   DEMO_IMPORT,
   DEMO_THREADS,
   DEMO_PROGRESS,
+  DEMO_CONCERNS,
 } from "@/lib/demo-data";
 import {
   DEMO_TOTALS,
@@ -49,7 +50,7 @@ const STATE_LABEL: Record<RegisterState, string> = {
   missing: "Not taken",
 };
 
-type Tab = "registers" | "fees" | "pupils" | "calendar" | "progress" | "messages";
+type Tab = "registers" | "fees" | "pupils" | "calendar" | "progress" | "concerns" | "messages";
 
 export function DemoAdmin({
   masjidName,
@@ -125,6 +126,10 @@ export function DemoAdmin({
               ["pupils", "Pupils"],
               ["calendar", "Calendar"],
               ["progress", "Hifz & sabaq"],
+              [
+                "concerns",
+                `Concerns · ${DEMO_CONCERNS.filter((c) => c.state !== "Closed").length}`,
+              ],
               [
                 "messages",
                 `Messages · ${DEMO_THREADS.filter((t) => t.unread).length} unread`,
@@ -447,6 +452,66 @@ export function DemoAdmin({
                           <span className="dadmin__muted">
                             Not shared{r.noteInternal ? " — private note only" : ""}
                           </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : null}
+
+        {tab === "concerns" ? (
+          <>
+            <div className="dadmin__alert">
+              <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
+                <span className="tag tag--dev">In development</span>
+              </p>
+              <p style={{ margin: 0 }}>
+                The table exists and holds nothing — no concern has been raised.
+                This is the office half of what a teacher sends.
+              </p>
+            </div>
+
+            <p className="dadmin__intro">
+              <strong>Only the designated person reaches this screen.</strong>{" "}
+              Not the committee, not the treasurer, not the other teachers. A
+              concern is never deleted, only closed with a note — a
+              safeguarding record that can be removed is not a safeguarding
+              record.
+            </p>
+
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Concerns, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  What a teacher raised, when, and where it got to. Sample data
+                  — these are not real children.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Reference</th>
+                    <th scope="col">Child</th>
+                    <th scope="col">Kind</th>
+                    <th scope="col">Raised by</th>
+                    <th scope="col">State</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_CONCERNS.map((c) => (
+                    <tr key={c.ref}>
+                      <th scope="row">{c.ref}</th>
+                      <td>{c.pupil}</td>
+                      <td>{c.kind}</td>
+                      <td className="dadmin__muted">{c.raisedBy} · {c.at}</td>
+                      <td>
+                        {c.state === "Closed" ? (
+                          <span className="dadmin__muted">{c.state}</span>
+                        ) : (
+                          <>
+                            <span className="dcong__next" aria-hidden="true">\u25aa </span>
+                            {c.state}
+                          </>
                         )}
                       </td>
                     </tr>

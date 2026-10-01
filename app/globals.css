@@ -2038,3 +2038,30 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .pform__field textarea:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
 .dcong__do:disabled{opacity:.5; cursor:default}
+
+/* Notices to a parent, and the thread they can answer. */
+.pnew{
+  margin-left:var(--s2); padding:.1rem .45rem;
+  background:var(--brass); color:var(--paper);
+  font-family:Archivo,system-ui,sans-serif;
+  font-size:var(--t-label); letter-spacing:.06em; vertical-align:middle;
+}
+.pnotices{margin:var(--s2) 0 0; padding:0; list-style:none; display:grid; gap:var(--s2)}
+.pnotice{padding:var(--s2); background:var(--paper); border:var(--hair) solid var(--rule)}
+.pnotice__top{
+  display:flex; justify-content:space-between; gap:var(--s2); margin:0 0 .3rem;
+  font-size:var(--t-label); letter-spacing:.08em; text-transform:uppercase;
+}
+.pnotice__kind{color:var(--brass)}
+.pnotice__title{margin:0; font-weight:600}
+.pnotice__body{margin:.3rem 0 0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}
+
+.pthread{margin:var(--s2) 0 var(--s3); padding:0; list-style:none; display:grid; gap:var(--s2)}
+.pmsg{padding:var(--s2); border:var(--hair) solid var(--rule); max-width:92%}
+.pmsg--parent{background:var(--paper); justify-self:end}
+.pmsg--office{background:var(--paper-2); border-left:3px solid var(--brass); justify-self:start}
+.pmsg__who{
+  margin:0 0 .3rem; color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.06em; text-transform:uppercase;
+}
+.pmsg__body{margin:0; line-height:1.6; font-size:var(--t-small)}
