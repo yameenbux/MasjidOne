@@ -8,7 +8,7 @@ Registers, fees and parent access on one side. Prayer times, a congregation
 app, the website, the hall screens and donations on the other.
 The same family, on both.
 
-A product of **YSB Ventures Ltd**, Bolton.
+Built in Bolton, for masājid across the UK.
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-0C2A21?style=flat-square&labelColor=0C2A21&color=2C4C40)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-0C2A21?style=flat-square&labelColor=0C2A21&color=2C4C40)
@@ -293,8 +293,8 @@ one that reported it.
 > demo" button and the subject access route in the privacy policy all go
 > nowhere.
 
-MasjidOne is a product of **YSB Ventures Ltd**, Bolton. There is no overseas
-support desk and no ticket queue — a masjid talks to the people who wrote it.
+There is no overseas support desk and no outsourced queue. A masjid talks to
+the **MasjidOne support team** — the people who wrote the system and can fix it.
 
 ---
 
