@@ -10,10 +10,24 @@ import * as React from "react";
  * to SEE both halves exist before that sentence means anything. So neither
  * option is a dead end — both lead somewhere real.
  *
- * Two full-height halves rather than cards: board against paper, each with its
- * device bleeding off the bottom edge. A choice of two worlds, with no card
- * chrome between the person and either one. Chosen from three drafts; the
- * other two — a grid of cards, and a prayer-board of rows — are gone.
+ * ONE MARKUP, TWO LAYOUTS, chosen by width in globals.css:
+ *
+ *   Wide    two full-height halves, board against paper, each device bleeding
+ *           off the bottom edge. A choice of two worlds, no card chrome.
+ *   Narrow  the masjid's own prayer board: one dark ground, brass hairlines,
+ *           an index numeral and a small inset per row.
+ *
+ * The split is the better desktop screen and the worse phone one — at 360px
+ * its two halves run about 700px each, so the second option sits below the
+ * fold and a committee member has to scroll to discover there is a choice at
+ * all. Rows put both on one screen. That is the whole reason for the swap.
+ *
+ * It is one DOM either way. Rendering two component trees and hiding one would
+ * double the markup, load both images twice, and leave a screen reader
+ * announcing the hidden copy. So every element below is present at both
+ * widths; the stylesheet moves them and hides the two that only belong to one
+ * layout — the numeral, which is decorative, and the word "Open", whose arrow
+ * stays and carries the meaning on its own.
  *
  * The device images are the existing interface previews, admin-register and
  * hall-screen. Both are modules that are built and running, so neither needs an
@@ -67,26 +81,34 @@ export function DemoChooser({
           building this is. The question underneath is what the person is
           actually here to answer, so it is set in brass rather than left to
           look like a caption. */}
-      <header className="psplit__head">
-        <h1 className="psplit__masjid">{masjidName}</h1>
-        <p className="psplit__ask">Where would you like to go?</p>
+      <header className="pick__head">
+        <h1 className="pick__masjid">{masjidName}</h1>
+        <p className="pick__ask">Where would you like to go?</p>
       </header>
 
-      {PORTALS.map((p) => (
+      {PORTALS.map((p, i) => (
         <button
           key={p.key}
           type="button"
-          className={`psplit__half psplit__half--${p.key}`}
+          className={`pchoose pchoose--${p.key}`}
           onClick={() => onChoose(p.key)}
         >
-          <span className="psplit__text">
-            <span className="psplit__title">{p.title}</span>
-            <span className="psplit__blurb">{p.blurb}</span>
-            <span className="psplit__go" aria-hidden="true">
-              Open <span className="psplit__arrow">→</span>
-            </span>
+          <span className="pchoose__no" aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}
           </span>
-          <span className="psplit__shot">
+          <span className="pchoose__text">
+            <span className="pchoose__title">{p.title}</span>
+            <span className="pchoose__blurb">{p.blurb}</span>
+          </span>
+          {/* A direct child of the button, not of the text: the narrow layout
+              puts it in its own grid cell at the end of the row, the wide one
+              lets it fall under the text as the next flex item. Nested inside
+              the text it could only ever be one or the other. */}
+          <span className="pchoose__go" aria-hidden="true">
+            <span className="pchoose__goword">Open </span>
+            <span className="pchoose__arrow">→</span>
+          </span>
+          <span className="pchoose__shot">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={p.img} alt={p.alt} loading="lazy" width={1600} height={1000} />
           </span>
