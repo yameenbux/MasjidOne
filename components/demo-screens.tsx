@@ -221,6 +221,81 @@ export function DemoScreens({
             the words are yours.
           </p>
 
+          {/* WHAT A MASJID ACTUALLY NEEDS.
+              The first question after "that looks good" is "what do we have to
+              buy", and a committee that cannot answer it cannot say yes. Every
+              line here is true of a page opened on a television, which is what
+              this is — so there is no box from us, nothing to install and no
+              per-screen charge to find later.
+
+              The network line is deliberately NOT written as "Ethernet is
+              essential". It is not: the screen works on Wi-Fi. Writing a
+              requirement the product does not have gets found out at
+              installation, and a masjid with no cable run to the prayer hall
+              would be sent to do building work it does not need. Giving the
+              reason is stronger than giving the order. */}
+          <div className="dreq">
+            <h3 className="dreq__h">What a masjid needs for this</h3>
+            <p className="dreq__lede">
+              It is a web page shown on a television. That is the whole of it,
+              and it is why the list is short.
+            </p>
+
+            <div className="dreq__cols">
+              <div className="dreq__col">
+                <p className="dreq__kicker">You will need</p>
+                <ol className="dreq__list">
+                  <li>
+                    <strong>A screen.</strong> Any television or display with an
+                    HDMI input, any size. Hang it landscape or portrait — for
+                    portrait you want a panel or a bracket that turns.
+                  </li>
+                  <li>
+                    <strong>A way to open a web page on it.</strong> Most smart
+                    televisions have a browser built in and that is enough on
+                    its own. If yours has not, any streaming stick or small
+                    media player will do it. There is no box from us and nothing
+                    proprietary to buy.
+                  </li>
+                  <li>
+                    <strong>A network connection, wired if you can run one.</strong>{" "}
+                    Wi-Fi works. But a screen that runs from Fajr to ʿIshāʾ every
+                    day should not depend on it: a dropout leaves a blank screen
+                    at jamāʿah and nobody notices until somebody complains. One
+                    cable to the prayer hall is the best thing you can do for it.
+                  </li>
+                  <li>
+                    <strong>Power that comes back by itself.</strong> Set the
+                    television to switch on after a power cut, so the screen
+                    returns without anybody fetching a remote.
+                  </li>
+                  <li>
+                    <strong>Your address.</strong> One web address for your
+                    masjid. Open it, make it full screen, leave it. Every screen
+                    in the building opens the same one.
+                  </li>
+                </ol>
+              </div>
+
+              <div className="dreq__col">
+                <p className="dreq__kicker">You will not need</p>
+                <ul className="dreq__not">
+                  <li>A Fire Stick, Chromecast or any box from us</li>
+                  <li>Digital signage software, or a subscription to it</li>
+                  <li>A computer in a cupboard</li>
+                  <li>Anything to install, update or patch — it is a web page</li>
+                  <li>A charge per screen, however many you hang</li>
+                  <li>Anybody to come out and configure each one</li>
+                </ul>
+                <p className="dreq__note">
+                  A consumer television is fine. A commercial panel is built to
+                  be left on all day and will last longer if the hall screen
+                  never goes off — worth knowing, not worth insisting on.
+                </p>
+              </div>
+            </div>
+          </div>
+
         </section>
 
         <div className="dscreen">

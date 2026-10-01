@@ -2572,3 +2572,69 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .dmodal__acts{display:flex; flex-wrap:wrap; gap:var(--s2)}
 /* A half-typed time is shown as not-yet-valid rather than silently refused. */
 .dscreen__time--bad{border-bottom-color:var(--brass-2); color:var(--brass)}
+
+/* ===================================================================
+   What a masjid needs — the shopping list for a hall screen
+   -------------------------------------------------------------------
+   Two columns, need against don't-need, because the second column is the
+   one that sells it: a committee expecting to buy signage software and a
+   box per screen is relieved to read that there is neither.
+   =================================================================== */
+
+.dreq{
+  margin:var(--s4) 0 0; padding:var(--s3) 0 0;
+  border-top:var(--hair) solid var(--rule);
+  max-width:58rem;
+}
+.dreq__h{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:var(--t-h3); line-height:1.15;
+}
+.dreq__lede{
+  margin:var(--s1) 0 var(--s3); color:var(--ink-2);
+  max-width:34rem; line-height:1.7;
+}
+.dreq__cols{
+  display:grid; gap:var(--s3) var(--s4);
+  grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:52em){
+  /* The need-list runs longer, so it takes the wider track rather than
+     leaving the short list stretched beside a column of orphans. */
+  .dreq__cols{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+}
+.dreq__col{min-width:0}
+.dreq__kicker{
+  margin:0 0 var(--s2); color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+
+/* Tailwind's preflight strips markers from ol as well as ul, so the numbering
+   has to be asked for. These are steps in an order — screen, then something to
+   open a page on it, then the network — so the numbers carry meaning. */
+.dreq__list{
+  margin:0; padding-left:1.4rem; list-style:decimal;
+  display:grid; gap:var(--s2); color:var(--ink-2);
+}
+.dreq__list li::marker{color:var(--brass); font-size:var(--t-small)}
+.dreq__list li{line-height:1.7}
+.dreq__list strong{color:var(--ink); font-weight:600}
+
+.dreq__not{
+  margin:0 0 var(--s3); padding:0; list-style:none;
+  display:grid; gap:.55rem; color:var(--ink-2);
+}
+.dreq__not li{
+  position:relative; padding-left:1.4rem; line-height:1.6;
+}
+/* A struck-through dash rather than a cross glyph: it reads as "not this"
+   without needing an icon that would want an aria-label of its own. */
+.dreq__not li::before{
+  content:""; position:absolute; left:0; top:.72em;
+  width:.85rem; height:1px; background:var(--rule-2);
+}
+.dreq__note{
+  margin:0; padding-top:var(--s2);
+  border-top:var(--hair) solid var(--rule);
+  color:var(--ink-2); font-size:var(--t-small); line-height:1.7;
+}
