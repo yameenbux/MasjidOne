@@ -4,9 +4,35 @@ import "./globals.css";
 import { BASE_PATH, SITE_ORIGIN } from "@/lib/site";
 import { StructuredData } from "@/components/structured-data";
 
-const TITLE = "MasjidOne — the madrasah and the congregation on one system";
+/**
+ * TITLE AND DESCRIPTION ARE WRITTEN FOR A SEARCH RESULT, not for the page.
+ *
+ * The page's own headline stays "The madrasah and the congregation, on one
+ * system" — that is the line that does the work once somebody is reading. But
+ * nobody searches for it, and nobody searches for "MasjidOne" either, because
+ * there is no brand awareness to search with yet. A title has to carry the
+ * words a committee actually types, and the two head terms are "mosque
+ * management software" and "madrasah management software". This title holds
+ * both without reading like a keyword list, and keeps the brand on the end.
+ *
+ * The description is kept under about 155 characters because Google truncates
+ * roughly there; the old one ran to 251 and lost its point mid-sentence. It
+ * also listed "parent access" among the things the product does, which breaks
+ * the house rule — parent access is in development, and a search result is a
+ * commercial claim like any other.
+ */
+const TITLE = "Mosque and madrasah management software, UK — MasjidOne";
 const DESCRIPTION =
-  "MasjidOne runs a UK mosque's madrasah and its congregation on one system. Prayer times, a congregation app, your website, the hall screens and donations at 0% commission — with registers, fees and parent access joining the same record of the same family.";
+  "Mosque and madrasah management software for UK masajid. Registers and fees joined to prayer times, the app, your website and donations at 0% commission.";
+
+/**
+ * Open Graph gets its own words. A search result is read by somebody hunting;
+ * a shared link is read by a committee member being sent it by a friend, and
+ * the keyword-led line is the wrong register for that. Neither claims parent
+ * access.
+ */
+const SOCIAL_DESCRIPTION =
+  "A UK mosque's madrasah and its congregation on one system — one record of the same family, reachable from both sides. Published prices, and 0% commission on donations.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
@@ -60,7 +86,7 @@ export const metadata: Metadata = {
     locale: "en_GB",
     url: SITE_ORIGIN,
     title: "The madrasah and the congregation, on one system",
-    description: DESCRIPTION,
+    description: SOCIAL_DESCRIPTION,
     images: [
       {
         url: "/social-card.png",
@@ -73,7 +99,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "The madrasah and the congregation, on one system",
-    description: DESCRIPTION,
+    description: SOCIAL_DESCRIPTION,
     images: ["/social-card.png"],
   },
   other: {
