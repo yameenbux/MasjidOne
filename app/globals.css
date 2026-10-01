@@ -2001,3 +2001,40 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .paccess .dcong__do--small:hover{border-color:var(--board-brass); color:var(--board-brass)}
 .paccess .dcong__do:focus-visible{outline:2px solid var(--board-brass); outline-offset:3px}
+
+/* The teacher's register: one row per child, three big targets. Marked
+   standing up, on a phone, in a room of children — so the buttons are large
+   and the name is never truncated to make room for them. */
+.treg{margin:var(--s3) 0 0; padding:0; list-style:none; display:grid; gap:.4rem}
+.treg__row{
+  display:flex; flex-wrap:wrap; gap:var(--s1) var(--s2);
+  align-items:center; justify-content:space-between;
+  padding:.6rem var(--s2);
+  background:var(--paper-2); border:var(--hair) solid var(--rule);
+}
+.treg__who{display:grid; gap:.1rem; min-width:0}
+.treg__name{font-weight:600}
+.treg__flag{
+  color:var(--brass); font-size:var(--t-label);
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.treg__marks{display:flex; gap:.3rem; flex:none}
+.treg__btn{
+  min-width:4rem; min-height:2.75rem;
+  background:var(--paper); color:var(--ink-2);
+  border:var(--hair) solid var(--rule); border-radius:2px;
+  cursor:pointer; font:inherit; font-size:var(--t-small);
+}
+.treg__btn:hover:not(:disabled){border-color:var(--brass); color:var(--brass)}
+.treg__btn.is-on{background:var(--board); color:var(--board-ink); border-color:var(--board)}
+.treg__btn:disabled{opacity:.55; cursor:default}
+.treg__btn:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+
+.pform__field--wide{max-width:42rem}
+.pform__field textarea{
+  font:inherit; color:var(--ink); background:var(--paper);
+  border:var(--hair) solid var(--rule); border-radius:2px;
+  padding:.55rem .6rem; resize:vertical;
+}
+.pform__field textarea:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+.dcong__do:disabled{opacity:.5; cursor:default}

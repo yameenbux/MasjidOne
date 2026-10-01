@@ -55,6 +55,7 @@ export const DEMO_REGISTERS: RegisterRow[] = [
   { className: "Hifz (girls)", teacher: "Qāriah N. Bibi", onRoll: 12, present: 11, state: "submitted", at: "17:58" },
   { className: "ʿĀlimah 1", teacher: "Ustādhah R. Ali", onRoll: 16, present: 13, state: "draft", at: "18:02" },
   { className: "Nāẓirah 4B", teacher: "H. Choudhury", onRoll: 20, present: 0, state: "missing", at: "—" },
+  { className: "Qāʿidah 2B", teacher: "H. Choudhury", onRoll: 16, present: 15, state: "locked", at: "17:46" },
 ];
 
 export type FeeRow = {
@@ -601,4 +602,50 @@ export const DEMO_ABSENCE_REASONS = [
   "A family commitment",
   "A school commitment",
   "Something else",
+] as const;
+
+
+/* ---- What one teacher sees ---- */
+
+/**
+ * The demonstration teacher is H. Choudhury, chosen because Nāẓirah 4B is the
+ * register nobody took tonight. A teacher signing in and being met by the one
+ * thing they have not done is the product earning its keep in a single screen;
+ * a teacher met by a tidy list of completed work demonstrates nothing.
+ *
+ * Their classes are filtered out of DEMO_REGISTERS by name rather than listed
+ * again, so the teacher's view and the office's view of the same evening
+ * cannot disagree.
+ *
+ * WHAT A TEACHER MUST NOT SEE, and the demo asserts it: any other teacher's
+ * class, the whole roll, anything about fees, any family's balance. The
+ * platform gates this with is_teacher() across eight functions; the demo has
+ * to show the same shape or it is selling an access model that does not exist.
+ */
+export const DEMO_TEACHER_NAME = "H. Choudhury";
+
+export const DEMO_TEACHER_CLASSES = DEMO_REGISTERS.filter(
+  (r) => r.teacher === DEMO_TEACHER_NAME,
+);
+
+/** The class with no register, pupil by pupil, ready to mark. */
+export const DEMO_TEACHER_ROLL: { ref: string; name: string; flag?: string }[] = [
+  { ref: "P-0501", name: "Pupil A. Choudhury" },
+  { ref: "P-0502", name: "Pupil B. Iqbal" },
+  { ref: "P-0503", name: "Pupil C. Jamal", flag: "Walks home alone" },
+  { ref: "P-0504", name: "Pupil D. Karim" },
+  { ref: "P-0505", name: "Pupil E. Latif", flag: "Inhaler kept in the office" },
+  { ref: "P-0506", name: "Pupil F. Mahmood" },
+  { ref: "P-0507", name: "Pupil G. Nasir" },
+  { ref: "P-0508", name: "Pupil H. Osman" },
+];
+
+/** What a teacher can raise, straight from the real raise_concern function. */
+export const DEMO_CONCERN_KINDS = [
+  "Repeated absence",
+  "Something a child said",
+  "A change in behaviour",
+  "An injury I noticed",
+  "Something a parent told me",
+  "Other",
 ] as const;
