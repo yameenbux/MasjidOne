@@ -67,9 +67,14 @@ const Node = React.forwardRef<HTMLDivElement, { spec: NodeSpec }>(({ spec }, ref
     </div>
     <span className="dgm__label">
       {spec.label}
-      <span className={spec.status === "Live" ? "dgm__status is-live" : "dgm__status"}>
-        {spec.status}
-      </span>
+      {/* Only "In development" is printed. A Live tag on every node but one
+          said nothing — the default is that a module works, so the tag was
+          decoration on five of six and the one that matters got lost among
+          them. The dev tag stays: it is the house rule that nothing claims a
+          feature that is not built, and it is doing real work here. */}
+      {spec.status === "In development" ? (
+        <span className="dgm__status">{spec.status}</span>
+      ) : null}
     </span>
   </div>
 ));

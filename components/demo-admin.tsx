@@ -4,6 +4,12 @@ import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
 import {
+  DEMO_CLOSURES,
+  DEMO_EVENTS,
+  DEMO_IMPORT,
+  DEMO_THREADS,
+} from "@/lib/demo-data";
+import {
   DEMO_TOTALS,
   DEMO_REGISTERS,
   DEMO_FEES,
@@ -42,7 +48,7 @@ const STATE_LABEL: Record<RegisterState, string> = {
   missing: "Not taken",
 };
 
-type Tab = "registers" | "fees" | "pupils";
+type Tab = "registers" | "fees" | "pupils" | "calendar" | "messages";
 
 export function DemoAdmin({
   masjidName,
@@ -116,6 +122,11 @@ export function DemoAdmin({
               ["registers", `Registers · ${open} open`],
               ["fees", `Fees · ${DEMO_FEE_SUMMARY.inArrears} in arrears`],
               ["pupils", "Pupils"],
+              ["calendar", "Calendar"],
+              [
+                "messages",
+                `Messages · ${DEMO_THREADS.filter((t) => t.unread).length} unread`,
+              ],
             ] as const
           ).map(([key, label]) => (
             <button
@@ -263,8 +274,170 @@ export function DemoAdmin({
                 </tbody>
               </table>
             </div>
+
+            {/* How the roll arrived. This sits under the pupils rather than on
+                its own tab because "how does our data get in?" is a question
+                somebody asks while looking at the roll, and because it is the
+                honest answer to what the setup fee buys. */}
+            <div className="dimport">
+              <h2 className="dadmin__h">How this roll got here</h2>
+              <p className="dadmin__muted dimport__src">
+                From: {DEMO_IMPORT.source}. Nobody at the masjid retyped a name.
+              </p>
+              <ul className="dimport__nums">
+                {[
+                  [DEMO_IMPORT.pupils, "pupils"],
+                  [DEMO_IMPORT.classes, "classes"],
+                  [DEMO_IMPORT.guardians, "guardians"],
+                  [DEMO_IMPORT.households, "households"],
+                  [DEMO_IMPORT.siblingsLinked, "siblings linked"],
+                ].map(([n, label]) => (
+                  <li key={label as string}>
+                    <span className="dadmin__tileN">{n as number}</span>
+                    <span className="dadmin__tileL">{label as string}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="dimport__review">
+                <strong>{DEMO_IMPORT.siblingsForReview} sibling links need a human.</strong>{" "}
+                The system proposes a link and says why it thinks so — same
+                surname, same address, same phone — and somebody at the masjid
+                confirms or rejects it. Guessing silently is how two brothers
+                end up as two unrelated families and get billed twice.
+              </p>
+              <p className="dimport__carried">
+                Carried across with them: {DEMO_IMPORT.carried.join(", ")}.
+                These are the fields a migration usually drops, and they are the
+                ones that matter most on the evening somebody needs them.
+              </p>
+            </div>
           </section>
         ) : null}
+        {tab === "calendar" ? (
+          <>
+            <p className="dadmin__intro">
+              The year, in the two halves a madrasah actually keeps: when you
+              are closed, and the dates the community works around.
+            </p>
+
+            <h2 className="dadmin__h">Closures</h2>
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Closures, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  Entered as ranges, not single days — a half term is a week,
+                  and nobody should type it five times. Registers are not asked
+                  for on a closed day, so nothing is chased over a holiday.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Closure</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_CLOSURES.map((c) => (
+                    <tr key={c.name + c.from}>
+                      <th scope="row">
+                        {c.name}
+                        {c.note ? <span className="dadmin__muted"> — {c.note}</span> : null}
+                      </th>
+                      <td>{c.from}</td>
+                      <td>{c.to}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <h2 className="dadmin__h">The Islamic calendar</h2>
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Islamic calendar, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  Every moon-dependent date is marked estimated until it is
+                  sighted. A system that printed ʿĪd as a fixed date would be
+                  wrong about one year in two, and the madrasah would be the
+                  one explaining it.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Hijrī</th>
+                    <th scope="col">Expected</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_EVENTS.map((e) => (
+                    <tr key={e.name}>
+                      <th scope="row">{e.name}</th>
+                      <td className="dadmin__muted">{e.hijri}</td>
+                      <td>
+                        {e.on}
+                        {e.estimated ? (
+                          <span className="dadmin__muted"> · estimated</span>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : null}
+
+        {tab === "messages" ? (
+          <>
+            <div className="dadmin__alert">
+              <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
+                <span className="tag tag--dev">In development</span>
+              </p>
+              <p style={{ margin: 0 }}>
+                <strong>The office half of this is built. The parent half is not.</strong>{" "}
+                Threads, replies and the unread state all work — but a parent
+                needs an account to write from, and no parent has one yet. It
+                arrives with parent access, targeted at the September 2027
+                intake. This is what it looks like then.
+              </p>
+            </div>
+
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Message threads, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  One thread per subject per family, so a question about
+                  Thursday pickup does not end up buried under a fee query.
+                  Sample data.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Family</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">State</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_THREADS.map((t) => (
+                    <tr key={t.subject}>
+                      <th scope="row">
+                        {t.unread ? (
+                          <span className="dcong__next" aria-hidden="true">▪ </span>
+                        ) : null}
+                        {t.subject}
+                        {t.unread ? (
+                          <span className="u-visually-hidden"> — unread</span>
+                        ) : null}
+                      </th>
+                      <td>{t.household}</td>
+                      <td className="dadmin__muted">{t.last}</td>
+                      <td>{t.state}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : null}
+
       </div>
 
       <footer className="dadmin__foot">

@@ -1796,3 +1796,37 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   .mshot .shot-img{transition:none}
   .mshot:hover .shot-img{transform:none}
 }
+
+/* ---------------------------------------------------------------------------
+   Demo: the screens added after the first pass — the madrasah calendar, the
+   office's committee and audit view, and how a roll was imported.
+   --------------------------------------------------------------------------- */
+
+/* A line of orientation at the top of a tab, before any table. */
+.dadmin__intro{
+  margin:0 0 var(--s3); color:var(--ink-2); max-width:62ch;
+}
+/* A heading inside a tab, where one tab holds two tables. */
+.dadmin__h{
+  margin:var(--s4) 0 var(--s2); font-size:1.0625rem; line-height:1.3;
+}
+.dadmin__h:first-of-type{margin-top:0}
+
+/* The import summary. A panel rather than a tab: it answers a question people
+   ask while looking at the roll. */
+.dimport{
+  margin-top:var(--s4); padding:var(--s3);
+  background:var(--paper-2);
+  border:var(--hair) solid var(--rule); border-left:3px solid var(--brass);
+}
+.dimport .dadmin__h{margin-top:0}
+.dimport__src{margin:0 0 var(--s3); font-size:var(--t-small)}
+.dimport__nums{
+  display:grid; gap:var(--s2); margin:0 0 var(--s3); padding:0; list-style:none;
+  grid-template-columns:repeat(auto-fit,minmax(7rem,1fr));
+}
+.dimport__review,.dimport__carried{
+  margin:0 0 var(--s2); color:var(--ink-2); max-width:62ch;
+  font-size:var(--t-small); line-height:1.6;
+}
+.dimport__carried{margin-bottom:0}

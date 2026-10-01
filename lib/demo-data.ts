@@ -321,3 +321,120 @@ export const DEMO_CONGREGATION = {
   drafts: DEMO_NOTICES.filter((n) => !n.published).length,
   lastReach: DEMO_NOTICES.find((n) => n.reached)?.reached ?? 0,
 } as const;
+
+/* ---- Committee and roles, and what the system has been doing ---- */
+
+/** The five roles the platform actually defines. Parent is listed because the
+ *  role exists in the schema; it is marked unused because `user_roles` holds
+ *  zero parent accounts, which is also why parent access stays tagged in
+ *  development everywhere on this site. */
+export type RoleRow = {
+  role: string;
+  people: number;
+  can: string;
+  /** True where the role is defined but nobody holds it yet. */
+  unused?: boolean;
+};
+
+export const DEMO_ROLES: RoleRow[] = [
+  { role: "Admin", people: 3, can: "Everything, including who else gets an account" },
+  { role: "Teacher", people: 31, can: "Their own classes — register, pupils, nothing financial" },
+  { role: "Hall office", people: 2, can: "Hall hire, nikah and course enquiries" },
+  { role: "Madrasah", people: 1, can: "The whole madrasah: registers, fees, families" },
+  { role: "Parent", people: 0, can: "Their own children only", unused: true },
+];
+
+/** What the audit log actually records.
+ *
+ *  Worth knowing what this is NOT: it is not only a list of who clicked what.
+ *  Most of the real log is the platform keeping the retention promises the
+ *  masjid was sold — holds expiring, donation records ageing out, applications
+ *  purged after their window. The rest is human actions and the occasional
+ *  anomaly worth a second look. The sample keeps that proportion. */
+export type AuditRow = { at: string; who: string; action: string; detail: string; kind: "person" | "system" | "flag" };
+
+export const DEMO_AUDIT: AuditRow[] = [
+  { at: "Today 18:14", who: "A. Khan (admin)", action: "teacher_login_created", detail: "New login for the Tuesday girls' class", kind: "person" },
+  { at: "Today 03:00", who: "The system", action: "hall_holds_purged", detail: "4 unpaid hall holds released after 48 hours", kind: "system" },
+  { at: "Yesterday 16:40", who: "The system", action: "payment_without_reference", detail: "£60 received with no reference — needs matching to a family", kind: "flag" },
+  { at: "Yesterday 03:00", who: "The system", action: "admission_applications_purged", detail: "11 unsuccessful applications deleted at the end of their retention window", kind: "system" },
+  { at: "3 days ago 09:22", who: "S. Patel (madrasah)", action: "fee_rate_changed", detail: "Second-child rate 24.00 → 22.00", kind: "person" },
+  { at: "3 days ago 03:00", who: "The system", action: "donations_purged", detail: "Gift Aid records older than the statutory period removed", kind: "system" },
+];
+
+/* ---- The madrasah year ---- */
+
+export type ClosureRow = { name: string; from: string; to: string; note?: string };
+export type EventRow = { name: string; hijri: string; on: string; estimated: boolean };
+
+/** Term dates and holidays. Date ranges, because a half term is a week and a
+ *  single-date field would make the office enter five rows for it. */
+export const DEMO_CLOSURES: ClosureRow[] = [
+  { name: "Insert day", from: "1 Sep", to: "1 Sep", note: "Staff only — no pupils" },
+  { name: "Half term", from: "26 Oct", to: "30 Oct" },
+  { name: "End of term break", from: "21 Dec", to: "1 Jan" },
+  { name: "Ramaḍān holidays", from: "8 Feb", to: "12 Mar" },
+  { name: "Summer half term", from: "31 May", to: "4 Jun" },
+  { name: "End of year", from: "26 Jul", to: "3 Sep" },
+];
+
+/** The Islamic calendar, with the one honest detail that matters: every
+ *  moon-dependent date is marked estimated until it is sighted. A system that
+ *  printed Eid as a fixed date would be wrong one year in two. */
+export const DEMO_EVENTS: EventRow[] = [
+  { name: "Mawlid an-Nabī ﷺ", hijri: "12 Rabīʿ al-Awwal", on: "24 Sep", estimated: true },
+  { name: "Laylat al-Miʿrāj", hijri: "27 Rajab", on: "15 Jan", estimated: true },
+  { name: "Ramaḍān begins", hijri: "1 Ramaḍān", on: "8 Feb", estimated: true },
+  { name: "Last ten nights begin", hijri: "21 Ramaḍān", on: "28 Feb", estimated: true },
+  { name: "ʿĪd al-Fiṭr", hijri: "1 Shawwāl", on: "10 Mar", estimated: true },
+  { name: "ʿĪd al-Aḍḥā", hijri: "10 Dhū al-Ḥijjah", on: "17 May", estimated: true },
+];
+
+/* ---- Bringing a madrasah's existing data in ---- */
+
+/** What the £499 setup fee actually does, as a finished import.
+ *
+ *  Every field here maps to a column in the real import tables — including the
+ *  ones nobody enjoys discussing: medical notes, allergies, SEND and EHCP
+ *  detail, and whether a child may walk home alone. They come across because a
+ *  madrasah that loses them in a migration has lost the things that matter
+ *  most. */
+export const DEMO_IMPORT = {
+  source: "One spreadsheet and two years of paper registers",
+  pupils: 438,
+  classes: 36,
+  guardians: 341,
+  households: 268,
+  siblingsLinked: 173,
+  /** The system proposes a sibling link and says why; a human confirms it. */
+  siblingsForReview: 6,
+  /* Stored mid-sentence, because this list is joined into a sentence. Do not
+     lowercase it on the way out: SEND and EHCP are acronyms a madrasah
+     secretary reads every week, and "send and ehcp" is simply wrong. */
+  carried: [
+    "medical notes and allergies",
+    "SEND and EHCP detail",
+    "whether a child may walk home alone",
+    "previous madrasah, and the date they joined",
+  ],
+} as const;
+
+/* ---- Office and parents, in one thread ---- */
+
+/** Messaging is parent-to-office, which is why it is tagged in development
+ *  rather than shown as working: the office half is built, but no parent has an
+ *  account to write from. The thread below is what it looks like once they do. */
+export type ThreadRow = {
+  subject: string;
+  household: string;
+  last: string;
+  state: "Open" | "Answered";
+  unread: boolean;
+  openedByParent: boolean;
+};
+
+export const DEMO_THREADS: ThreadRow[] = [
+  { subject: "Collecting Yusuf early on Thursdays", household: "The Dawood household", last: "2 hours ago", state: "Open", unread: true, openedByParent: true },
+  { subject: "Fee instalment for this term", household: "The Rahman household", last: "Yesterday", state: "Answered", unread: false, openedByParent: true },
+  { subject: "Half term dates", household: "The Begum household", last: "4 days ago", state: "Answered", unread: false, openedByParent: false },
+];

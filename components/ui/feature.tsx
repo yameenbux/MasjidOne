@@ -276,9 +276,12 @@ export function FeaturesSection() {
           <div className="mt-4">
             <h3 className="font-serif text-xl text-foreground flex items-baseline gap-2 flex-wrap">
               {card.title}
-              <span className={card.status === "Live" ? "tag tag--live" : "tag tag--dev"}>
-                {card.status}
-              </span>
+              {/* Same as the diagram above: only "In development" is shown.
+                  Five Live tags and one dev tag meant the eye skipped all six.
+                  The dev tag is load-bearing and stays. */}
+              {card.status === "In development" ? (
+                <span className="tag tag--dev">{card.status}</span>
+              ) : null}
             </h3>
             <p className="text-muted-foreground text-sm mt-1 leading-relaxed">{card.body}</p>
           </div>

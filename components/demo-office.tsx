@@ -3,6 +3,7 @@
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
+import { DEMO_ROLES, DEMO_AUDIT } from "@/lib/demo-data";
 import {
   DEMO_REQUESTS,
   DEMO_NOTICES,
@@ -47,7 +48,7 @@ import {
 
 const money = (n: number) => `£${n.toLocaleString("en-GB")}`;
 
-type Tab = "requests" | "notices" | "giving";
+type Tab = "requests" | "notices" | "giving" | "committee";
 
 export function DemoOffice({
   masjidName,
@@ -122,6 +123,7 @@ export function DemoOffice({
               ["requests", `Requests · ${DEMO_CONGREGATION.needsYou}`],
               ["notices", `Notices · ${DEMO_CONGREGATION.drafts} draft`],
               ["giving", "Giving"],
+              ["committee", "Committee"],
             ] as const
           ).map(([key, label]) => (
             <button
@@ -299,6 +301,89 @@ export function DemoOffice({
             </div>
           </section>
         ) : null}
+        {tab === "committee" ? (
+          <>
+            <p className="dadmin__intro">
+              Who can do what, and what has been done. This is the first thing
+              trustees ask about and the last thing most systems answer, because
+              the usual answer is one shared password in a drawer.
+            </p>
+
+            <h2 className="dadmin__h">Roles</h2>
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Roles, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  Access is granted per person, per role. Nobody sees everything
+                  by default — including the admins, who can see everything but
+                  leave a trail doing it. Sample data.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Role</th>
+                    <th scope="col" className="dadmin__num">People</th>
+                    <th scope="col">What it reaches</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_ROLES.map((r) => (
+                    <tr key={r.role}>
+                      <th scope="row">
+                        {r.role}
+                        {r.unused ? (
+                          <span className="dadmin__muted"> · not in use yet</span>
+                        ) : null}
+                      </th>
+                      <td className={r.unused ? "dadmin__num dadmin__muted" : "dadmin__num"}>
+                        {r.people}
+                      </td>
+                      <td>{r.can}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <p className="dcong__said">
+              The parent role is defined and reaches nothing yet, because no
+              parent has an account. It is listed rather than hidden — a role
+              that exists in the system should be visible in the system.
+            </p>
+
+            <h2 className="dadmin__h">What has been done</h2>
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Audit log, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  Not only a list of who clicked what. Most of this log is the
+                  platform keeping the retention promises the masjid was sold —
+                  holds released, records aged out on schedule — alongside the
+                  human actions and anything that looks wrong. Sample data.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">When</th>
+                    <th scope="col">Who</th>
+                    <th scope="col">What</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_AUDIT.map((a) => (
+                    <tr key={a.at + a.action}>
+                      <th scope="row" className="dadmin__muted">{a.at}</th>
+                      <td>{a.who}</td>
+                      <td>
+                        <span className={a.kind === "flag" ? "dcong__next" : undefined}>
+                          {a.detail}
+                        </span>
+                        <span className="dadmin__muted dcong__ref"> {a.action}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : null}
+
       </div>
 
       <footer className="dadmin__foot">
