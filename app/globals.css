@@ -2219,3 +2219,75 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .cform__steps::marker,.cform__steps li::marker{color:var(--brass); font-size:var(--t-small)}
 .cform__steps li{margin-bottom:.6rem; line-height:1.6}
 .cform__asidenote{margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}
+
+/* ===================================================================
+   Demo list search and filters
+   -------------------------------------------------------------------
+   Underlined inputs rather than boxed ones, matching the contact form and
+   the demo login — the prayer-board hairline vernacular, not a card. Sits
+   above a table, so it has to stay quiet.
+   =================================================================== */
+
+.dfilter{margin:0 0 var(--s3)}
+.dfilter__row{
+  display:flex; flex-wrap:wrap; gap:var(--s2) var(--s3); align-items:flex-end;
+}
+.dfilter__field{
+  margin:0; display:flex; flex-direction:column; gap:.3rem; min-width:0;
+  flex:0 1 auto;
+}
+/* The search box takes the slack; the selects stay at their content width. */
+.dfilter__field--grow{flex:1 1 15rem}
+.dfilter__field label{
+  color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+.dfilter__field input,
+.dfilter__field select{
+  width:100%; min-width:0;
+  /* 44px, because the office opens this on a tablet as often as a desktop. */
+  min-height:2.75rem; padding:.5rem .15rem;
+  background:transparent; color:var(--ink);
+  border:0; border-bottom:var(--hair) solid var(--rule-2); border-radius:0;
+  font:inherit; font-size:1rem;
+  transition:border-color .2s ease;
+}
+.dfilter__field select{
+  -webkit-appearance:none; appearance:none; padding-right:1.5rem; cursor:pointer;
+  /* Chevron in currentColor so it follows the theme without a second asset. */
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+                   linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 9px) 1.15rem,calc(100% - 4px) 1.15rem;
+  background-size:5px 5px,5px 5px; background-repeat:no-repeat;
+}
+.dfilter__field input::placeholder{color:var(--ink-2); opacity:.6}
+.dfilter__field input:focus,
+.dfilter__field select:focus{outline:none; border-bottom-color:var(--brass)}
+.dfilter__field input:focus-visible,
+.dfilter__field select:focus-visible{outline:2px solid var(--brass); outline-offset:3px}
+/* The native clear affordance on type=search draws its own cross in a colour
+   we do not control; ours is the Clear button, which says what it does. */
+.dfilter__field input[type=search]::-webkit-search-cancel-button{display:none}
+
+.dfilter__clear{
+  flex:0 0 auto; min-height:2.75rem; padding:.5rem var(--s2);
+  background:transparent; color:var(--brass);
+  border:var(--hair) solid var(--rule-2); border-radius:0;
+  font:inherit; font-size:var(--t-label); letter-spacing:.12em;
+  text-transform:uppercase; cursor:pointer;
+}
+.dfilter__clear:hover{border-color:var(--brass)}
+
+.dfilter__count{
+  margin:var(--s2) 0 0; color:var(--ink-2);
+  font-size:var(--t-small); font-variant-numeric:tabular-nums;
+}
+.dfilter__count strong{color:var(--ink); font-weight:600}
+
+.dfilter__empty{
+  margin:0; padding:var(--s3) 0;
+  border-top:var(--hair) solid var(--rule);
+  border-bottom:var(--hair) solid var(--rule);
+  color:var(--ink-2); max-width:44rem; line-height:1.7;
+}
+.dfilter__empty strong{color:var(--ink)}

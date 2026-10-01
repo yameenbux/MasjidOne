@@ -155,7 +155,13 @@ export type PupilRow = {
   attendance: number;
 };
 
-/** A slice of the roll, enough to show the shape of the record. */
+/**
+ * A slice of the roll. Not all 438 — but every household the fees table bills
+ * appears here with exactly the number of children it is billed for, so a
+ * committee can cross-check any family between the two screens and the numbers
+ * hold. The assertion below enforces that; before it, Household 1017 was billed
+ * for four children and listed two.
+ */
 export const DEMO_PUPILS: PupilRow[] = [
   { ref: "P-0431", name: "Pupil A. Adam", className: "Nāẓirah 3A", guardian: "Household 1042", attendance: 96 },
   { ref: "P-0432", name: "Pupil B. Adam", className: "Qāʿidah 1A", guardian: "Household 1042", attendance: 91 },
@@ -165,7 +171,56 @@ export const DEMO_PUPILS: PupilRow[] = [
   { ref: "P-0295", name: "Pupil A. Chowdhury", className: "ʿĀlimah 1", guardian: "Household 1203", attendance: 78 },
   { ref: "P-0120", name: "Pupil A. Dawood", className: "Hifz (girls)", guardian: "Household 1017", attendance: 97 },
   { ref: "P-0121", name: "Pupil B. Dawood", className: "Nāẓirah 3B", guardian: "Household 1017", attendance: 93 },
+  { ref: "P-0501", name: "Pupil C. Dawood", className: "Qāʿidah 1A", guardian: "Household 1017", attendance: 94 },
+  { ref: "P-0502", name: "Pupil D. Dawood", className: "Qāʿidah 1B", guardian: "Household 1017", attendance: 99 },
+  { ref: "P-0503", name: "Pupil A. Ebrahim", className: "Qāʿidah 2A", guardian: "Household 1330", attendance: 92 },
+  { ref: "P-0504", name: "Pupil B. Ebrahim", className: "Qāʿidah 2B", guardian: "Household 1330", attendance: 80 },
+  { ref: "P-0505", name: "Pupil A. Farooq", className: "Nāẓirah 3A", guardian: "Household 1291", attendance: 95 },
+  { ref: "P-0506", name: "Pupil A. Gani", className: "Nāẓirah 3B", guardian: "Household 1156", attendance: 100 },
+  { ref: "P-0507", name: "Pupil B. Gani", className: "Nāẓirah 4A", guardian: "Household 1156", attendance: 90 },
+  { ref: "P-0508", name: "Pupil C. Gani", className: "Nāẓirah 4B", guardian: "Household 1156", attendance: 98 },
+  { ref: "P-0509", name: "Pupil A. Haque", className: "Hifz (boys)", guardian: "Household 1074", attendance: 89 },
+  { ref: "P-0510", name: "Pupil B. Haque", className: "Hifz (girls)", guardian: "Household 1074", attendance: 85 },
+  { ref: "P-0511", name: "Pupil A. Ibrahim", className: "ʿĀlimah 1", guardian: "Household 1055", attendance: 97 },
+  { ref: "P-0512", name: "Pupil B. Ibrahim", className: "Qāʿidah 1A", guardian: "Household 1055", attendance: 96 },
+  { ref: "P-0513", name: "Pupil A. Jamal", className: "Qāʿidah 1B", guardian: "Household 1187", attendance: 87 },
+  { ref: "P-0514", name: "Pupil A. Kassim", className: "Qāʿidah 2A", guardian: "Household 1214", attendance: 82 },
+  { ref: "P-0515", name: "Pupil B. Kassim", className: "Qāʿidah 2B", guardian: "Household 1214", attendance: 76 },
+  { ref: "P-0516", name: "Pupil C. Kassim", className: "Nāẓirah 3A", guardian: "Household 1214", attendance: 94 },
+  { ref: "P-0517", name: "Pupil A. Latif", className: "Nāẓirah 3B", guardian: "Household 1098", attendance: 99 },
+  { ref: "P-0518", name: "Pupil B. Latif", className: "Nāẓirah 4A", guardian: "Household 1098", attendance: 92 },
+  { ref: "P-0519", name: "Pupil A. Mahmood", className: "Nāẓirah 4B", guardian: "Household 1262", attendance: 80 },
+  { ref: "P-0520", name: "Pupil B. Mahmood", className: "Hifz (boys)", guardian: "Household 1262", attendance: 95 },
+  { ref: "P-0521", name: "Pupil A. Nasir", className: "Hifz (girls)", guardian: "Household 1133", attendance: 100 },
+  { ref: "P-0522", name: "Pupil A. Osman", className: "ʿĀlimah 1", guardian: "Household 1309", attendance: 90 },
+  { ref: "P-0523", name: "Pupil B. Osman", className: "Qāʿidah 1A", guardian: "Household 1309", attendance: 98 },
+  { ref: "P-0524", name: "Pupil A. Patel", className: "Qāʿidah 1B", guardian: "Household 1176", attendance: 89 },
+  { ref: "P-0525", name: "Pupil B. Patel", className: "Qāʿidah 2A", guardian: "Household 1176", attendance: 85 },
+  { ref: "P-0526", name: "Pupil C. Patel", className: "Qāʿidah 2B", guardian: "Household 1176", attendance: 97 },
+  { ref: "P-0527", name: "Pupil A. Qureshi", className: "Nāẓirah 3A", guardian: "Household 1221", attendance: 96 },
+  { ref: "P-0528", name: "Pupil A. Rashid", className: "Nāẓirah 3B", guardian: "Household 1245", attendance: 87 },
+  { ref: "P-0529", name: "Pupil B. Rashid", className: "Nāẓirah 4A", guardian: "Household 1245", attendance: 82 },
+  { ref: "P-0530", name: "Pupil A. Saleh", className: "Nāẓirah 4B", guardian: "Household 1067", attendance: 76 },
+  { ref: "P-0531", name: "Pupil B. Saleh", className: "Hifz (boys)", guardian: "Household 1067", attendance: 94 },
+  { ref: "P-0532", name: "Pupil A. Tahir", className: "Hifz (girls)", guardian: "Household 1288", attendance: 99 },
 ];
+
+/* Every household the fee table bills must appear on the roll with exactly the
+   number of children it is charged for, or a committee cross-checking the two
+   screens finds the demo contradicting itself. Fails the build, not the demo. */
+{
+  for (const fee of DEMO_FEES) {
+    const ref = fee.household.split(" · ")[0];
+    const onRoll = DEMO_PUPILS.filter((p) => p.guardian === ref).length;
+    if (onRoll !== fee.children) {
+      throw new Error(
+        `${fee.household} is billed for ${fee.children} children but ${onRoll} appear on the roll.`,
+      );
+    }
+  }
+}
+
+
 
 /**
  * The seeded sign-in. Shown on the screen on purpose: this is a demonstration

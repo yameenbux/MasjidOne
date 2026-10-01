@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { DemoFilter, DemoEmpty, matches } from "@/components/demo-filter";
 import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
 import {
@@ -66,6 +67,44 @@ export function DemoAdmin({
   onSignOut: () => void;
 }) {
   const [tab, setTab] = React.useState<Tab>("registers");
+
+  /* Search and filter state for the three lists that have enough rows to need
+     it. Kept here rather than in each tab so switching tabs does not lose what
+     somebody has typed mid-demonstration. */
+  const [pupilQ, setPupilQ] = React.useState("");
+  const [pupilClass, setPupilClass] = React.useState("All classes");
+  const [feeQ, setFeeQ] = React.useState("");
+  const [feeState, setFeeState] = React.useState("All families");
+  const [regQ, setRegQ] = React.useState("");
+  const [regState, setRegState] = React.useState("All registers");
+
+  const pupilClasses = React.useMemo(
+    () => ["All classes", ...Array.from(new Set(DEMO_PUPILS.map((p) => p.className))).sort()],
+    [],
+  );
+  const pupils = DEMO_PUPILS.filter(
+    (p) =>
+      (pupilClass === "All classes" || p.className === pupilClass) &&
+      matches(pupilQ, p.ref, p.name, p.className, p.guardian),
+  );
+  const fees = DEMO_FEES.filter(
+    (f) =>
+      (feeState === "All families" ||
+        (feeState === "Behind" ? f.behind > 0 : f.behind === 0)) &&
+      matches(feeQ, f.household),
+  );
+  /* "Awaiting lock" is draft or submitted — the same definition the tab count
+     uses, so the filter and the tab cannot disagree. */
+  const registers = DEMO_REGISTERS.filter(
+    (r) =>
+      (regState === "All registers"
+        ? true
+        : regState === "Awaiting lock"
+          ? r.state === "draft" || r.state === "submitted"
+          : regState === "Not taken"
+            ? r.state === "missing"
+            : r.state === "locked") && matches(regQ, r.className, r.teacher),
+  );
 
   const missing = DEMO_REGISTERS.filter((r) => r.state === "missing").length;
   const open = DEMO_REGISTERS.filter(
@@ -150,6 +189,33 @@ export function DemoAdmin({
 
         {tab === "registers" ? (
           <section aria-label="Today's registers">
+            <DemoFilter
+              label="Find a class or teacher"
+              placeholder="Class name or teacher"
+              query={regQ}
+              onQuery={setRegQ}
+              selects={[
+                {
+                  id: "state",
+                  label: "Showing",
+                  value: regState,
+                  options: ["All registers", "Awaiting lock", "Not taken", "Locked"],
+                  onChange: setRegState,
+                },
+              ]}
+              showing={registers.length}
+              loaded={DEMO_REGISTERS.length}
+              total={DEMO_REGISTERS.length}
+              noun="registers"
+            />
+            {registers.length === 0 ? (
+              <DemoEmpty
+                query={regQ}
+                loaded={DEMO_REGISTERS.length}
+                total={DEMO_REGISTERS.length}
+                noun="registers"
+              />
+            ) : (
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Registers table, scrollable">
               <table className="dadmin__table">
                 <caption className="dadmin__cap">
@@ -166,7 +232,7 @@ export function DemoAdmin({
                   </tr>
                 </thead>
                 <tbody>
-                  {DEMO_REGISTERS.map((r) => (
+                  {registers.map((r) => (
                     <tr key={r.className}>
                       <th scope="row">{r.className}</th>
                       <td>{r.teacher}</td>
@@ -185,6 +251,7 @@ export function DemoAdmin({
                 </tbody>
               </table>
             </div>
+            )}
           </section>
         ) : null}
 
@@ -204,6 +271,28 @@ export function DemoAdmin({
                 <span className="dadmin__tileL">Families in arrears</span>
               </li>
             </ul>
+            <DemoFilter
+              label="Find a family"
+              placeholder="Household number or surname"
+              query={feeQ}
+              onQuery={setFeeQ}
+              selects={[
+                {
+                  id: "state",
+                  label: "Showing",
+                  value: feeState,
+                  options: ["All families", "Behind", "Up to date"],
+                  onChange: setFeeState,
+                },
+              ]}
+              showing={fees.length}
+              loaded={DEMO_FEES.length}
+              total={DEMO_TOTALS.households}
+              noun="households"
+            />
+            {fees.length === 0 ? (
+              <DemoEmpty query={feeQ} loaded={DEMO_FEES.length} total={DEMO_TOTALS.households} noun="households" />
+            ) : (
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Fees table, scrollable">
               <table className="dadmin__table">
                 <caption className="dadmin__cap">
@@ -222,7 +311,7 @@ export function DemoAdmin({
                   </tr>
                 </thead>
                 <tbody>
-                  {DEMO_FEES.map((f) => (
+                  {fees.map((f) => (
                     <tr key={f.household}>
                       <th scope="row">{f.household}</th>
                       <td className="dadmin__num">{f.children}</td>
@@ -250,11 +339,34 @@ export function DemoAdmin({
                 </tbody>
               </table>
             </div>
+            )}
           </section>
         ) : null}
 
         {tab === "pupils" ? (
           <section aria-label="Pupils">
+            <DemoFilter
+              label="Find a pupil"
+              placeholder="Name, reference, class or household"
+              query={pupilQ}
+              onQuery={setPupilQ}
+              selects={[
+                {
+                  id: "class",
+                  label: "Class",
+                  value: pupilClass,
+                  options: pupilClasses,
+                  onChange: setPupilClass,
+                },
+              ]}
+              showing={pupils.length}
+              loaded={DEMO_PUPILS.length}
+              total={DEMO_TOTALS.pupils}
+              noun="pupils"
+            />
+            {pupils.length === 0 ? (
+              <DemoEmpty query={pupilQ} loaded={DEMO_PUPILS.length} total={DEMO_TOTALS.pupils} noun="pupils" />
+            ) : (
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Pupils table, scrollable">
               <table className="dadmin__table">
                 <caption className="dadmin__cap">
@@ -271,7 +383,7 @@ export function DemoAdmin({
                   </tr>
                 </thead>
                 <tbody>
-                  {DEMO_PUPILS.map((p) => (
+                  {pupils.map((p) => (
                     <tr key={p.ref}>
                       <th scope="row">{p.ref}</th>
                       <td>{p.name}</td>
@@ -283,6 +395,7 @@ export function DemoAdmin({
                 </tbody>
               </table>
             </div>
+            )}
 
             {/* How the roll arrived. This sits under the pupils rather than on
                 its own tab because "how does our data get in?" is a question
