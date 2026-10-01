@@ -24,8 +24,17 @@ const masjidOnePlans = [
     yearlyPrice: String(yearlyTotal(PRICING.madrasah)),
     period: "month",
     yearlyPeriod: "year",
-    // The portal is built and running at Taiyabah. The two features below that
-    // are not built carry their own dev tag rather than the whole plan.
+    // The portal is built and loaded at Taiyabah — the roll, the classes, the
+    // staff and their logins. The two features below that are not built carry
+    // their own dev tag rather than the whole plan.
+    //
+    // The description below says "built" rather than "running" on purpose, and
+    // it is checked against the database rather than remembered: the portal
+    // holds 553 pupils and several thousand logged admin actions, and zero
+    // submitted registers and zero payments. "Built and in a masjid" is
+    // supported; "running" implies an evening-by-evening operation that has
+    // not started, and the FAQ and the preview captions already sit on the
+    // honest line. This used to contradict both of them.
     status: "live" as const,
     features: [
       "Unlimited pupils and teachers",
@@ -38,7 +47,7 @@ const masjidOnePlans = [
       "Phone support, no per-pupil pricing, no paid add-ons",
     ],
     description:
-      "Running in a Bolton masjid now. Setup is charged at signing; the monthly starts at go-live.",
+      "Built, and in a Bolton masjid now — the roll, the classes and the staff are on it. Setup is charged at signing; the monthly starts at go-live.",
     buttonText: "Request a demo",
     href: DEMO_MAILTO,
     isPopular: false,
@@ -60,7 +69,7 @@ const masjidOnePlans = [
       { text: "Parent access — the join", status: "dev" as const },
     ],
     description:
-      "Both sides run in a Bolton masjid now. The half a parent sees is the last piece.",
+      "Both sides are in a Bolton masjid now. The half a parent sees is the last piece.",
     buttonText: "Request a demo",
     href: DEMO_MAILTO,
     isPopular: true,
