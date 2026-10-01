@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING } from "@/lib/site";
+import { PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mosque prayer times and prayer hall screens",
   description:
     "Prayer time displays for UK masajid. Your own jamāʿah times — not a calculation — on unlimited prayer hall screens, the congregation app and your website at once, changed in one place.",
   alternates: { canonical: "/mosque-prayer-times-screens/" },
+  openGraph: openGraphFor("/mosque-prayer-times-screens/"),
 };
 
 export default function PrayerTimesScreensPage() {

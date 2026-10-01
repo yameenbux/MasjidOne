@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
+import { openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
   description:
     "How MasjidOne and YSB Ventures Ltd handle personal data on this website and in the platform.",
+  alternates: { canonical: "/privacy/" },
+  openGraph: openGraphFor("/privacy/"),
 };
 
 /**

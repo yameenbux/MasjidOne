@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING } from "@/lib/site";
+import { PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Madrasah software: registers, fees and families",
   description:
     "Madrasah management software for UK mosques. Daily registers drafted, submitted and locked, fees charged per family with automatic reminders, and every teacher on their own login. £79 a month, unlimited pupils.",
   alternates: { canonical: "/madrasah-software/" },
+  openGraph: openGraphFor("/madrasah-software/"),
 };
 
 export default function MadrasahSoftwarePage() {

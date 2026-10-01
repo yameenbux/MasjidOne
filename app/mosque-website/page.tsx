@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING } from "@/lib/site";
+import { PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "A managed mosque website",
   description:
     "A managed website for UK masajid, current because nobody has to remember to update it: today's prayer times, the next jamāʿah and your notices publish to the site, the app and the hall screens at once.",
   alternates: { canonical: "/mosque-website/" },
+  openGraph: openGraphFor("/mosque-website/"),
 };
 
 export default function MosqueWebsitePage() {

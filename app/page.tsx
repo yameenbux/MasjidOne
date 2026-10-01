@@ -13,6 +13,17 @@ import { SiteBehaviour } from "@/components/site-behaviour";
 import { MasjidOnePricing } from "@/components/masjidone-pricing";
 import { MasjidOneHero } from "@/components/masjidone-hero";
 
+import type { Metadata } from "next";
+import { openGraphFor } from "@/lib/site";
+
+/** The canonical used to come from the root layout, where every other page
+ *  inherited it by mistake. It belongs to this page. */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: openGraphFor("/"),
+};
+
+
 export default function Home() {
   return (
     <>
