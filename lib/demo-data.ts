@@ -121,3 +121,55 @@ export const DEMO_PUPILS: PupilRow[] = [
  * not.
  */
 export const DEMO_CREDENTIALS = { user: "demo", pass: "demo" } as const;
+
+/* ---------------------------------------------------------------------------
+   Congregation side
+   --------------------------------------------------------------------------
+   The other half of the join. Same invented masjid, same invented people — a
+   committee has to see that both halves exist before "one system" means
+   anything, and a chooser that leads to a dead end makes the opposite point.
+
+   Prayer times carry begins and jamāʿah as two columns because that is the
+   rhythm a UK prayer board uses, and because it is the distinction that
+   matters: a calculated time is a beginning, a jamāʿah time is a decision the
+   masjid made. Tabular numerals, per the design system.
+   ------------------------------------------------------------------------- */
+
+export type PrayerRow = { name: string; begins: string; jamaah: string };
+
+export const DEMO_PRAYERS: PrayerRow[] = [
+  { name: "Fajr", begins: "05:42", jamaah: "06:15" },
+  { name: "Sunrise", begins: "07:14", jamaah: "—" },
+  { name: "Zuhr", begins: "12:58", jamaah: "13:30" },
+  { name: "ʿAsr", begins: "15:46", jamaah: "16:15" },
+  { name: "Maghrib", begins: "18:31", jamaah: "18:36" },
+  { name: "ʿIshāʾ", begins: "20:02", jamaah: "20:15" },
+];
+
+export const DEMO_JUMUAH = [
+  { label: "First Jumuʿah", time: "13:15" },
+  { label: "Second Jumuʿah", time: "14:00" },
+];
+
+export type NoticeRow = { title: string; detail: string; when: string; urgent?: boolean };
+
+export const DEMO_NOTICES: NoticeRow[] = [
+  {
+    title: "Janāzah after Zuhr",
+    detail: "Burial to follow at the cemetery. Lifts leaving from the car park.",
+    when: "Today",
+    urgent: true,
+  },
+  { title: "Madrasah half term", detail: "No classes Monday to Friday next week.", when: "Today" },
+  { title: "Roof appeal update", detail: "£18,400 raised of the £45,000 target.", when: "2 days ago" },
+  { title: "Winter timetable", detail: "ʿIshāʾ moves to 19:45 from the first of next month.", when: "5 days ago" },
+];
+
+/** Headline figures for the congregation dashboard. Invented, like the rest. */
+export const DEMO_CONGREGATION = {
+  appInstalls: 1246,
+  remindersSent: 3810,
+  givenThisMonth: 4280,
+  giftAidClaimable: 920,
+  hallScreens: 4,
+} as const;

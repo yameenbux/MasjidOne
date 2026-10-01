@@ -2,7 +2,9 @@
 
 import * as React from "react";
 import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
+import { DemoChooser, type ChooserVariant, type PortalKey } from "@/components/demo-chooser";
 import { DemoAdmin } from "@/components/demo-admin";
+import { DemoCongregation } from "@/components/demo-congregation";
 import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
 
 /**
@@ -17,36 +19,51 @@ import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
  * means there is no server here to authenticate against, and adding one is
  * forbidden. Nothing typed into it leaves the page, and nothing is stored: no
  * localStorage, no cookie, so a reload returns to the sign-in screen. Real
- * software behaviour needs a real tenant; see founder/demo-tenant.md.
+ * software behaviour needs a real tenant, in its own Supabase project.
  *
  * WHY THE CREDENTIALS ARE PRINTED ON THE SCREEN. Because a login box on a
  * public URL that appears to guard something real, but does not, is a
  * credential-harvesting shape. Saying "demo / demo, this is a demonstration"
  * in plain sight removes any doubt about what the visitor is looking at.
  *
- * THE ?masjid= PARAMETER is the white-label slot, and the reason this is worth
- * more than a slide deck: open /demo/?masjid=Masjid%20e%20Taqwa before a call
- * and the committee sees their own masjid's name above the sign-in. The
- * "Demonstration · sample data" strip stays regardless, so a screenshot can
- * never be passed around as evidence that they are a customer.
+ * THE FLOW is sign in → choose a portal → that portal, with "Switch portal" to
+ * come back. Both halves lead somewhere real: a chooser whose second door
+ * opens onto nothing would undercut the one claim the product rests on.
  *
- * Read from window.location rather than useSearchParams: the latter forces a
- * Suspense boundary and a client-side bailout under static export, for a value
- * this page can perfectly well pick up after mount.
+ * TWO QUERY PARAMETERS, both read from window.location rather than
+ * useSearchParams, which forces a Suspense boundary and a client-side bailout
+ * under static export for values this page can pick up after mount:
+ *
+ *   ?masjid=   the white-label slot. Open /demo/?masjid=Masjid%20e%20Taqwa
+ *              before a call and the committee sees their own name above the
+ *              form. The "Demonstration · sample data" strip stays regardless,
+ *              so a screenshot can never be passed around as evidence that
+ *              they are a customer.
+ *   ?chooser=  a|b|c, while three drafts of the portal chooser are being
+ *              weighed. This comes out once one is chosen.
  */
+
+type Stage = "login" | "pick" | "madrasah" | "congregation";
 
 export default function DemoPage() {
   const [masjid, setMasjid] = React.useState(DEMO_MASJID_DEFAULT);
-  const [signedIn, setSignedIn] = React.useState(false);
+  const [variant, setVariant] = React.useState<ChooserVariant>("a");
+  const [stage, setStage] = React.useState<Stage>("login");
 
   React.useEffect(() => {
-    const raw = new URLSearchParams(window.location.search).get("masjid");
-    if (!raw) return;
-    // Trim, collapse whitespace and cap the length. The value lands in a
-    // heading at display size, and React escapes it, so the only real risk is
-    // someone pasting an essay and breaking the layout.
-    const name = raw.replace(/\s+/g, " ").trim().slice(0, 48);
-    if (name) setMasjid(name);
+    const q = new URLSearchParams(window.location.search);
+
+    const raw = q.get("masjid");
+    if (raw) {
+      // Trim, collapse whitespace and cap the length. The value lands in a
+      // heading at display size and React escapes it, so the only real risk is
+      // someone pasting an essay and breaking the layout.
+      const name = raw.replace(/\s+/g, " ").trim().slice(0, 48);
+      if (name) setMasjid(name);
+    }
+
+    const v = (q.get("chooser") ?? "").toLowerCase();
+    if (v === "a" || v === "b" || v === "c") setVariant(v);
   }, []);
 
   return (
@@ -60,9 +77,7 @@ export default function DemoPage() {
         </span>
       </p>
 
-      {signedIn ? (
-        <DemoAdmin masjidName={masjid} onSignOut={() => setSignedIn(false)} />
-      ) : (
+      {stage === "login" ? (
         <MasjidAccessLogin
           masjidName={masjid}
           onSignIn={(user, pass) => {
@@ -70,7 +85,7 @@ export default function DemoPage() {
               user.toLowerCase() === DEMO_CREDENTIALS.user &&
               pass === DEMO_CREDENTIALS.pass
             ) {
-              setSignedIn(true);
+              setStage("pick");
               return null;
             }
             return `Use ${DEMO_CREDENTIALS.user} / ${DEMO_CREDENTIALS.pass} — this is a demonstration.`;
@@ -83,7 +98,31 @@ export default function DemoPage() {
             </>
           }
         />
-      )}
+      ) : null}
+
+      {stage === "pick" ? (
+        <DemoChooser
+          masjidName={masjid}
+          variant={variant}
+          onChoose={(k: PortalKey) => setStage(k)}
+        />
+      ) : null}
+
+      {stage === "madrasah" ? (
+        <DemoAdmin
+          masjidName={masjid}
+          onSwitch={() => setStage("pick")}
+          onSignOut={() => setStage("login")}
+        />
+      ) : null}
+
+      {stage === "congregation" ? (
+        <DemoCongregation
+          masjidName={masjid}
+          onSwitch={() => setStage("pick")}
+          onSignOut={() => setStage("login")}
+        />
+      ) : null}
     </>
   );
 }
