@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
-import { openGraphFor } from "@/lib/site";
+import { BASE_PATH, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms and conditions",
@@ -118,7 +118,7 @@ export default function TermsPage() {
       <h2>3. Data protection</h2>
       <p>
         Covered separately in the{" "}
-        <a href="../privacy/">privacy policy</a> and, for customers, in the data
+        <a href={`${BASE_PATH}/privacy/`}>privacy policy</a> and, for customers, in the data
         processing agreement signed before the first invoice.
       </p>
 
