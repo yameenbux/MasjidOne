@@ -8,6 +8,7 @@ import {
   DEMO_EVENTS,
   DEMO_IMPORT,
   DEMO_THREADS,
+  DEMO_PROGRESS,
 } from "@/lib/demo-data";
 import {
   DEMO_TOTALS,
@@ -48,7 +49,7 @@ const STATE_LABEL: Record<RegisterState, string> = {
   missing: "Not taken",
 };
 
-type Tab = "registers" | "fees" | "pupils" | "calendar" | "messages";
+type Tab = "registers" | "fees" | "pupils" | "calendar" | "progress" | "messages";
 
 export function DemoAdmin({
   masjidName,
@@ -123,6 +124,7 @@ export function DemoAdmin({
               ["fees", `Fees · ${DEMO_FEE_SUMMARY.inArrears} in arrears`],
               ["pupils", "Pupils"],
               ["calendar", "Calendar"],
+              ["progress", "Hifz & sabaq"],
               [
                 "messages",
                 `Messages · ${DEMO_THREADS.filter((t) => t.unread).length} unread`,
@@ -376,6 +378,76 @@ export function DemoAdmin({
                         {e.estimated ? (
                           <span className="dadmin__muted"> · estimated</span>
                         ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : null}
+
+        {tab === "progress" ? (
+          <>
+            <div className="dadmin__alert">
+              <p className="modp__tag" style={{ margin: "0 0 .5rem" }}>
+                <span className="tag tag--dev">In development</span>
+              </p>
+              <p style={{ margin: 0 }}>
+                <strong>Designed and not yet built.</strong> The table exists
+                and holds nothing: no teacher has written an entry. This is what
+                it will look like, shown so a committee can see what is coming
+                rather than be told about it. You are not buying this today.
+              </p>
+            </div>
+
+            <p className="dadmin__intro">
+              Sabaq is the new lesson, sabqi the recent revision, manzil the
+              older. A teacher writes them after hearing a child, and decides
+              per entry whether the parent sees it.
+            </p>
+
+            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Progress entries, scrollable">
+              <table className="dadmin__table">
+                <caption className="dadmin__cap">
+                  The private note is the column that matters. A teacher needs
+                  somewhere to write &ldquo;tired all week, ask whether anything
+                  has changed at home&rdquo; without it arriving on a father&rsquo;s
+                  phone. Nothing reaches a parent unless it is marked shared.
+                  Sample data.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Pupil</th>
+                    <th scope="col">When</th>
+                    <th scope="col">Sabaq</th>
+                    <th scope="col">Sabqi</th>
+                    <th scope="col">Manzil</th>
+                    <th scope="col">Parent sees</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_PROGRESS.map((r) => (
+                    <tr key={r.pupilRef + r.on}>
+                      <th scope="row">{r.pupilRef}</th>
+                      <td className="dadmin__muted">{r.on}</td>
+                      <td>{r.sabaq}</td>
+                      <td>{r.sabqi}</td>
+                      <td>{r.manzil}</td>
+                      <td>
+                        {r.shared ? (
+                          <>
+                            <span className="dcong__next" aria-hidden="true">\u25aa </span>
+                            Shared
+                            {r.noteForParent ? (
+                              <span className="dadmin__muted"> — &ldquo;{r.noteForParent}&rdquo;</span>
+                            ) : null}
+                          </>
+                        ) : (
+                          <span className="dadmin__muted">
+                            Not shared{r.noteInternal ? " — private note only" : ""}
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

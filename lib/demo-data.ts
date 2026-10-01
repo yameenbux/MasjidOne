@@ -506,3 +506,99 @@ export const DEMO_PARENT = {
 
 /** The evening's session times, so "next session" is not invented twice. */
 export const DEMO_PARENT_SESSION = { days: "Monday to Thursday", from: "17:30", to: "19:00" } as const;
+
+/* ---- Hifz and sabaq progress ---- */
+
+/**
+ * Shaped from the real `madrasah_progress` table, which is more considered
+ * than a progress log usually is and decides the design:
+ *
+ *   sabaq / sabqi / manzil   the three classical divisions — the new lesson,
+ *                            the recent revision, the older revision — as free
+ *                            text, because "Al-Baqarah 142–148" is how a
+ *                            teacher writes it and a dropdown would fight them.
+ *   note_for_parent          what the parent reads.
+ *   note_internal            what the parent does not. A teacher needs somewhere
+ *                            to write "struggling since the move" without it
+ *                            landing on a father's phone.
+ *   shared                   the teacher decides, per entry, whether the parent
+ *                            sees it at all. Nothing reaches a parent by
+ *                            default.
+ *
+ * STILL IN DEVELOPMENT. The table exists and holds zero rows; no teacher has
+ * ever written one. Every screen built on this carries the tag.
+ */
+export type ProgressRow = {
+  pupilRef: string;
+  on: string;
+  sabaq: string;
+  sabqi: string;
+  manzil: string;
+  noteForParent?: string;
+  noteInternal?: string;
+  shared: boolean;
+};
+
+export const DEMO_PROGRESS: ProgressRow[] = [
+  {
+    pupilRef: "P-0388", on: "Wed 1 Oct",
+    sabaq: "Al-Baqarah 142–148", sabqi: "Al-Baqarah 120–141", manzil: "Juzʾ 1",
+    noteForParent: "Fluent today. Ready to move on.",
+    shared: true,
+  },
+  {
+    pupilRef: "P-0388", on: "Tue 30 Sep",
+    sabaq: "Al-Baqarah 136–141", sabqi: "Al-Baqarah 115–135", manzil: "Juzʾ 1",
+    noteForParent: "Two slips on 139. Worth hearing him again at home.",
+    shared: true,
+  },
+  {
+    pupilRef: "P-0388", on: "Mon 29 Sep",
+    sabaq: "Al-Baqarah 130–135", sabqi: "Al-Baqarah 110–129", manzil: "Juzʾ 1",
+    noteInternal: "Tired all week — ask the office whether anything has changed at home.",
+    shared: false,
+  },
+  {
+    pupilRef: "P-0389", on: "Wed 1 Oct",
+    sabaq: "Qāʿidah p.41 — joined letters", sabqi: "p.38–40", manzil: "—",
+    noteForParent: "Reading more confidently. Keep going five minutes a night.",
+    shared: true,
+  },
+];
+
+/** One child's term, week by week, for the parent's detail view. */
+export type TermWeek = { week: string; marks: ("in" | "absent" | "late" | "closed")[] };
+
+export const DEMO_TERM: Record<string, TermWeek[]> = {
+  "P-0388": [
+    { week: "29 Sep", marks: ["in", "in", "in", "in"] },
+    { week: "22 Sep", marks: ["in", "in", "in", "in"] },
+    { week: "15 Sep", marks: ["in", "in", "late", "in"] },
+    { week: "8 Sep", marks: ["in", "in", "in", "in"] },
+    { week: "1 Sep", marks: ["closed", "in", "in", "in"] },
+  ],
+  "P-0389": [
+    { week: "29 Sep", marks: ["in", "absent", "late", "in"] },
+    { week: "22 Sep", marks: ["in", "in", "absent", "in"] },
+    { week: "15 Sep", marks: ["absent", "absent", "in", "in"] },
+    { week: "8 Sep", marks: ["in", "in", "in", "in"] },
+    { week: "1 Sep", marks: ["closed", "in", "in", "in"] },
+  ],
+};
+
+/** What the £90 is made of — charges and payments against the family. */
+export const DEMO_LEDGER = [
+  { on: "1 Oct", what: "Monthly fee — October", charge: 45, paid: 0 },
+  { on: "1 Sep", what: "Monthly fee — September", charge: 45, paid: 0 },
+  { on: "28 Jul", what: "Payment received — card", charge: 0, paid: 45 },
+  { on: "1 Jul", what: "Monthly fee — July", charge: 45, paid: 0 },
+] as const;
+
+/** Why a parent says a child will be away. The office sees the reason. */
+export const DEMO_ABSENCE_REASONS = [
+  "Unwell",
+  "Away travelling",
+  "A family commitment",
+  "A school commitment",
+  "Something else",
+] as const;

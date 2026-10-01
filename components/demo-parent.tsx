@@ -2,7 +2,15 @@
 
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
-import { DEMO_PARENT, DEMO_PARENT_SESSION } from "@/lib/demo-data";
+import {
+  DEMO_PARENT,
+  DEMO_PARENT_SESSION,
+  DEMO_PROGRESS,
+  DEMO_TERM,
+  DEMO_LEDGER,
+  DEMO_ABSENCE_REASONS,
+  type ParentChildRow,
+} from "@/lib/demo-data";
 
 /**
  * What a parent sees after signing in.
@@ -34,6 +42,117 @@ const MARK: Record<string, { label: string; glyph: string; cls: string }> = {
 };
 const DAYS = ["Mon", "Tue", "Wed", "Thu"];
 
+
+/** One child, opened: the term, what the teacher wrote, nothing else. */
+function ChildDetail({ child, onBack }: { child: ParentChildRow; onBack: () => void }) {
+  const term = DEMO_TERM[child.ref] ?? [];
+  // Only entries the teacher chose to share. The private note never leaves
+  // the madrasah, which is the point of the `shared` flag being per entry.
+  const shared = DEMO_PROGRESS.filter((r) => r.pupilRef === child.ref && r.shared);
+  return (
+    <>
+      <button type="button" className="dnav__btn pback" onClick={onBack}>
+        <span aria-hidden="true">←</span> All children
+      </button>
+
+      <section className="pchild" aria-label={child.name}>
+        <h2 className="pchild__name">{child.name}</h2>
+        <p className="pchild__class">{child.className} · {child.teacher}</p>
+
+        <h3 className="pdet__h">This term</h3>
+        <ul className="pterm">
+          {term.map((w) => (
+            <li className="pterm__row" key={w.week}>
+              <span className="pterm__week">{w.week}</span>
+              <span className="pterm__marks">
+                {w.marks.map((m, i) => (
+                  <span key={i} className={`pmark ${MARK[m].cls} pmark--tiny`}>
+                    <span className="pmark__glyph" aria-hidden="true">{MARK[m].glyph}</span>
+                    <span className="u-visually-hidden">{DAYS[i]} {MARK[m].label}</span>
+                  </span>
+                ))}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="dadmin__muted pdet__note">
+          <strong>{child.attendance}%</strong> across the term. Closed days are
+          not counted against a child.
+        </p>
+      </section>
+
+      <section className="pfee" aria-label="Progress">
+        <div className="pdet__tagrow">
+          <h3 className="pdet__h" style={{ margin: 0 }}>Hifz and sabaq</h3>
+          <span className="tag tag--dev">In development</span>
+        </div>
+        <p className="dadmin__muted pdet__note">
+          What the teacher heard, and chose to share. Sabaq is the new lesson,
+          sabqi the recent revision, manzil the older. A teacher can also write
+          a note only the madrasah sees — none of those appear here.
+        </p>
+        {shared.length === 0 ? (
+          <p className="dadmin__muted">Nothing shared yet.</p>
+        ) : (
+          <ul className="pprog">
+            {shared.map((r) => (
+              <li className="pprog__row" key={r.on}>
+                <p className="pprog__when">{r.on}</p>
+                <dl className="pprog__dl">
+                  <dt>Sabaq</dt><dd>{r.sabaq}</dd>
+                  <dt>Sabqi</dt><dd>{r.sabqi}</dd>
+                  <dt>Manzil</dt><dd>{r.manzil}</dd>
+                </dl>
+                {r.noteForParent ? <p className="pprog__note">“{r.noteForParent}”</p> : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </>
+  );
+}
+
+/** Telling the madrasah before the register opens. */
+function AbsenceForm({
+  child, onCancel, onSend,
+}: { child: ParentChildRow; onCancel: () => void; onSend: (day: string, reason: string) => void }) {
+  const [day, setDay] = React.useState("This evening");
+  const [reason, setReason] = React.useState<string>(DEMO_ABSENCE_REASONS[0]);
+  return (
+    <>
+      <button type="button" className="dnav__btn pback" onClick={onCancel}>
+        <span aria-hidden="true">←</span> Cancel
+      </button>
+      <section className="pfee" aria-label={`Report an absence for ${child.name}`}>
+        <h2 className="pchild__name">Report an absence</h2>
+        <p className="dadmin__muted pdet__note">
+          {child.name} · {child.className} · {child.teacher}
+        </p>
+        <form
+          onSubmit={(e) => { e.preventDefault(); onSend(day, reason); }}
+        >
+          <div className="pform__field">
+            <label htmlFor="abs-day">Which session</label>
+            <select id="abs-day" value={day} onChange={(e) => setDay(e.target.value)}>
+              {["This evening", "Tomorrow evening", "The rest of this week"].map((d) => (
+                <option key={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+          <div className="pform__field">
+            <label htmlFor="abs-why">Why</label>
+            <select id="abs-why" value={reason} onChange={(e) => setReason(e.target.value)}>
+              {DEMO_ABSENCE_REASONS.map((r) => <option key={r}>{r}</option>)}
+            </select>
+          </div>
+          <button type="submit" className="dcong__do">Tell the madrasah</button>
+        </form>
+      </section>
+    </>
+  );
+}
+
 export function DemoParent({
   masjidName,
   onSignOut,
@@ -42,6 +161,8 @@ export function DemoParent({
   onSignOut: () => void;
 }) {
   const [said, setSaid] = React.useState("");
+  const [open, setOpen] = React.useState<ParentChildRow | null>(null);
+  const [absence, setAbsence] = React.useState<ParentChildRow | null>(null);
   const { fees, children } = DEMO_PARENT;
 
   const act = (message: string) => () => setSaid(message);
@@ -71,6 +192,21 @@ export function DemoParent({
           {said}
         </p>
 
+        {absence ? (
+          <AbsenceForm
+            child={absence}
+            onCancel={() => setAbsence(null)}
+            onSend={(day, reason) => {
+              setAbsence(null);
+              setSaid(
+                `${absence.name} reported absent — ${day.toLowerCase()}, ${reason.toLowerCase()}. ${absence.teacher} sees it before the register opens, the office sees it on their screen, and nobody had to telephone the masjid.`,
+              );
+            }}
+          />
+        ) : open ? (
+          <ChildDetail child={open} onBack={() => setOpen(null)} />
+        ) : (
+        <>
         {/* ── Each child, with this week at a glance ───────────────────── */}
         {children.map((c) => (
           <section className="pchild" key={c.ref} aria-label={c.name}>
@@ -98,15 +234,22 @@ export function DemoParent({
               {c.note ? <span className="pchild__note"> — {c.note}</span> : null}
             </p>
 
-            <button
-              type="button"
-              className="dcong__do dcong__do--small"
-              onClick={act(
-                `${c.name} reported absent. ${c.teacher} sees it before the register opens, and nobody has to telephone the masjid.`,
-              )}
-            >
-              Tell the madrasah they will be absent
-            </button>
+            <div className="pchild__acts">
+              <button
+                type="button"
+                className="dcong__do"
+                onClick={() => { setOpen(c); setSaid(""); }}
+              >
+                Open {c.name.split(" ").slice(-2).join(" ")}
+              </button>
+              <button
+                type="button"
+                className="dcong__do dcong__do--small"
+                onClick={() => { setAbsence(c); setSaid(""); }}
+              >
+                Report an absence
+              </button>
+            </div>
           </section>
         ))}
 
@@ -151,6 +294,8 @@ export function DemoParent({
             Write to the office
           </button>
         </section>
+        </>
+        )}
       </div>
 
       <div className="dadmin__foot">
