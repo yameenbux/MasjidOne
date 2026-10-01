@@ -279,6 +279,61 @@ export const DEMO_PRAYERS: PrayerRow[] = [
   { name: "ʿIshāʾ", begins: "20:02", jamaah: "20:15" },
 ];
 
+/**
+ * Screens checking in.
+ *
+ * NOT BUILT, AND TAGGED AS SUCH. There is no screens table in the platform and
+ * no function anywhere takes a screen id, so this is the first thing since the
+ * tags were cleared on 1 October that genuinely earns "In development". Do not
+ * quietly promote it; the test is whether the functions exist and enforce, not
+ * whether this fixture looks convincing.
+ *
+ * WHAT IT IS AND IS NOT. It is monitoring, not content. Every screen in the
+ * building shows the same output — that does not change — and this says only
+ * whether a television is switched on and talking to us. The reason it is
+ * worth building is the Foyer row: a screen that died on Tuesday is currently
+ * found by a congregant, not by the office.
+ */
+export type ScreenRow = {
+  name: string;
+  /** Which shape it is hung in, so the list matches the two previews above. */
+  shape: "Landscape" | "Portrait";
+  /** Seconds since it last reported in. null means it never has. */
+  secondsAgo: number | null;
+};
+
+export const DEMO_SCREENS: ScreenRow[] = [
+  { name: "Prayer hall", shape: "Landscape", secondsAgo: 18 },
+  { name: "Women's section", shape: "Landscape", secondsAgo: 44 },
+  { name: "Foyer", shape: "Portrait", secondsAgo: 229_000 },
+  { name: "Madrasah corridor", shape: "Portrait", secondsAgo: null },
+];
+
+/** A screen is late before it is dead, because a reboot takes a minute. */
+export const SCREEN_LATE_AFTER = 180;
+export const SCREEN_DOWN_AFTER = 3_600;
+
+export type ScreenState = "ok" | "late" | "down" | "never";
+
+export function screenState(s: ScreenRow): ScreenState {
+  if (s.secondsAgo === null) return "never";
+  if (s.secondsAgo > SCREEN_DOWN_AFTER) return "down";
+  if (s.secondsAgo > SCREEN_LATE_AFTER) return "late";
+  return "ok";
+}
+
+/** "18 seconds ago", "4 days ago" — the office does not want a timestamp. */
+export function sinceLabel(secondsAgo: number | null): string {
+  if (secondsAgo === null) return "Never";
+  if (secondsAgo < 60) return `${secondsAgo} seconds ago`;
+  const m = Math.round(secondsAgo / 60);
+  if (m < 60) return `${m} minute${m === 1 ? "" : "s"} ago`;
+  const h = Math.round(secondsAgo / 3_600);
+  if (h < 24) return `${h} hour${h === 1 ? "" : "s"} ago`;
+  const d = Math.round(secondsAgo / 86_400);
+  return `${d} day${d === 1 ? "" : "s"} ago`;
+}
+
 export const DEMO_JUMUAH = [
   { label: "First Jumuʿah", time: "13:15" },
   { label: "Second Jumuʿah", time: "14:00" },

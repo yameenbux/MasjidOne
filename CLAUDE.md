@@ -104,8 +104,21 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    enforcing); *Hifz and sabaq progress* (`madrasah_progress` plus six
    functions including `progress_save`, with `shared` and a private note).
 
-   **Nothing currently carries the tag.** The mechanism stays in the code for
-   the next thing that genuinely is unbuilt.
+   **One thing carries the tag: the screen heartbeat** (`DEMO_SCREENS` and the
+   "Are the screens alive?" panel in the Timetable view, added 1 October 2026).
+   It is correctly tagged and must stay tagged. There is no screens table in
+   the platform and no function anywhere takes a screen id — checked against
+   the live database, not inferred from a comment. Do not promote it because
+   the fixture looks convincing; the test is whether the functions exist and
+   enforce. Nothing else carries the tag.
+
+   **What the heartbeat is, so it is not widened by mistake:** monitoring, not
+   content. Every screen shows the same output and that does not change. The
+   panel says only whether a television is switched on and talking to us. A
+   screens *registry* (a token per screen, a last-seen timestamp) is what it
+   would need; per-screen *content* is a different and much larger thing that
+   nobody has asked for and that the "one timetable, not a wall of screens"
+   pitch deliberately argues against.
 
    **What is still true, and is a usage fact rather than a capability one:**
    no register has been submitted, no fee paid, no progress entry written and

@@ -5,6 +5,9 @@ import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
 import { HallScreen } from "@/components/demo-hall-screen";
 import {
+  DEMO_SCREENS,
+  screenState,
+  sinceLabel,
   DEMO_PRAYERS,
   type PrayerRow,
   DEMO_JUMUAH,
@@ -220,6 +223,68 @@ export function DemoScreens({
             and whichever way round. Interface preview — the design is fixed,
             the words are yours.
           </p>
+
+          {/* ARE THE SCREENS ALIVE?
+              Tagged In development, and it is the first thing to carry that tag
+              since they were all cleared on 1 October, because it genuinely is
+              unbuilt: there is no screens table and no function takes a screen
+              id. Do not promote it because the fixture looks convincing.
+
+              It is also deliberately MONITORING AND NOT CONTENT. Every screen
+              shows the same output and that does not change here; this says
+              only whether a television is switched on and talking to us. The
+              Foyer row is the argument for building it — a screen that died on
+              Tuesday is currently found by a congregant, not by the office. */}
+          <div className="dheart">
+            <div className="dheart__head">
+              <h3 className="dheart__h">Are the screens alive?</h3>
+              <span className="tag tag--dev">In development</span>
+            </div>
+            <p className="dheart__lede">
+              Each screen says hello every minute. This is the only thing in the
+              system that is about a television rather than about the times —
+              they all show the same output, and nothing here changes what any
+              one of them says.
+            </p>
+
+            <ul className="dheart__list">
+              {DEMO_SCREENS.map((sc) => {
+                const state = screenState(sc);
+                return (
+                  <li className={`dheart__row dheart__row--${state}`} key={sc.name}>
+                    <span className="dheart__dot" aria-hidden="true" />
+                    <span className="dheart__name">
+                      {sc.name}
+                      <span className="dheart__shape">{sc.shape}</span>
+                    </span>
+                    <span className="dheart__since">
+                      {state === "never" ? (
+                        "Never checked in"
+                      ) : (
+                        <>Seen {sinceLabel(sc.secondsAgo)}</>
+                      )}
+                    </span>
+                    <span className="dheart__verdict">
+                      {state === "ok"
+                        ? "Showing the timetable"
+                        : state === "late"
+                          ? "Quiet — may be restarting"
+                          : state === "down"
+                            ? "Not showing anything"
+                            : "Set up, never opened"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <p className="dheart__note">
+              The foyer screen has been dark since Tuesday. Nobody has mentioned
+              it, which is how it usually goes — a blank screen is noticed by
+              whoever walks past it, and only if they say something. This is
+              what the heartbeat is for, and it is the whole of what it does.
+            </p>
+          </div>
 
           {/* WHAT A MASJID ACTUALLY NEEDS.
               The first question after "that looks good" is "what do we have to

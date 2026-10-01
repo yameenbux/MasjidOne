@@ -2648,3 +2648,71 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .dreq__note + .dreq__note{margin-top:var(--s2); padding-top:var(--s2)}
 .dreq__note strong{color:var(--ink); font-weight:600}
+
+/* ===================================================================
+   Screen heartbeat — are the televisions alive?
+   -------------------------------------------------------------------
+   Monitoring, not content. State is carried in the dot's FORM as well as
+   its colour (filled, ringed, hollow) and restated in words at the end of
+   every row, so nothing here depends on telling brass from grey.
+   =================================================================== */
+
+.dheart{
+  margin:var(--s4) 0 0; padding:var(--s3) 0 0;
+  border-top:var(--hair) solid var(--rule);
+  max-width:58rem;
+}
+.dheart__head{display:flex; align-items:baseline; gap:var(--s2); flex-wrap:wrap}
+.dheart__h{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:var(--t-h3); line-height:1.15;
+}
+.dheart__lede{
+  margin:var(--s1) 0 var(--s3); color:var(--ink-2);
+  max-width:38rem; line-height:1.7;
+}
+.dheart__list{margin:0; padding:0; list-style:none; display:grid; gap:0}
+.dheart__row{
+  display:grid; gap:.2rem var(--s2); align-items:baseline;
+  grid-template-columns:auto minmax(0,1fr);
+  padding:var(--s2) 0;
+  border-top:var(--hair) solid var(--rule);
+}
+.dheart__row:last-child{border-bottom:var(--hair) solid var(--rule)}
+@media (min-width:46em){
+  .dheart__row{
+    grid-template-columns:auto minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);
+  }
+}
+.dheart__dot{
+  width:.6rem; height:.6rem; border-radius:50%;
+  border:2px solid var(--ink-2); align-self:center;
+  grid-row:1; grid-column:1;
+}
+.dheart__name{font-weight:600; min-width:0; display:flex; flex-direction:column}
+.dheart__shape{
+  font-weight:400; color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.1em; text-transform:uppercase;
+}
+.dheart__since,.dheart__verdict{color:var(--ink-2); font-size:var(--t-small); min-width:0}
+.dheart__since{font-variant-numeric:tabular-nums}
+/* On a phone the three text cells stack under the name rather than beside it. */
+@media (max-width:45.99em){
+  .dheart__since,.dheart__verdict{grid-column:2}
+}
+
+/* Alive: filled. Late: ringed. Down and never: hollow — a shape difference,
+   not only a colour one. */
+.dheart__row--ok .dheart__dot{background:var(--brass); border-color:var(--brass)}
+.dheart__row--ok .dheart__verdict{color:var(--brass)}
+.dheart__row--late .dheart__dot{background:transparent; border-color:var(--brass)}
+.dheart__row--down .dheart__dot{background:transparent; border-color:var(--ink); border-style:dashed}
+.dheart__row--down .dheart__name,
+.dheart__row--down .dheart__verdict{color:var(--ink)}
+.dheart__row--down .dheart__verdict{font-weight:600}
+.dheart__row--never .dheart__dot{background:transparent; border-color:var(--rule-2)}
+
+.dheart__note{
+  margin:var(--s3) 0 0; color:var(--ink-2);
+  font-size:var(--t-small); line-height:1.7; max-width:44rem;
+}
