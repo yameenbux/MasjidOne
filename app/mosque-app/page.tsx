@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING } from "@/lib/site";
+import { PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "A congregation app for your masjid",
   description:
     "A mosque app for UK masajid: your own jamāʿah times, reminders set per person rather than per masjid, announcements and janāzah notices, qibla, a Zakat calculator and one-tap giving.",
   alternates: { canonical: "/mosque-app/" },
+  openGraph: openGraphFor("/mosque-app/"),
 };
 
 export default function MosqueAppPage() {

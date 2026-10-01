@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import { BASE_PATH, SITE_ORIGIN } from "@/lib/site";
+import { BASE_PATH, SITE_ORIGIN, openGraphFor } from "@/lib/site";
 import { StructuredData } from "@/components/structured-data";
 
 /**
@@ -45,7 +45,10 @@ export const metadata: Metadata = {
   authors: [{ name: "YSB Ventures Ltd" }],
   creator: "YSB Ventures Ltd",
   publisher: "YSB Ventures Ltd",
-  alternates: { canonical: "/" },
+  // NO DEFAULT CANONICAL HERE, deliberately. A canonical in the root layout is
+  // inherited by every page that does not override it, so /privacy/ was telling
+  // Google it was a duplicate of the home page and should not be indexed on its
+  // own. Each page declares its own; the home page's lives in app/page.tsx.
   // Search Console. A Domain property verified by DNS TXT at the registrar is
   // the better route — it covers http, https, www and every subdomain at once,
   // and survives a host move. This meta tag is here for the URL-prefix
@@ -80,22 +83,13 @@ export const metadata: Metadata = {
     shortcut: [{ url: `${BASE_PATH}/favicon-32.svg`, type: "image/svg+xml" }],
     apple: [{ url: `${BASE_PATH}/apple-touch-icon.png`, sizes: "180x180" }],
   },
-  openGraph: {
-    type: "website",
-    siteName: "MasjidOne",
-    locale: "en_GB",
-    url: SITE_ORIGIN,
+  // Next replaces openGraph wholesale rather than merging it, so every page
+  // builds its own block from one helper — see lib/site.ts. A fixed url here
+  // used to make every shared sub-page link resolve to the home page.
+  openGraph: openGraphFor("/", {
     title: "The madrasah and the congregation, on one system",
     description: SOCIAL_DESCRIPTION,
-    images: [
-      {
-        url: "/social-card.png",
-        width: 1200,
-        height: 630,
-        alt: "MasjidOne — the madrasah and the congregation, on one system",
-      },
-    ],
-  },
+  }),
   twitter: {
     card: "summary_large_image",
     title: "The madrasah and the congregation, on one system",

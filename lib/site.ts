@@ -52,3 +52,37 @@ export const PRICING = {
 export function yearlyTotal(monthlyPounds: number): number {
   return monthlyPounds * 12;
 }
+
+/**
+ * The Open Graph block for one page.
+ *
+ * Next REPLACES `openGraph` rather than merging it, so a page that sets only
+ * `url` silently drops the site name, the locale and the card image — the share
+ * card loses its picture, which is most of the point of a share card. Every
+ * page therefore builds its whole block from here.
+ *
+ * `title` and `description` are left out on purpose: with them absent Next
+ * falls back to the page's own title and description, which is what a shared
+ * module page should say. The home page passes its own, because its social copy
+ * is deliberately not its search copy.
+ */
+export function openGraphFor(
+  path: string,
+  overrides?: { title?: string; description?: string },
+) {
+  return {
+    type: "website" as const,
+    siteName: "MasjidOne",
+    locale: "en_GB",
+    url: path,
+    images: [
+      {
+        url: "/social-card.png",
+        width: 1200,
+        height: 630,
+        alt: "MasjidOne — the madrasah and the congregation, on one system",
+      },
+    ],
+    ...overrides,
+  };
+}

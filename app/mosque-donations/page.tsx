@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING } from "@/lib/site";
+import { PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mosque donations and Gift Aid at 0% commission",
   description:
     "Take donations for your masjid with 0% commission, permanently. Card, Apple Pay and Google Pay, one-off or recurring, appeal campaigns, and Gift Aid claimed at the point of giving.",
   alternates: { canonical: "/mosque-donations/" },
+  openGraph: openGraphFor("/mosque-donations/"),
 };
 
 export default function MosqueDonationsPage() {

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
+import { openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms and conditions",
   description:
     "The terms covering use of the MasjidOne website, and a summary of the terms on which the platform is supplied.",
+  alternates: { canonical: "/terms/" },
+  openGraph: openGraphFor("/terms/"),
 };
 
 /**
