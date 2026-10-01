@@ -1942,3 +1942,62 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   padding:.55rem .6rem; min-height:2.75rem;
 }
 .pform__field select:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+
+/* The parent's way back in: reset, lock, and a ticket to the office. */
+.mlogin__notice{margin:0 0 var(--s2)}
+.mlogin__help{margin:0; color:var(--board-ink-2); font-size:var(--t-small); line-height:1.6}
+.mlogin__link{
+  background:none; border:0; padding:0; cursor:pointer; font:inherit;
+  color:var(--board-brass);
+  box-shadow:inset 0 -1px 0 0 var(--board-brass);
+}
+.mlogin__link:hover{color:var(--board-ink)}
+.mlogin__link:focus-visible{outline:2px solid var(--board-brass); outline-offset:3px}
+
+.paccess{
+  flex:1; display:grid; place-items:center;
+  padding:var(--s4) var(--s2);
+  background:var(--board); color:var(--board-ink);
+  font-family:Archivo,system-ui,sans-serif;
+}
+.paccess__panel{width:100%; max-width:30rem}
+.paccess__name{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.8rem,5vw,2.6rem); line-height:1.08;
+}
+.paccess__body{margin-top:var(--s4)}
+.paccess__h{
+  margin:0 0 var(--s2); font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:var(--t-h3); line-height:1.2;
+}
+.paccess__p{margin:0 0 var(--s2); color:var(--board-ink-2); line-height:1.65; max-width:46ch}
+.paccess__muted{font-size:var(--t-small)}
+.paccess__acts{display:flex; gap:var(--s1); flex-wrap:wrap; margin-top:var(--s3)}
+.paccess__foot{
+  margin-top:var(--s5); padding-top:var(--s3);
+  border-top:var(--hair) solid var(--board-rule);
+}
+/* On the board, the form controls need the board's own colours. */
+.paccess .pform__field label{color:var(--board-ink-2)}
+.paccess .pform__field input{
+  font:inherit; color:var(--board-ink); background:transparent;
+  border:0; border-bottom:var(--hair) solid var(--board-ink-2);
+  padding:.55rem .1rem; min-height:2.75rem;
+}
+.paccess .pform__field input:focus-visible{
+  outline:0; border-bottom-color:var(--board-brass);
+  box-shadow:0 1px 0 0 var(--board-brass);
+}
+
+/* On the board, the action buttons need the board's own pair. --cta-bg is
+   tuned for paper and goes nearly invisible against deep green. */
+.paccess .dcong__do{
+  background:var(--board-brass); color:var(--board);
+  border-color:var(--board-brass);
+}
+.paccess .dcong__do--small{
+  background:transparent; color:var(--board-ink);
+  border-color:var(--board-rule);
+}
+.paccess .dcong__do--small:hover{border-color:var(--board-brass); color:var(--board-brass)}
+.paccess .dcong__do:focus-visible{outline:2px solid var(--board-brass); outline-offset:3px}

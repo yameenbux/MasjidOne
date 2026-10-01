@@ -1,12 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
 import { DemoParent } from "@/components/demo-parent";
-import {
-  DEMO_MASJID_DEFAULT,
-  DEMO_PARENT_CREDENTIALS,
-} from "@/lib/demo-data";
+import { DemoParentAccess } from "@/components/demo-parent-access";
+import { DEMO_MASJID_DEFAULT } from "@/lib/demo-data";
 
 /**
  * The parents' door.
@@ -53,26 +50,9 @@ export default function DemoParentPage() {
       {signedIn ? (
         <DemoParent masjidName={masjid} onSignOut={() => setSignedIn(false)} />
       ) : (
-        <MasjidAccessLogin
+        <DemoParentAccess
           masjidName={masjid}
-          portalLabel="Parents Portal"
-          onSignIn={(user, pass) => {
-            if (
-              user.trim().toLowerCase() === DEMO_PARENT_CREDENTIALS.user &&
-              pass === DEMO_PARENT_CREDENTIALS.pass
-            ) {
-              setSignedIn(true);
-              return null;
-            }
-            // Deliberately does not say which of the two was wrong.
-            return `Use ${DEMO_PARENT_CREDENTIALS.user} / ${DEMO_PARENT_CREDENTIALS.pass} — this is a demonstration.`;
-          }}
-          hint={
-            <>
-              Sign in with <code>parent</code> / <code>parent</code>. Your
-              madrasah issues this — you do not create it yourself.
-            </>
-          }
+          onSignedIn={() => setSignedIn(true)}
         />
       )}
     </div>

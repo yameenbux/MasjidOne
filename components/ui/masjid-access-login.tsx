@@ -57,6 +57,11 @@ export type MasjidAccessLoginProps = {
   onSignIn: (user: string, pass: string) => string | null;
   /** Small print under the form, e.g. the seeded demo credentials. */
   hint?: React.ReactNode;
+  /** Shown between the error and the button — the way out when sign-in fails. */
+  notice?: React.ReactNode;
+  /** Overrides the first field's label and input type. */
+  userLabel?: string;
+  userType?: "text" | "email";
   className?: string;
 };
 
@@ -81,6 +86,9 @@ export function MasjidAccessLogin({
   portalLabel = "Madrasah & congregation portal",
   onSignIn,
   hint,
+  notice,
+  userLabel = "Your sign-in",
+  userType = "text",
   className,
 }: MasjidAccessLoginProps) {
   const [user, setUser] = React.useState("");
@@ -181,11 +189,11 @@ export function MasjidAccessLogin({
 
         <form onSubmit={submit} noValidate>
           <div className="mlogin__field">
-            <label htmlFor="mlogin-user">Your sign-in</label>
+            <label htmlFor="mlogin-user">{userLabel}</label>
             <input
               id="mlogin-user"
               name="username"
-              type="text"
+              type={userType}
               autoComplete="username"
               autoCapitalize="none"
               spellCheck={false}
@@ -214,6 +222,8 @@ export function MasjidAccessLogin({
           <p className="mlogin__error" role="status" aria-live="polite">
             {error}
           </p>
+
+          {notice ? <div className="mlogin__notice">{notice}</div> : null}
 
           <div className="mlogin__submit">
             <span className="mlogin__drop" aria-hidden="true" />
