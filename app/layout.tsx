@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { BASE_PATH, SITE_ORIGIN } from "@/lib/site";
+import { StructuredData } from "@/components/structured-data";
 
 const TITLE = "MasjidOne — the madrasah and the congregation on one system";
 const DESCRIPTION =
@@ -19,6 +20,14 @@ export const metadata: Metadata = {
   creator: "YSB Ventures Ltd",
   publisher: "YSB Ventures Ltd",
   alternates: { canonical: "/" },
+  // Search Console. A Domain property verified by DNS TXT at the registrar is
+  // the better route — it covers http, https, www and every subdomain at once,
+  // and survives a host move. This meta tag is here for the URL-prefix
+  // property, which is verified per-origin: set GOOGLE_SITE_VERIFICATION as a
+  // repository variable and the tag appears; leave it unset and it does not.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
   robots: {
     index: true,
     follow: true,
@@ -91,7 +100,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..110,400..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <StructuredData />
+        {children}
+      </body>
     </html>
   );
 }

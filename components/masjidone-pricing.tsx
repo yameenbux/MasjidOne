@@ -1,7 +1,7 @@
 "use client";
 
 import { Pricing } from "@/components/ui/pricing";
-import { DEMO_MAILTO } from "@/lib/site";
+import { DEMO_MAILTO, PRICING, yearlyTotal } from "@/lib/site";
 
 /**
  * MasjidOne's real published prices.
@@ -20,8 +20,8 @@ import { DEMO_MAILTO } from "@/lib/site";
 const masjidOnePlans = [
   {
     name: "MADRASAH",
-    price: "79",
-    yearlyPrice: "948",
+    price: String(PRICING.madrasah),
+    yearlyPrice: String(yearlyTotal(PRICING.madrasah)),
     period: "month",
     yearlyPeriod: "year",
     // The portal is built and running at Taiyabah. The two features below that
@@ -45,8 +45,8 @@ const masjidOnePlans = [
   },
   {
     name: "MASJID COMPLETE",
-    price: "179",
-    yearlyPrice: "2148",
+    price: String(PRICING.complete),
+    yearlyPrice: String(yearlyTotal(PRICING.complete)),
     period: "month",
     yearlyPeriod: "year",
     status: "live" as const,
@@ -67,7 +67,7 @@ const masjidOnePlans = [
   },
   {
     name: "SETUP AND MIGRATION",
-    price: "499",
+    price: String(PRICING.setup),
     yearlyPrice: "0",
     period: "once",
     yearlyPeriod: "once",
