@@ -29,11 +29,19 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      # The sitemap stamps every URL with this rather than the build date, so a
+      # deploy that changed nothing does not tell crawlers three pages changed.
+      - name: Record the commit date for the sitemap
+        run: echo "COMMIT_DATE=$(git log -1 --format=%cI)" >> "$GITHUB_ENV"
       - run: npm run build
         env:
           # Set this to "/MasjidOne" if the site is served from
           # <user>.github.io/MasjidOne rather than a custom domain.
           NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
+          NEXT_PUBLIC_COMMIT_DATE: ${{ env.COMMIT_DATE }}
+          # Only needed for a Search Console URL-prefix property. A Domain
+          # property is verified by DNS at the registrar and needs nothing here.
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -2,10 +2,8 @@
 
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
+import { DemoNav } from "@/components/demo-nav";
 import {
-  DEMO_PRAYERS,
-  DEMO_JUMUAH,
-  DEMO_NEXT_JAMAAH,
   DEMO_REQUESTS,
   DEMO_NOTICES,
   DEMO_DONATIONS,
@@ -14,55 +12,57 @@ import {
 } from "@/lib/demo-data";
 
 /**
- * The congregation half of the demonstration tenant.
+ * The masjid office: everything on the congregation side that is not the
+ * timetable or the screens.
  *
- * The first version of this screen was a dashboard: five figures and two
- * read-only lists. Looking at what the platform actually stores changed the
- * shape of it. The congregation side is not a dashboard, it is a DAY — a
- * handful of times that must be right, a queue of things the public has asked
- * for that nobody has answered yet, and one or two things the masjid needs to
- * say. So the screen is organised around what the office has to do, not around
- * numbers that make a committee feel good.
+ * The congregation portal was one screen and is now two, because the two jobs
+ * have nothing to do with each other and are rarely done by the same person. A
+ * caretaker changing ʿIshāʾ for the winter does not want to walk past hall
+ * deposits to reach it, and the trustee chasing a nikah fee does not want the
+ * prayer table in the way. Timetable and screens live next door; this is the
+ * desk work.
  *
- * Four tabs, matching the madrasah portal's three so the two halves read as
- * one product:
+ * Three tabs, matching the madrasah portal's three so the halves read as one
+ * product. Each opens with the thing somebody most often came to do.
  *
- *   Today     the times, begins against jamāʿah, and the one being reminded
- *             next. Changing a jamāʿah time is the most frequent act on this
- *             side of the masjid and it is the first button on the screen.
  *   Requests  hall hire, nikah, chanda collections, course places and madrasah
- *             admissions. Every one of those is a public form the office must
- *             answer, they all carry the same reference/status/office_notes
- *             shape, and together they are most of the actual work. The
- *             admission is marked, because it is the join in one row: a form
- *             on the congregation side becoming a child on the madrasah side.
+ *             admissions. Five public forms the office must answer, all
+ *             carrying the same reference/status/office_notes shape, and
+ *             together most of the actual work. The admission is marked
+ *             because it is the join in one row: a form on the congregation
+ *             side becoming a child on the madrasah side.
  *   Notices   drafts until somebody presses Publish, and publishing can send
- *             to the app. The janāzah is the case that matters — a death is
- *             known at eleven and the burial is after Zuhr, so the only useful
- *             version of this reaches people in minutes.
+ *             to the app AND changes the line along the bottom of every screen
+ *             in the building. The janāzah is the case that matters — a death
+ *             known at eleven, a burial after Zuhr, so the only useful version
+ *             reaches people in minutes.
  *   Giving    0% commission, and unclaimed Gift Aid, which is money the
  *             committee can go and collect.
  *
- * Nothing here shows hall screens as managed devices, or an appeal with a
- * running total and phases. Neither has a table behind it, and a demo that
- * shows a screen the platform cannot produce is a promise that comes due in
- * week three.
+ * Every shape mirrors a table that is built. Nothing here shows hall screens
+ * as managed devices or an appeal with a running total: neither has a table,
+ * and a demo that shows a screen the platform cannot produce is a promise that
+ * comes due in week three.
  */
 
 const money = (n: number) => `£${n.toLocaleString("en-GB")}`;
 
-type Tab = "today" | "requests" | "notices" | "giving";
+type Tab = "requests" | "notices" | "giving";
 
-export function DemoCongregation({
+export function DemoOffice({
   masjidName,
+  onBack,
+  onHome,
   onSwitch,
   onSignOut,
 }: {
   masjidName: string;
+  onBack: () => void;
+  onHome: () => void;
   onSwitch: () => void;
   onSignOut: () => void;
 }) {
-  const [tab, setTab] = React.useState<Tab>("today");
+  const [tab, setTab] = React.useState<Tab>("requests");
   /**
    * Nothing here writes anywhere — there is no server behind a static export.
    * Rather than leave the buttons inert, which demonstrates nothing, each one
@@ -79,8 +79,8 @@ export function DemoCongregation({
     <div className="dadmin">
       <header className="dadmin__top">
         <div>
-          <p className="dadmin__portal">Congregation Portal</p>
-          <p className="dadmin__name">{masjidName}</p>
+          <p className="dadmin__portal">Masjid office</p>
+          <h1 className="dadmin__name">{masjidName}</h1>
         </div>
         <div className="dadmin__acts">
           <button type="button" className="dadmin__out" onClick={onSwitch}>
@@ -93,13 +93,14 @@ export function DemoCongregation({
       </header>
 
       <div className="dadmin__body">
+        <DemoNav onBack={onBack} onHome={onHome} homeLabel="Congregation home" />
+
         <ul className="dadmin__tiles">
           {[
             [String(DEMO_CONGREGATION.needsYou), "Need an answer"],
             [String(DEMO_CONGREGATION.drafts), "Notices in draft"],
             [money(DEMO_GIVING.month), "Given this month"],
             [money(DEMO_GIVING.unclaimed), "Gift Aid unclaimed"],
-            [DEMO_CONGREGATION.lastReach.toLocaleString("en-GB"), "Reached last send"],
           ].map(([value, label]) => (
             <li key={label} className="dadmin__tile">
               <span className="dadmin__tileN">{value}</span>
@@ -109,18 +110,15 @@ export function DemoCongregation({
         </ul>
 
         <p className="dadmin__alert" role="status">
-          <strong>
-            Next jamāʿah: {DEMO_NEXT_JAMAAH.name} at {DEMO_NEXT_JAMAAH.at}.
-          </strong>{" "}
-          Everyone who asked for thirty minutes&apos; notice is reminded at{" "}
-          {DEMO_NEXT_JAMAAH.remindAt}. The hall screens are showing these times,
-          from this table — there is only one set.
+          <strong>{DEMO_CONGREGATION.needsYou} requests are waiting.</strong> The
+          oldest has been sitting four days, and one hall hold expires in 46
+          hours. Prayer times and the screens are next door, under Timetable
+          &amp; screens.
         </p>
 
         <nav className="dadmin__tabs" aria-label="Sections">
           {(
             [
-              ["today", "Today"],
               ["requests", `Requests · ${DEMO_CONGREGATION.needsYou}`],
               ["notices", `Notices · ${DEMO_CONGREGATION.drafts} draft`],
               ["giving", "Giving"],
@@ -143,61 +141,6 @@ export function DemoCongregation({
         <p className="dcong__said" role="status" aria-live="polite">
           {said}
         </p>
-
-        {tab === "today" ? (
-          <section aria-label="Today's prayer times">
-            <div className="dcong__bar">
-              <button
-                type="button"
-                className="dcong__do"
-                onClick={act(
-                  "ʿAsr jamāʿah moved to 16:30. The hall screens and the app follow within the minute, and the reminder shifts to 16:00 for everyone who asked for half an hour.",
-                )}
-              >
-                Change a jamāʿah time
-              </button>
-              <span className="dadmin__muted">365 days loaded for this year</span>
-            </div>
-            <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Prayer times, scrollable">
-              <table className="dadmin__table">
-                <caption className="dadmin__cap">
-                  Jamāʿah is the masjid&apos;s own, not a calculated time. Sample data.
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Prayer</th>
-                    <th scope="col" className="dadmin__num">Begins</th>
-                    <th scope="col" className="dadmin__num">Jamāʿah</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {DEMO_PRAYERS.map((p) => (
-                    <tr key={p.name}>
-                      <th scope="row">
-                        {p.name === DEMO_NEXT_JAMAAH.name ? (
-                          <span className="dcong__next">{p.name} · next</span>
-                        ) : (
-                          p.name
-                        )}
-                      </th>
-                      <td className="dadmin__num">{p.begins}</td>
-                      <td className="dadmin__num">
-                        {p.jamaah === "—" ? <span className="dadmin__muted">—</span> : p.jamaah}
-                      </td>
-                    </tr>
-                  ))}
-                  {DEMO_JUMUAH.map((j) => (
-                    <tr key={j.label}>
-                      <th scope="row">{j.label}</th>
-                      <td className="dadmin__num dadmin__muted">—</td>
-                      <td className="dadmin__num">{j.time}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        ) : null}
 
         {tab === "requests" ? (
           <section aria-label="Requests awaiting the office">
@@ -365,4 +308,4 @@ export function DemoCongregation({
   );
 }
 
-export default DemoCongregation;
+export default DemoOffice;

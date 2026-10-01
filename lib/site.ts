@@ -30,3 +30,25 @@ export const CONTACT_EMAIL = "REPLACE-ME@masjidone.example";
 
 /** mailto with the subject prefilled, for the demo CTAs. */
 export const DEMO_MAILTO = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne demo request")}`;
+
+/**
+ * The published prices. One source, because three places quote them — the
+ * pricing cards, the structured data Google reads, and the comparison copy —
+ * and a figure that drifts between them is a figure a committee can catch.
+ *
+ * CLAUDE.md states the invariant: MasjidOne never discounts the monthly, it
+ * waives the setup fee. So the twelve-month figure is derived here rather than
+ * typed, and cannot quietly become a discount. £79 -> £948, £179 -> £2,148.
+ * The setup fee is the only figure that actually falls, £499 -> £0.
+ */
+export const PRICING = {
+  madrasah: 79,
+  complete: 179,
+  setup: 499,
+  currency: "GBP",
+} as const;
+
+/** Twelve months at the same monthly rate. Not a cheaper rate — the same one. */
+export function yearlyTotal(monthlyPounds: number): number {
+  return monthlyPounds * 12;
+}

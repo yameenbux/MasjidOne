@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
+import { DemoNav } from "@/components/demo-nav";
 import {
   DEMO_TOTALS,
   DEMO_REGISTERS,
@@ -45,10 +46,14 @@ type Tab = "registers" | "fees" | "pupils";
 
 export function DemoAdmin({
   masjidName,
+  onBack,
+  onHome,
   onSwitch,
   onSignOut,
 }: {
   masjidName: string;
+  onBack: () => void;
+  onHome: () => void;
   onSwitch: () => void;
   onSignOut: () => void;
 }) {
@@ -64,7 +69,7 @@ export function DemoAdmin({
       <header className="dadmin__top">
         <div>
           <p className="dadmin__portal">Madrasah Portal</p>
-          <p className="dadmin__name">{masjidName}</p>
+          <h1 className="dadmin__name">{masjidName}</h1>
         </div>
         <div className="dadmin__acts">
           <button type="button" className="dadmin__out" onClick={onSwitch}>
@@ -77,6 +82,8 @@ export function DemoAdmin({
       </header>
 
       <div className="dadmin__body">
+        <DemoNav onBack={onBack} onHome={onHome} homeLabel="Portals" />
+
         {/* Five figures, the ones a committee asks for first. */}
         <ul className="dadmin__tiles">
           {[
