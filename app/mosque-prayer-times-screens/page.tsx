@@ -31,7 +31,7 @@ export default function PrayerTimesScreensPage() {
         alt: "Interface preview of a prayer hall screen: a live clock, a timetable with beginning and jamāʿah columns, the next jamāʿah marked, and a strip carrying Jumuʿah and janāzah notices.",
         caption: (
           <>
-            Interface preview. Runs on any TV with a browser — unlimited
+            Interface preview. Runs on ordinary televisions — unlimited
             screens, live from the same timetable as the app.
           </>
         ),
@@ -98,7 +98,7 @@ export default function PrayerTimesScreensPage() {
           ),
         },
         {
-          h: "Unlimited screens, on any TV with a browser",
+          h: "Unlimited screens, on ordinary televisions",
           p: (
             <>
               No proprietary box to buy per screen and no per-screen licence.

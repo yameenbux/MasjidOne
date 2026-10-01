@@ -228,7 +228,7 @@ const CARDS: Card[] = [
     key: "screens",
     title: "Website and hall screens",
     status: "Live",
-    body: "A managed mosque website kept current from the same place as everything else, and unlimited screens on any TV with a browser. Live announcements and janāzah notices reach the hall and the phone together.",
+    body: "A managed mosque website kept current from the same place as everything else, and unlimited screens on ordinary televisions. Live announcements and janāzah notices reach the hall and the phone together.",
     Visual: LayoutAnimation,
   },
   {

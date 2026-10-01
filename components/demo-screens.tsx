@@ -251,11 +251,18 @@ export function DemoScreens({
                     portrait you want a panel or a bracket that turns.
                   </li>
                   <li>
-                    <strong>A way to open a web page on it.</strong> Most smart
-                    televisions have a browser built in and that is enough on
-                    its own. If yours has not, any streaming stick or small
-                    media player will do it. There is no box from us and nothing
-                    proprietary to buy.
+                    <strong>A small player to run it.</strong> A streaming
+                    stick or mini computer, about £50 once, from any shop — set
+                    to open the page the moment it has power and never leave it.
+                    This is the part we set up with you.{" "}
+                    <em>
+                      A television&rsquo;s own browser can open the page, and for
+                      a masjid spending nothing it will do. But a consumer set
+                      will not reopen the page after a power cut, will sleep on
+                      its own timer, and anybody with the remote can navigate
+                      away from it — so it is not what we would build an
+                      installation on.
+                    </em>
                   </li>
                   <li>
                     <strong>A network connection, wired if you can run one.</strong>{" "}
@@ -280,17 +287,32 @@ export function DemoScreens({
               <div className="dreq__col">
                 <p className="dreq__kicker">You will not need</p>
                 <ul className="dreq__not">
-                  <li>A Fire Stick, Chromecast or any box from us</li>
+                  <li>
+                    Hardware bought from us, or at our price — the player is an
+                    ordinary device from any shop
+                  </li>
                   <li>Digital signage software, or a subscription to it</li>
-                  <li>A computer in a cupboard</li>
-                  <li>Anything to install, update or patch — it is a web page</li>
+                  <li>A server, or a computer in a cupboard</li>
+                  <li>
+                    An app to install, or updates to keep on top of — the page
+                    refreshes itself
+                  </li>
                   <li>A charge per screen, however many you hang</li>
-                  <li>Anybody to come out and configure each one</li>
+                  <li>Anybody coming back out to each screen afterwards</li>
                 </ul>
                 <p className="dreq__note">
-                  A consumer television is fine. A commercial panel is built to
-                  be left on all day and will last longer if the hall screen
-                  never goes off — worth knowing, not worth insisting on.
+                  <strong>If you want one answer:</strong> an ordinary
+                  television and a £50 player. We will tell you the exact model
+                  and set it up, and every masjid we install gets the same one,
+                  so there is one thing to support rather than twenty.
+                </p>
+                <p className="dreq__note">
+                  <strong>If the budget runs to it:</strong> a commercial
+                  signage display instead. They cost £400&ndash;900, need no
+                  player at all because they open a web address on their own,
+                  are built to be left on all day, and cannot be navigated away
+                  from with a remote. Worth it for a screen that is going up
+                  once and staying there.
                 </p>
               </div>
             </div>

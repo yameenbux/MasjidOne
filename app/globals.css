@@ -2638,3 +2638,13 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   border-top:var(--hair) solid var(--rule);
   color:var(--ink-2); font-size:var(--t-small); line-height:1.7;
 }
+/* The caveat inside a requirement is a step down, not a shout: it qualifies the
+   line above rather than competing with it. Italic over several lines is hard
+   work, so it is set in the muted ink and given its own space instead. */
+.dreq__list em{
+  display:block; margin-top:.5rem; font-style:normal;
+  padding-left:.7rem; border-left:2px solid var(--rule-2);
+  font-size:var(--t-small); line-height:1.65;
+}
+.dreq__note + .dreq__note{margin-top:var(--s2); padding-top:var(--s2)}
+.dreq__note strong{color:var(--ink); font-weight:600}

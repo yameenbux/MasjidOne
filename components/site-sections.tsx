@@ -262,7 +262,7 @@ export function Previews() {
     <figure className="shot-fig">
       <img className="shot-img" src={`${BASE}/devices/hall-screen.webp`} width={1300} height={766} loading="lazy" decoding="async"
         alt="Interface preview of a prayer hall screen: a live clock, a timetable with beginning and jamāʿah columns, the next jamāʿah marked, and a strip carrying Jumuʿah and janāzah notices." />
-      <figcaption>Runs on any TV with a browser. Unlimited screens, live from the same timetable as the app.</figcaption>
+      <figcaption>Runs on ordinary televisions. Unlimited screens, live from the same timetable as the app.</figcaption>
     </figure>
   </div>
 
