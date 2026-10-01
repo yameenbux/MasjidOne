@@ -200,9 +200,30 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   re-encoded to 720p it should drop to roughly 4 MB; do not add an autoplay
   background video, which would download that weight before anyone has read
   a word.
-- Fill in the real contact email and phone in `#contact` — currently the
-  placeholder `REPLACE-ME@masjidone.example`.
-- Decide on a contact form. Static export can't process one; Formspree is the
-  minimal option, Cloudflare Pages Functions the better one.
+- **Fill in the real contact email and phone in `lib/site.ts`** — still the
+  placeholder `REPLACE-ME@masjidone.example`, and `CONTACT_PHONE` is empty.
+  This is the single highest-cost item on the site. Until it is set the demo
+  form can only hand its answers to the visitor's own mail client, aimed at an
+  address that does not exist, and the privacy and terms pages fall back to
+  linking the form rather than naming a subject-access address. Setting
+  `CONTACT_EMAIL` lights all of that up on its own — `CONTACT_READY` derives
+  from it and the conditionals are already in place.
+- **Decide where the form posts.** Done enough to ship: `#contact` and
+  `/request-a-demo/` both carry `components/demo-request-form.tsx`, and all
+  eight CTAs point at the page. What is left is the endpoint, set by the
+  repository variable `NEXT_PUBLIC_FORM_ENDPOINT` rather than in code.
+  Note the earlier brief was wrong on the options: **Cloudflare Pages
+  Functions are not available**, because the site is served by GitHub Pages
+  from `.github/workflows/deploy.yml` with a `public/CNAME`. The real choice
+  is a third-party endpoint (Formspree and the like — minutes of work, but a
+  processor who must then be named in the privacy policy), or a Cloudflare
+  Worker on a subdomain (you own the pipe and no processor appears in the
+  policy, but it needs a Worker and an email-sending service). Either way it
+  is a repository variable, not a rewrite.
+  Whatever is chosen, update the last paragraph of the privacy notice's
+  "The demo request form" section before it goes live — it currently promises
+  the processor will be named there.
+- Do not add a captcha. reCAPTCHA is a Google tracker and would trigger the
+  cookie banner this site deliberately avoids. The form has a honeypot.
 - Set `NEXT_PUBLIC_BASE_PATH` as a repository variable, or add a `CNAME` to
   `public/` for a custom domain.
