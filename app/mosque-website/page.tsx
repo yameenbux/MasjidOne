@@ -26,17 +26,51 @@ export default function MosqueWebsitePage() {
           such job attached to it.
         </>
       }
-      points={[
+      hero={{
+        img: "website.webp",
+        alt: "Interface preview of the managed mosque website, with the next jamāʿah in the header and today's times below the headline.",
+        caption: (
+          <>
+            Interface preview. The next jamāʿah in the header, because that is
+            what most visitors came for.
+          </>
+        ),
+      }}
+      bands={[
         {
           h: "Current without anybody updating it",
+          img: "hall-screen.webp",
+          alt: "Interface preview of a prayer hall screen showing the same beginning and jamāʿah times the website carries.",
+          caption: <>Interface preview. The hall screen and the site read one timetable.</>,
           p: (
             <>
-              The times on the website are the times on the screens, because they
-              are one timetable. Nobody edits the site on a Thursday night, and
-              there is no version of the site that is a fortnight behind the hall.
+              The times on the website are the times on the screens, because
+              they are one table rather than two copies of one. Nobody edits the
+              site on a Thursday night, and there is no week where the board in
+              the hall is right and the website is a fortnight behind. The most
+              common fault on a mosque website is not a design fault — it is
+              that keeping it current was somebody&apos;s unpaid job, and this
+              removes the job rather than reassigning it.
             </>
           ),
         },
+        {
+          h: "Notices publish everywhere at once",
+          img: "app-notices.webp",
+          alt: "Interface preview of notices in the congregation app: a janāzah today, Jumuʿah times, and a madrasah half term.",
+          caption: <>Interface preview. One action, three places.</>,
+          p: (
+            <>
+              A janāzah notice or a half-term announcement goes to the website,
+              the app and the hall screens in one action. A screen cannot carry
+              something the website is not also carrying, so the congregation
+              never has to work out which of the three to believe — which is
+              what they currently do, and why most of them check none of them.
+            </>
+          ),
+        },
+      ]}
+      points={[
         {
           h: "The next jamāʿah, in the header",
           p: (
@@ -44,16 +78,6 @@ export default function MosqueWebsitePage() {
               The one thing most visitors came for, answered before they scroll.
               Everything else on a mosque website is secondary to that line and
               the site should admit it.
-            </>
-          ),
-        },
-        {
-          h: "Notices publish everywhere at once",
-          p: (
-            <>
-              A janāzah notice or a half-term announcement goes to the website,
-              the app and the hall screens in one action. A screen cannot carry
-              something the website is not also carrying.
             </>
           ),
         },

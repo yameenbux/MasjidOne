@@ -1721,8 +1721,8 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   margin-top:var(--s4); padding:var(--s3);
   background:var(--paper-2);
   border:var(--hair) solid var(--rule); border-left:3px solid var(--brass);
-  max-width:60ch;
 }
+.modp__pending__body p:last-child{margin:.4rem 0 0; color:var(--ink-2); max-width:60ch}
 .modp__pending p:last-child{margin:.4rem 0 0; color:var(--ink-2)}
 
 .modp__rel{
@@ -1738,3 +1738,61 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .modp__rel a:hover{color:var(--brass)}
 .modp__rel span{color:var(--ink-2); font-size:var(--t-small)}
+
+/* ---------------------------------------------------------------------------
+   Module pages, part two: the imagery.
+
+   The first version of these pages was six paragraphs in a grid, and nobody
+   reads that. The arguments that carry a picture are now bands — one screen
+   beside one paragraph, alternating sides — and only the shorter points stay
+   as text. No JavaScript is involved anywhere here, deliberately: the home
+   page's previews hide four of five panels behind tabs, so with scripts off
+   most of the imagery is gone. These pages show every picture regardless.
+   --------------------------------------------------------------------------- */
+
+/* The headline and the signature screen, side by side. */
+.mhero{display:grid; gap:var(--s4); align-items:center}
+.mhero > *{min-width:0}
+@media (min-width:60rem){
+  .mhero{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:var(--s5)}
+}
+
+/* One band: picture and paragraph. The paragraph is capped at a readable
+   measure rather than filling the column, because a 60rem line is its own
+   reason not to read something. */
+.mband{display:grid; gap:var(--s3); align-items:center}
+.mband > *{min-width:0}
+.mband__body h2{margin:0; max-width:20ch}
+.mband__body p{margin:var(--s2) 0 0; color:var(--ink-2); max-width:46ch}
+@media (min-width:60rem){
+  .mband{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:var(--s5)}
+  /* Alternate which side the picture sits on, by moving the picture rather
+     than the text: `direction` tricks reverse the reading order for a screen
+     reader, and the order the markup gives is the order it should be read. */
+  .mband--flip .mband__media{order:2}
+}
+
+/* Shared treatment for every preview on these pages. The lift on hover is the
+   only motion, it is small, and it is off under prefers-reduced-motion. */
+.mshot .shot-img{
+  border:var(--hair) solid var(--rule);
+  background:var(--paper-2);
+  transition:transform .4s cubic-bezier(.16,1,.3,1), border-color .4s ease;
+}
+.mshot:hover .shot-img{transform:translateY(-3px); border-color:var(--brass)}
+.mshot figcaption{max-width:46ch}
+
+/* The in-development callout, with its own preview beside it when it has one. */
+.modp__pending{display:grid; gap:var(--s3); align-items:start}
+@media (min-width:52rem){
+  .modp__pending:has(.modp__pending__media){
+    grid-template-columns:minmax(0,1fr) minmax(0,15rem);
+    gap:var(--s4);
+  }
+}
+.modp__pending > *{min-width:0}
+
+@media (prefers-reduced-motion: reduce){
+  .mshot .shot-img{transition:none}
+  .mshot:hover .shot-img{transform:none}
+}

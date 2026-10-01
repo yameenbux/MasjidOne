@@ -26,6 +26,48 @@ export default function MosqueDonationsPage() {
           paid.
         </>
       }
+      hero={{
+        img: "app-giving.webp",
+        alt: "Interface preview of giving in the app, with Gift Aid added and Apple Pay and Google Pay, at 0% commission.",
+        caption: (
+          <>
+            Interface preview. Gift Aid added at the point of giving, and 0%
+            commission taken by us.
+          </>
+        ),
+      }}
+      bands={[
+        {
+          h: "Appeals, where the congregation already is",
+          img: "foyer-appeal.webp",
+          alt: "Interface preview of a foyer screen running an appeal: the total raised, the phases so far, and a QR code to give.",
+          caption: <>Interface preview. The total and the phases, on the screen in the foyer.</>,
+          p: (
+            <>
+              A roof appeal with a running total on the screen people walk past
+              on the way out, and a QR code under it. A monthly standing
+              contribution, or a single donation after Jumuʿah, in the app they
+              already check for jamāʿah times. The ask lands where attention
+              already is, rather than on a page somebody has to be told about.
+            </>
+          ),
+        },
+        {
+          h: "The donor list belongs to the masjid",
+          img: "admin-committee.webp",
+          alt: "Interface preview of the committee and roles screen: who can edit times, publish notices, see donation figures and manage users.",
+          caption: <>Interface preview. Who can see the money is a role, not a password.</>,
+          p: (
+            <>
+              Who gave, and how often, stays with you rather than with a
+              platform that will rent it back to you later. It is also the same
+              record of the same family the madrasah side reads. And who at the
+              masjid can see the donation figures is set by role — the treasurer
+              can, the register-marking teacher cannot.
+            </>
+          ),
+        },
+      ]}
       points={[
         {
           h: "0% commission, permanently",
@@ -55,26 +97,6 @@ export default function MosqueDonationsPage() {
               afterwards. Unclaimed Gift Aid is the most common twenty-five
               pence in the pound a masjid leaves on the table, and it is lost at
               the moment of the donation or not at all.
-            </>
-          ),
-        },
-        {
-          h: "The donor list belongs to the masjid",
-          p: (
-            <>
-              Who gave, and how often, stays with you rather than with a
-              platform that will rent it back. It is also the same record of the
-              same family the madrasah side uses.
-            </>
-          ),
-        },
-        {
-          h: "One-off, recurring, and appeals",
-          p: (
-            <>
-              A roof appeal with a running total, a monthly standing
-              contribution, or a single donation after Jumuʿah. Card, Apple Pay
-              and Google Pay, so giving is a thumbprint rather than a form.
             </>
           ),
         },
