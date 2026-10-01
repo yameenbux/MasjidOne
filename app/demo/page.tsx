@@ -60,7 +60,12 @@ export default function DemoPage() {
   }, []);
 
   return (
-    <>
+    /* One viewport tall, the strip taking what it needs and the screen below
+       taking the rest. The screens used to subtract a hardcoded 2.6rem for the
+       strip, but the strip wraps to two or three lines depending on width, so
+       that guess was wrong at every size and pushed the footer below the fold
+       on every phone. */
+    <div className="dshell">
       {/* Permanent, on every screen, above everything. */}
       <p className="dstrip">
         <strong>Demonstration</strong>
@@ -112,6 +117,6 @@ export default function DemoPage() {
           onSignOut={() => setStage("login")}
         />
       ) : null}
-    </>
+    </div>
   );
 }

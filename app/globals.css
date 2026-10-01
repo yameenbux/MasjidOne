@@ -1028,6 +1028,10 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    guard at the end of this section.
    ========================================================================== */
 
+/* One viewport tall. Everything below the strip grows into what is left, which
+   is why no screen subtracts a guessed strip height any more. */
+.dshell{min-height:100dvh; display:flex; flex-direction:column}
+
 /* The strip that says this is not real. Sticky, so it stays true even when a
    committee scrolls the roll. Brass on board: the highest-contrast pairing in
    the palette, because this is the one message that must not be missed. */
@@ -1062,10 +1066,9 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 
 .mlogin{
   position:relative; isolation:isolate; overflow:hidden;
-  /* dvh, not vh: on a phone the browser toolbar makes the visual viewport
-     shorter than 100vh and the form ends up underneath it. The strip above is
-     sticky and takes its own height, hence the subtraction. */
-  min-height:calc(100dvh - 2.6rem);
+  /* Grows into whatever the strip leaves. dvh lives on .dshell, because on a
+     phone the browser toolbar makes the visual viewport shorter than 100vh. */
+  flex:1;
   /* Two rows: the form takes the space and centres in it, the footer sits
      under it at the bottom of the screen. The stage and the veil are
      absolutely positioned, so they are out of flow and do not occupy a row. */
@@ -1199,7 +1202,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 /* ---------- Admin ---------- */
 
 .dadmin{
-  min-height:calc(100dvh - 2.6rem);
+  flex:1;
   display:flex; flex-direction:column;
   background:var(--paper); color:var(--ink);
   font-family:Archivo,system-ui,sans-serif;
@@ -1331,20 +1334,21 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 /* ==========================================================================
    PORTAL CHOOSER  ·  one markup, two layouts
    --------------------------------------------------------------------------
+   Narrow  two cards stacked down the middle, the device above the words.
    Wide    two full-height halves, board against paper, each device bleeding
            off the bottom edge.
-   Narrow  the masjid's own prayer board: one dark ground, brass hairlines, an
-           index numeral and a small inset per row.
 
-   The split is the better desktop screen and the worse phone one. At 360px its
+   The split is the better desktop screen and the worse phone one. At 390px its
    halves run about 700px each, so the second option sits below the fold and a
-   committee member has to scroll to discover there is a choice at all. Rows
-   put both on one screen.
+   committee member has to scroll to discover there is a choice at all. Stacked
+   cards put both on one screen.
 
-   Same DOM either way — see the note in components/demo-chooser.tsx for why
-   that matters. Narrow is the base here and wide is the override, so the
-   phone, which is where most of these screens get opened, gets the simpler
-   stylesheet rather than a pile of undone desktop rules.
+   Same DOM either way — see the note in components/demo-chooser.tsx. Narrow is
+   the base and wide is the override, so the phone, which is where most of
+   these screens get opened, gets the simpler stylesheet rather than a pile of
+   undone desktop rules. The one thing the layouts disagree about structurally
+   is the order of the device and the words, which is an `order` on the shot
+   rather than a second copy of the markup.
 
    Every device image is drawn `contain`, never `cover`: the files are devices
    on a transparent surround, and cover crops the bezel off the top.
@@ -1353,14 +1357,15 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    ========================================================================== */
 
 .pick{
-  min-height:calc(100dvh - 2.6rem);
+  flex:1;
   font-family:Archivo,system-ui,sans-serif;
   background:var(--board); color:var(--board-ink);
-  display:flex; flex-direction:column;
+  display:flex; flex-direction:column; align-items:center;
+  gap:var(--s2); padding-bottom:var(--s2);
 }
 
 .pick__head{
-  text-align:center; padding:var(--s3) var(--s2);
+  width:100%; text-align:center; padding:var(--s2);
   border-bottom:var(--hair) solid var(--board-rule);
 }
 .pick__masjid{
@@ -1373,91 +1378,112 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-label); letter-spacing:.16em; text-transform:uppercase;
 }
 
-/* ---------- Narrow: the board ---------- */
+/* ---------- Narrow: stacked cards ---------- */
 
 .pchoose{
-  display:grid; align-items:center; gap:var(--s2);
-  grid-template-columns:auto 1fr auto auto;
-  grid-template-areas:"no text shot go";
-  width:100%; padding:var(--s3) var(--s2);
-  background:transparent; color:inherit; font:inherit; border:0;
-  border-bottom:var(--hair) solid var(--board-brass);
-  cursor:pointer; text-align:left;
-  transition:background-color .25s ease;
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  width:calc(100% - var(--s3)); max-width:22rem; padding:var(--s2);
+  background:transparent; color:inherit; font:inherit; text-align:center;
+  border:var(--hair) solid var(--board-rule);
+  cursor:pointer;
+  transition:background-color .25s ease,border-color .25s ease;
 }
-/* Auto margins on the outer two rows centre the pair in whatever space is
-   left under the head, which stays at the top. Without them the rows sit
-   against the head with a tall empty board beneath, which reads as a page
-   that failed to finish loading rather than a deliberate one. */
-.pchoose:first-of-type{border-top:var(--hair) solid var(--board-brass); margin-top:auto}
-.pchoose:last-of-type{margin-bottom:auto}
-.pchoose:hover,.pchoose:focus-visible{background:var(--board-rule)}
-.pchoose__no{
-  color:var(--board-brass); font-variant-numeric:tabular-nums;
-  font-size:var(--t-small); letter-spacing:.1em;
+/* Auto margins on the outer card and the footer centre the pair in whatever
+   space is left under the head, which stays at the top. Without them the
+   cards sit against the head with a tall empty board beneath, which reads as
+   a page that failed to finish loading. */
+.pchoose:first-of-type{margin-top:auto}
+.pchoose:hover,.pchoose:focus-visible{
+  background:var(--board-rule); border-color:var(--board-brass);
 }
-.pchoose__text{display:flex; flex-direction:column; gap:.3rem; min-width:0}
+.pchoose__no{display:none}
+/* The device sits above the words on a card and below them on the split, which
+   is the only structural disagreement between the two layouts. */
+.pchoose__shot{
+  order:-1; display:block; width:100%;
+  background:var(--board-rule); padding:var(--s1);
+}
+/* Scales with the viewport's height rather than sitting at a fixed size: the
+   whole screen — head, both cards and the footer — has to fit without
+   scrolling, and the device is the only part that can give. Measured against
+   360, 390 and 430px phones. */
+.pchoose__shot img{
+  display:block; width:100%; height:clamp(4rem,13vh,6.5rem); object-fit:contain;
+}
+.pchoose__text{display:flex; flex-direction:column; gap:.25rem; min-width:0}
 .pchoose__title{
   font-family:Newsreader,Georgia,serif; font-size:var(--t-h3); line-height:1.2;
 }
 .pchoose__blurb{color:var(--board-ink-2); font-size:var(--t-small)}
-/* The word belongs to the wide layout; here the arrow carries it alone. */
-.pchoose__goword{display:none}
-.pchoose__go{color:var(--board-brass); font-size:var(--t-h3); line-height:1}
+.pchoose__go{
+  color:var(--board-brass);
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
 .pchoose__arrow{display:inline-block; transition:transform .25s ease}
 .pchoose:hover .pchoose__arrow,
 .pchoose:focus-visible .pchoose__arrow{transform:translateX(4px)}
-.pchoose__shot{display:block; background:var(--board-rule); padding:.3rem}
-.pchoose__shot img{display:block; width:5.5rem; height:3.4rem; object-fit:contain}
 
-.pchoose__no{grid-area:no}
-.pchoose__text{grid-area:text}
-.pchoose__shot{grid-area:shot}
-.pchoose__go{grid-area:go}
+/* ---------- The footer, on every width ---------- */
+
+.pick__foot{
+  margin-top:auto; display:flex; flex-direction:column; align-items:center;
+  gap:var(--s1); padding:var(--s1) var(--s2) 0; text-align:center;
+}
+.pick__help{margin:0; color:var(--board-ink-2); font-size:var(--t-small)}
+.pick__help a{color:var(--board-brass)}
 
 /* ---------- Wide: the split ---------- */
 
 @media (min-width:52rem){
   .pick{
-    display:grid; grid-template-rows:auto 1fr;
-    grid-template-areas:"head head" "a b"; grid-template-columns:1fr 1fr;
+    display:grid; grid-template-rows:auto 1fr auto;
+    grid-template-areas:"head head" "a b" "foot foot";
+    grid-template-columns:1fr 1fr;
+    gap:0; padding-bottom:0;
+    /* The card layout centres its children; grid items must go back to
+       stretching or the two halves size to their content and float in the
+       middle of the row instead of being full-height columns. */
+    align-items:stretch; justify-items:stretch;
   }
   .pick__head{grid-area:head}
+  .pick__foot{grid-area:foot; margin-top:0; padding:var(--s2)}
 
   .pchoose{
     /* Centred as a group, not space-between: on a tall viewport space-between
        pushed the title to the ceiling and the device to the floor and left a
        dead hole between them that read as a loading state. */
-    display:flex; flex-direction:column; justify-content:center;
-    gap:var(--s3); padding:var(--s4) var(--s3) 0;
-    border:0; overflow:hidden;
+    display:flex; flex-direction:column; align-items:flex-start;
+    justify-content:center; gap:var(--s3);
+    width:auto; max-width:none;
+    padding:var(--s4) var(--s3) 0;
+    border:0; overflow:hidden; text-align:left;
     transition:background-color .3s ease;
   }
-  .pchoose:first-of-type{border-top:0; margin-top:0}
-  .pchoose:last-of-type{margin-bottom:0}
+  /* The card layout gives the first card margin-top:auto to centre the pair.
+     A media query adds no specificity, so `.pchoose{margin-top:0}` here loses
+     to `.pchoose:first-of-type` in the base and the half stays pushed down to
+     the bottom of its row. Matched selector, matched specificity. */
+  .pchoose:first-of-type{margin-top:0}
   .pchoose--madrasah{grid-area:a; background:var(--board); color:var(--board-ink)}
   .pchoose--congregation{grid-area:b; background:var(--paper); color:var(--ink)}
   .pchoose--madrasah:hover,.pchoose--madrasah:focus-visible{background:var(--board-rule)}
   .pchoose--congregation:hover,.pchoose--congregation:focus-visible{background:var(--paper-2)}
 
-  .pchoose__no{display:none}
   .pchoose__text{gap:.5rem; max-width:22rem}
   .pchoose__title{font-size:clamp(1.6rem,3.2vw,2.4rem); line-height:1.08}
   .pchoose__blurb{color:inherit; opacity:.78; font-size:var(--t-small)}
-  .pchoose__goword{display:inline}
-  .pchoose__go{
-    margin-top:var(--s1); line-height:inherit;
-    font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
-  }
+  .pchoose__go{margin-top:calc(var(--s3) * -1 + var(--s1))}
   .pchoose--madrasah .pchoose__go{color:var(--board-brass)}
   .pchoose--congregation .pchoose__go{color:var(--brass)}
 
-  /* The shot sits low and runs off the bottom edge, so the half reads as a
-     scene rather than a card with a picture in it. */
-  .pchoose__shot{background:transparent; padding:0; margin-bottom:calc(var(--s4) * -1)}
+  /* The shot returns below the words and runs off the bottom edge, so the half
+     reads as a scene rather than a card with a picture in it. */
+  .pchoose__shot{
+    order:0; background:transparent; padding:0;
+    margin-bottom:calc(var(--s4) * -1);
+  }
   .pchoose__shot img{
-    width:100%; height:min(30vh,14rem);
-    object-position:center bottom;
+    height:min(30vh,14rem); object-position:center bottom;
     transition:transform .4s cubic-bezier(.2,1,.3,1);
   }
   .pchoose:hover .pchoose__shot img,
