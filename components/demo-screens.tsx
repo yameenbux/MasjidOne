@@ -6,6 +6,7 @@ import { DemoNav } from "@/components/demo-nav";
 import { HallScreen } from "@/components/demo-hall-screen";
 import {
   DEMO_PRAYERS,
+  type PrayerRow,
   DEMO_JUMUAH,
   DEMO_NEXT_JAMAAH,
   DEMO_NOTICES,
@@ -34,6 +35,11 @@ import {
  *    not let it imply four managed devices.
  */
 
+/** 24-hour HH:MM, which is what a UK prayer board shows. */
+function validTime(v: string) {
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test(v);
+}
+
 export function DemoScreens({
   masjidName,
   onBack,
@@ -50,8 +56,93 @@ export function DemoScreens({
   const [said, setSaid] = React.useState<string | null>(null);
   const act = (m: string) => () => setSaid(m);
 
-  /** The screen's bottom line is the latest published notice. One source. */
-  const onScreen = DEMO_NOTICES.find((n) => n.published);
+  /**
+   * What the screens are showing, and what an editor has typed but not yet
+   * saved. Keeping them apart is the whole point of the Edit mode: the preview
+   * follows the draft so a committee can see the change before it reaches the
+   * hall, and Cancel throws the draft away without anything having moved.
+   *
+   * In the real platform `live` would come from prayer_times and notices. Here
+   * it starts as the published fixtures.
+   */
+  const [live, setLive] = React.useState<{
+    prayers: PrayerRow[];
+    announcements: string[];
+  }>(() => ({
+    prayers: DEMO_PRAYERS.map((p) => ({ ...p })),
+    announcements: DEMO_NOTICES.filter((n) => n.published).map((n) => n.title),
+  }));
+
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState(live);
+  /* The dialog holds the change until somebody says yes, and names it while it
+     waits — a confirmation that only asks "are you sure?" teaches people to
+     press Yes without reading it. */
+  const [confirming, setConfirming] = React.useState(false);
+
+  const prayers = editing ? draft.prayers : live.prayers;
+  /* A half-typed time must not reach the screens, so Save waits for all of
+     them to be whole. The previews show the draft either way, which is how
+     somebody sees that 16:3 is not yet a time. */
+  const timesOk = draft.prayers.every((p) => p.jamaah === "—" || validTime(p.jamaah));
+  const announcements = editing ? draft.announcements : live.announcements;
+
+  /** Exactly what is about to change, in the words the dialog will use. */
+  const changes = React.useMemo(() => {
+    const out: string[] = [];
+    draft.prayers.forEach((d, i) => {
+      const was = live.prayers[i];
+      if (was && was.jamaah !== d.jamaah) {
+        out.push(`${d.name} jamāʿah ${was.jamaah} → ${d.jamaah}`);
+      }
+      if (was && was.begins !== d.begins) {
+        out.push(`${d.name} begins ${was.begins} → ${d.begins}`);
+      }
+    });
+    draft.announcements.forEach((a, i) => {
+      const was = live.announcements[i];
+      if (was !== a) {
+        out.push(was ? `Announcement: “${was}” → “${a}”` : `New announcement: “${a}”`);
+      }
+    });
+    if (draft.announcements.length < live.announcements.length) {
+      out.push(`${live.announcements.length - draft.announcements.length} announcement removed`);
+    }
+    return out;
+  }, [draft, live]);
+
+  function startEditing() {
+    setDraft({
+      prayers: live.prayers.map((p) => ({ ...p })),
+      announcements: [...live.announcements],
+    });
+    setSaid(null);
+    setEditing(true);
+  }
+
+  /* A modal that cannot be dismissed from the keyboard is a trap. Escape
+     closes it, and focus moves into it on open so a screen reader lands on the
+     heading rather than being left behind on the Save button. */
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!confirming) return;
+    dialogRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setConfirming(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [confirming]);
+
+  function applyChanges() {
+    setLive(draft);
+    setEditing(false);
+    setConfirming(false);
+    setSaid(
+      `Saved. ${changes.length} change${changes.length === 1 ? "" : "s"} pushed to every screen and to the app. ` +
+        "Recorded against your name in the audit trail.",
+    );
+  }
 
   return (
     <div className="dadmin">
@@ -85,51 +176,148 @@ export function DemoScreens({
           {said}
         </p>
 
-        <div className="dscreen">
-          <section aria-label="What the screens are showing" className="dscreen__live">
-            <h2 className="dscreen__h">On the screens now</h2>
-            <figure className="dscreen__fig">
-              {/* The preview is RENDERED FROM THE SAME DATA as the table beside
-                  it, not a picture of a screen. It has to be: this view's whole
-                  claim is "every screen is showing the table below", so a static
-                  capture would be visibly contradicting that claim on the very
-                  page that makes it — different times, a notice from a different
-                  day. Rendered, an edit to the times moves both at once, which
-                  is also what the real product does. It is still an interface
-                  preview, not a photograph of a television. */}
-              <HallScreen masjidName={masjidName} />
+        <section aria-label="What the screens are showing" className="dscreen__wallsect">
+          <h2 className="dscreen__h">On the screens now</h2>
+          {/* TWO SHAPES, ONE OUTPUT — and the caption says exactly that,
+              because there is no screens table in the platform and no
+              per-screen content. Showing four configurable televisions here
+              would sell a committee something that does not exist. What does
+              exist is better framed anyway: they manage one timetable, not a
+              wall of screens. */}
+          <div className="dscreen__wall">
+            <figure className="dscreen__fig dscreen__fig--land">
+              <div className="hallfrm hallfrm--land">
+                <HallScreen
+                  masjidName={masjidName}
+                  orientation="landscape"
+                  prayers={prayers}
+                  announcements={announcements}
+                />
+              </div>
               <figcaption>
-                One output, shown on every television in the building. Interface
-                preview — the design is fixed, the words are yours.
+                <strong>Landscape</strong> — the wide screen over the miḥrāb.
               </figcaption>
             </figure>
 
+            <figure className="dscreen__fig dscreen__fig--port">
+              <div className="hallfrm hallfrm--port">
+                <HallScreen
+                  masjidName={masjidName}
+                  orientation="portrait"
+                  prayers={prayers}
+                  announcements={announcements}
+                />
+              </div>
+              <figcaption>
+                <strong>Portrait</strong> — the tall one in the foyer.
+              </figcaption>
+            </figure>
+          </div>
+
+          <p className="dscreen__oneout">
+            The same output in two shapes, not two screens to keep in step.
+            Every television in the building shows this, however many you hang
+            and whichever way round. Interface preview — the design is fixed,
+            the words are yours.
+          </p>
+
+        </section>
+
+        <div className="dscreen">
+          <section aria-label="The announcement line" className="dscreen__live">
             <div className="dscreen__row">
               <p className="dscreen__label">The line along the bottom</p>
               <p className="dscreen__value">
-                {onScreen ? onScreen.title : "Nothing published"}
+                {announcements.length ? announcements.join(" · ") : "Nothing published"}
               </p>
               <p className="dscreen__note">
-                This is your most recent published notice. Publish another in the
-                masjid office and the screens change with the website — a screen
-                cannot say something the website is not also saying.
+                Every published notice takes its turn along the bottom of the
+                screen, so a janāzah today and half term next week both reach the
+                hall. Publish another in the masjid office and the screens change
+                with the website — a screen cannot say something the website is
+                not also saying.
               </p>
             </div>
           </section>
 
           <section aria-label="Today's times" className="dscreen__times">
             <div className="dcong__bar">
-              <button
-                type="button"
-                className="dcong__do"
-                onClick={act(
-                  "ʿAsr jamāʿah moved to 16:30. Every screen follows within the minute, the app updates, and the reminder shifts to 16:00 for everyone who asked for half an hour.",
-                )}
-              >
-                Change a jamāʿah time
-              </button>
-              <span className="dadmin__muted">365 days loaded for this year</span>
+              {editing ? (
+                <>
+                  <button
+                    type="button"
+                    className="dcong__do"
+                    disabled={changes.length === 0 || !timesOk}
+                    onClick={() => setConfirming(true)}
+                  >
+                    Save {changes.length ? `· ${changes.length}` : ""}
+                  </button>
+                  <button
+                    type="button"
+                    className="dscreen__cancel"
+                    onClick={() => setEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                  <span className="dadmin__muted">
+                    {!timesOk
+                      ? "A jamāʿah time needs to read HH:MM before this can be saved."
+                      : changes.length
+                        ? "The screens above are showing your draft. Nothing is live yet."
+                        : "Change a time or an announcement and the screens above follow."}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <button type="button" className="dcong__do" onClick={startEditing}>
+                    Edit these screens
+                  </button>
+                  <span className="dadmin__muted">365 days loaded for this year</span>
+                </>
+              )}
             </div>
+
+            {editing ? (
+              <div className="dscreen__edit">
+                <h3 className="dscreen__editH">The announcement line</h3>
+                <p className="dadmin__muted dscreen__editNote">
+                  Each one takes its turn along the bottom of every screen.
+                </p>
+                {draft.announcements.map((a, idx) => (
+                  <p className="dscreen__editField" key={idx}>
+                    <label htmlFor={`ann-${idx}`}>Announcement {idx + 1}</label>
+                    <span className="dscreen__editRow">
+                      <input
+                        id={`ann-${idx}`}
+                        type="text"
+                        value={a}
+                        maxLength={80}
+                        onChange={(e) =>
+                          setDraft((d) => ({
+                            ...d,
+                            announcements: d.announcements.map((x, j) =>
+                              j === idx ? e.target.value : x,
+                            ),
+                          }))
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="dscreen__drop"
+                        onClick={() =>
+                          setDraft((d) => ({
+                            ...d,
+                            announcements: d.announcements.filter((_, j) => j !== idx),
+                          }))
+                        }
+                      >
+                        Take off<span className="u-visually-hidden"> announcement {idx + 1}</span>
+                      </button>
+                    </span>
+                  </p>
+                ))}
+              </div>
+            ) : null}
             <div className="dadmin__scroll" tabIndex={0} role="region" aria-label="Prayer times, scrollable">
               <table className="dadmin__table">
                 <caption className="dadmin__cap">
@@ -143,7 +331,7 @@ export function DemoScreens({
                   </tr>
                 </thead>
                 <tbody>
-                  {DEMO_PRAYERS.map((p) => (
+                  {prayers.map((p, idx) => (
                     <tr key={p.name}>
                       <th scope="row">
                         {p.name === DEMO_NEXT_JAMAAH.name ? (
@@ -152,9 +340,53 @@ export function DemoScreens({
                           p.name
                         )}
                       </th>
+                      {/* Begins is calculated from the almanac, so it is read-only
+                          even in Edit. Jamāʿah is the masjid's own decision, which
+                          is the whole reason this screen exists. */}
                       <td className="dadmin__num">{p.begins}</td>
                       <td className="dadmin__num">
-                        {p.jamaah === "—" ? <span className="dadmin__muted">—</span> : p.jamaah}
+                        {p.jamaah === "—" ? (
+                          <span className="dadmin__muted">—</span>
+                        ) : editing ? (
+                          <>
+                            <label
+                              className="u-visually-hidden"
+                              htmlFor={`jam-${idx}`}
+                            >
+                              {p.name} jamāʿah time
+                            </label>
+                            {/* A text field rather than type="time", which
+                                renders in the BROWSER's locale: on a machine
+                                set to en-US it prints "04:30 PM" in a column
+                                whose other figures read 15:46. A UK masjid
+                                board is 24-hour throughout and the demo cannot
+                                depend on whose laptop it is opened on. */}
+                            <input
+                              id={`jam-${idx}`}
+                              className={
+                                validTime(p.jamaah)
+                                  ? "dscreen__time"
+                                  : "dscreen__time dscreen__time--bad"
+                              }
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={5}
+                              placeholder="HH:MM"
+                              aria-invalid={!validTime(p.jamaah)}
+                              value={p.jamaah}
+                              onChange={(e) =>
+                                setDraft((d) => ({
+                                  ...d,
+                                  prayers: d.prayers.map((x, j) =>
+                                    j === idx ? { ...x, jamaah: e.target.value } : x,
+                                  ),
+                                }))
+                              }
+                            />
+                          </>
+                        ) : (
+                          p.jamaah
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -171,6 +403,56 @@ export function DemoScreens({
           </section>
         </div>
       </div>
+
+      {/* THE CONFIRMATION, and why it is written like this.
+          "Are you sure?" on every save teaches people to press Yes without
+          reading, and within a month it is furniture. So the dialog names the
+          exact change and its reach instead — a last check that carries
+          information rather than friction. It also says "within the minute"
+          rather than "instantly", because a screen on hall wifi is not instant
+          and a committee will hold you to the word. */}
+      {confirming ? (
+        <div className="dmodal" role="presentation" onClick={() => setConfirming(false)}>
+          <div
+            className="dmodal__box"
+            ref={dialogRef}
+            tabIndex={-1}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="confirm-h"
+            aria-describedby="confirm-list"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="dmodal__h" id="confirm-h">
+              {changes.length === 1
+                ? "One change, going to every screen"
+                : `${changes.length} changes, going to every screen`}
+            </h2>
+            <ul className="dmodal__list" id="confirm-list">
+              {changes.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+            <p className="dmodal__reach">
+              Every television in the building and everyone&rsquo;s app updates
+              within the minute. Reminders shift with the time. It is recorded
+              against your name.
+            </p>
+            <div className="dmodal__acts">
+              <button type="button" className="dcong__do" onClick={applyChanges}>
+                Yes, make it live
+              </button>
+              <button
+                type="button"
+                className="dscreen__cancel"
+                onClick={() => setConfirming(false)}
+              >
+                No, keep editing
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <footer className="dadmin__foot">
         <PoweredBy />
