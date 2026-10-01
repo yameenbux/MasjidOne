@@ -3,14 +3,16 @@
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { DemoNav } from "@/components/demo-nav";
 
 /**
- * The screen between signing in and the portal itself: madrasah, or congregation.
+ * A screen that asks the person to choose between two places.
  *
- * This is the join made visible. Everything MasjidOne argues rests on the two
- * halves being one system over one record of one family, and a committee has
- * to SEE both halves exist before that sentence means anything. So neither
- * option is a dead end — both lead somewhere real.
+ * Used twice: once at the top to pick a portal, and once inside the
+ * congregation portal to pick between the masjid's screens and the office. It
+ * is the same component both times because it is the same question, and
+ * because a committee that learns the shape once should not have to learn it
+ * again one level down.
  *
  * ONE MARKUP, TWO LAYOUTS, chosen by width in globals.css:
  *
@@ -21,60 +23,46 @@ import { CONTACT_EMAIL } from "@/lib/site";
  * The split is the better desktop screen and the worse phone one — at 390px
  * its two halves run about 700px each, so the second option sits below the
  * fold and a committee member has to scroll to discover there is a choice at
- * all. Stacked cards put both on one screen. That is the reason for the swap.
+ * all. Stacked cards put both on one screen.
  *
  * It is one DOM either way. Rendering two component trees and hiding one would
  * double the markup, load both images twice, and leave a screen reader
- * announcing the hidden copy. So every element below is present at both
- * widths; the stylesheet moves them and hides the two that only belong to one
- * layout — the numeral, which is decorative, and the word "Open", whose arrow
- * stays and carries the meaning on its own.
+ * announcing the hidden copy.
  *
- * The device images are the existing interface previews, admin-register and
- * hall-screen. Both are modules that are built and running, so neither needs an
- * "in development" tag. app-parent is deliberately NOT used: parent access has
- * no accounts yet and may not be shown without its tag.
- *
- * They are drawn `contain`, never `cover`. The files are pictures of a device
- * on a transparent surround, and cover crops the bezel off the top — the part
- * that says "this is a screen".
+ * Images are drawn `contain`, never `cover`. The files are pictures of a
+ * device on a transparent surround, and cover crops the bezel off the top —
+ * the part that says "this is a screen".
  */
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-export type PortalKey = "madrasah" | "congregation";
-
-type Portal = {
-  key: PortalKey;
+export type ChooserOption = {
+  key: string;
   title: string;
   blurb: string;
+  /** File name inside public/devices. */
   img: string;
   alt: string;
 };
 
-const PORTALS: Portal[] = [
-  {
-    key: "madrasah",
-    title: "Madrasah Portal",
-    blurb: "Registers, classes, families and fees.",
-    img: `${BASE}/devices/admin-register.webp`,
-    alt: "The madrasah register for one class, with the evening's attendance and the lock",
-  },
-  {
-    key: "congregation",
-    title: "Congregation Portal",
-    blurb: "Prayer times, notices, screens and giving.",
-    img: `${BASE}/devices/hall-screen.webp`,
-    alt: "A prayer hall screen showing the beginning and jamāʿah times with the next jamāʿah marked",
-  },
-];
+export function demoImg(file: string) {
+  return `${BASE}/devices/${file}`;
+}
 
 export function DemoChooser({
   masjidName,
+  ask,
+  options,
   onChoose,
+  nav,
 }: {
   masjidName: string;
-  onChoose: (k: PortalKey) => void;
+  /** The question. Different one level down, so it is a prop. */
+  ask: string;
+  options: [ChooserOption, ChooserOption];
+  onChoose: (key: string) => void;
+  /** Absent at the top of the tree, where there is nowhere above to go. */
+  nav?: React.ComponentProps<typeof DemoNav>;
 }) {
   return (
     <div className="pick">
@@ -83,38 +71,37 @@ export function DemoChooser({
           actually here to answer, so it is set in brass rather than left to
           look like a caption. */}
       <header className="pick__head">
+        {nav ? <DemoNav {...nav} tone="board" /> : null}
         <h1 className="pick__masjid">{masjidName}</h1>
-        <p className="pick__ask">Where would you like to go?</p>
+        <p className="pick__ask">{ask}</p>
       </header>
 
-      {PORTALS.map((p) => (
+      {options.map((o) => (
         <button
-          key={p.key}
+          key={o.key}
           type="button"
-          className={`pchoose pchoose--${p.key}`}
-          onClick={() => onChoose(p.key)}
+          className={`pchoose pchoose--${o.key}`}
+          onClick={() => onChoose(o.key)}
         >
           <span className="pchoose__text">
-            <span className="pchoose__title">{p.title}</span>
-            <span className="pchoose__blurb">{p.blurb}</span>
+            <span className="pchoose__title">{o.title}</span>
+            <span className="pchoose__blurb">{o.blurb}</span>
           </span>
           {/* A direct child of the button, not of the text: the narrow layout
               puts it in its own grid cell at the end of the row, the wide one
-              lets it fall under the text as the next flex item. Nested inside
-              the text it could only ever be one or the other. */}
+              lets it fall under the text as the next flex item. */}
           <span className="pchoose__go" aria-hidden="true">
             <span className="pchoose__goword">Open </span>
             <span className="pchoose__arrow">→</span>
           </span>
           <span className="pchoose__shot">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.img} alt={p.alt} loading="lazy" width={1600} height={1000} />
+            <img src={demoImg(o.img)} alt={o.alt} loading="lazy" width={1600} height={1000} />
           </span>
         </button>
       ))}
 
-      {/* The credit was missing from this screen entirely, which broke the
-          rule that it sits in the footer of every portal screen. The support
+      {/* The credit sits in the footer of every portal screen. The support
           line goes with it: a committee that cannot find the way to report a
           problem reports it by stopping using the thing. */}
       <footer className="pick__foot">

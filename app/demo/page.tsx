@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
-import { DemoChooser, type PortalKey } from "@/components/demo-chooser";
+import { DemoChooser, type ChooserOption } from "@/components/demo-chooser";
 import { DemoAdmin } from "@/components/demo-admin";
-import { DemoCongregation } from "@/components/demo-congregation";
+import { DemoScreens } from "@/components/demo-screens";
+import { DemoOffice } from "@/components/demo-office";
 import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
 
 /**
@@ -16,40 +17,108 @@ import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
  *
  * WHAT THIS IS NOT. The platform. There is no database behind it, no session,
  * and the sign-in is a string comparison in the browser — `output: 'export'`
- * means there is no server here to authenticate against, and adding one is
- * forbidden. Nothing typed into it leaves the page, and nothing is stored: no
- * localStorage, no cookie, so a reload returns to the sign-in screen. Real
- * software behaviour needs a real tenant, in its own Supabase project.
+ * means there is no server here to authenticate against. Nothing typed into it
+ * leaves the page and nothing is stored: no localStorage, no cookie. A reload
+ * returns to whichever screen the URL names, because only the URL survives.
  *
  * WHY THE CREDENTIALS ARE PRINTED ON THE SCREEN. Because a login box on a
  * public URL that appears to guard something real, but does not, is a
- * credential-harvesting shape. Saying "demo / demo, this is a demonstration"
- * in plain sight removes any doubt about what the visitor is looking at.
+ * credential-harvesting shape.
  *
- * THE FLOW is sign in → choose a portal → that portal, with "Switch portal" to
- * come back. Both halves lead somewhere real: a chooser whose second door
- * opens onto nothing would undercut the one claim the product rests on.
+ * THE TREE
+ *
+ *   sign in
+ *     portals ──┬─ madrasah
+ *               └─ congregation ──┬─ timetable & screens
+ *                                 └─ masjid office
+ *
+ * NAVIGATION IS THE URL, not component state. Each screen has a hash —
+ * /demo/#office — and the stage is derived from it on mount and on every
+ * `hashchange`. Back and Home move the hash; the browser does the rest, so the
+ * back button and, the one that actually matters, the phone's back gesture
+ * work. Before this, swiping back left the site entirely.
+ *
+ * WHY THE HASH AND NOT `history.state`. That was the first attempt and it was
+ * wrong. Next's App Router owns `popstate` on this page: when you go back it
+ * replaceState's its own router tree onto the restored entry and the page
+ * remounts, so a mount effect that seeds the stage wipes whatever entry you
+ * just returned to — one Back jumped three screens. A hash-only change does
+ * not touch the router at all, and `hashchange` is ours. Deriving the stage
+ * from the URL also means a remount is harmless: it re-reads the same hash.
+ *
+ * A SIDE EFFECT WORTH HAVING: the screens are now linkable. Send a committee
+ * /demo/?masjid=Their+Masjid#screens and they open on the timetable, no
+ * clicking through. Which also means the hash can skip the sign-in screen —
+ * fine, and deliberate: that form guards nothing, as above. It is a screen to
+ * be shown, not a lock.
+ *
+ * Back goes up one step. Home goes to the top of the portal you are in; on a
+ * portal's own home page it goes to the portal chooser, and the button says
+ * which, because an unlabelled Home in a two-level tree is a guess.
  *
  * ?masjid= IS THE WHITE-LABEL SLOT. Open /demo/?masjid=Masjid%20e%20Taqwa
  * before a call and the committee sees their own name above the form. The
  * "Demonstration · sample data" strip stays regardless, so a screenshot can
  * never be passed around as evidence that they are a customer.
- *
- * It is read from window.location rather than useSearchParams, which forces a
- * Suspense boundary and a client-side bailout under static export for a value
- * this page can perfectly well pick up after mount.
  */
 
-type Stage = "login" | "pick" | "madrasah" | "congregation";
+const STAGES = [
+  "login",
+  "portals",
+  "madrasah",
+  "congregation",
+  "screens",
+  "office",
+] as const;
+
+type Stage = (typeof STAGES)[number];
+
+/** The URL is the source of truth. Anything unrecognised means the sign-in screen. */
+function stageFromHash(): Stage {
+  const h = window.location.hash.replace(/^#\/?/, "");
+  return (STAGES as readonly string[]).includes(h) ? (h as Stage) : "login";
+}
+
+const PORTAL_OPTIONS: [ChooserOption, ChooserOption] = [
+  {
+    key: "madrasah",
+    title: "Madrasah Portal",
+    blurb: "Registers, classes, families and fees.",
+    img: "admin-register.webp",
+    alt: "The madrasah register for one class, with the evening's attendance and the lock",
+  },
+  {
+    key: "congregation",
+    title: "Congregation Portal",
+    blurb: "Prayer times, screens, notices and giving.",
+    img: "hall-screen.webp",
+    alt: "A prayer hall screen showing the beginning and jamāʿah times with the next jamāʿah marked",
+  },
+];
+
+const CONGREGATION_OPTIONS: [ChooserOption, ChooserOption] = [
+  {
+    key: "screens",
+    title: "Timetable & screens",
+    blurb: "The times, and what the screens say.",
+    img: "hall-screen.webp",
+    alt: "A prayer hall screen showing the beginning and jamāʿah times with the next jamāʿah marked",
+  },
+  {
+    key: "office",
+    title: "Masjid office",
+    blurb: "Hall hire, nikah, notices, donations and Gift Aid.",
+    img: "admin-committee.webp",
+    alt: "The committee and roles screen: who can edit times, notices, money and users",
+  },
+];
 
 export default function DemoPage() {
   const [masjid, setMasjid] = React.useState(DEMO_MASJID_DEFAULT);
   const [stage, setStage] = React.useState<Stage>("login");
 
   React.useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-
-    const raw = q.get("masjid");
+    const raw = new URLSearchParams(window.location.search).get("masjid");
     if (raw) {
       // Trim, collapse whitespace and cap the length. The value lands in a
       // heading at display size and React escapes it, so the only real risk is
@@ -57,14 +126,26 @@ export default function DemoPage() {
       const name = raw.replace(/\s+/g, " ").trim().slice(0, 48);
       if (name) setMasjid(name);
     }
+
+    // Honour a hash that was typed, bookmarked or sent in a link.
+    setStage(stageFromHash());
+    const onHash = () => setStage(stageFromHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
+  /**
+   * Every move goes through here. Setting the hash pushes a history entry and
+   * fires `hashchange`, which sets the stage — so state can never drift from
+   * the URL, because the URL is the only thing driving it.
+   */
+  const go = React.useCallback((next: Stage) => {
+    window.location.hash = next;
+  }, []);
+
+  const back = React.useCallback(() => window.history.back(), []);
+
   return (
-    /* One viewport tall, the strip taking what it needs and the screen below
-       taking the rest. The screens used to subtract a hardcoded 2.6rem for the
-       strip, but the strip wraps to two or three lines depending on width, so
-       that guess was wrong at every size and pushed the footer below the fold
-       on every phone. */
     <div className="dshell">
       {/* Permanent, on every screen, above everything. */}
       <p className="dstrip">
@@ -83,7 +164,7 @@ export default function DemoPage() {
               user.toLowerCase() === DEMO_CREDENTIALS.user &&
               pass === DEMO_CREDENTIALS.pass
             ) {
-              setStage("pick");
+              go("portals");
               return null;
             }
             return `Use ${DEMO_CREDENTIALS.user} / ${DEMO_CREDENTIALS.pass} — this is a demonstration.`;
@@ -98,23 +179,52 @@ export default function DemoPage() {
         />
       ) : null}
 
-      {stage === "pick" ? (
-        <DemoChooser masjidName={masjid} onChoose={(k: PortalKey) => setStage(k)} />
+      {stage === "portals" ? (
+        <DemoChooser
+          masjidName={masjid}
+          ask="Where would you like to go?"
+          options={PORTAL_OPTIONS}
+          onChoose={(k) => go(k as Stage)}
+        />
+      ) : null}
+
+      {stage === "congregation" ? (
+        <DemoChooser
+          masjidName={masjid}
+          ask="Congregation — which part?"
+          options={CONGREGATION_OPTIONS}
+          onChoose={(k) => go(k as Stage)}
+          nav={{ onBack: back, onHome: () => go("portals"), homeLabel: "Portals" }}
+        />
       ) : null}
 
       {stage === "madrasah" ? (
         <DemoAdmin
           masjidName={masjid}
-          onSwitch={() => setStage("pick")}
-          onSignOut={() => setStage("login")}
+          onBack={back}
+          onHome={() => go("portals")}
+          onSwitch={() => go("portals")}
+          onSignOut={() => go("login")}
         />
       ) : null}
 
-      {stage === "congregation" ? (
-        <DemoCongregation
+      {stage === "screens" ? (
+        <DemoScreens
           masjidName={masjid}
-          onSwitch={() => setStage("pick")}
-          onSignOut={() => setStage("login")}
+          onBack={back}
+          onHome={() => go("congregation")}
+          onSwitch={() => go("portals")}
+          onSignOut={() => go("login")}
+        />
+      ) : null}
+
+      {stage === "office" ? (
+        <DemoOffice
+          masjidName={masjid}
+          onBack={back}
+          onHome={() => go("congregation")}
+          onSwitch={() => go("portals")}
+          onSignOut={() => go("login")}
         />
       ) : null}
     </div>

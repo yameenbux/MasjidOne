@@ -182,6 +182,14 @@ ul{margin:0;padding:0;list-style:none}
 .skip{position:absolute;left:-9999px;top:0;background:var(--board);color:var(--board-ink);padding:var(--s2);z-index:99}
 .skip:focus{left:0}
 
+/* Readable by a screen reader, invisible on the page. Used where a visual cue
+   (a brass row, a marker) carries meaning that has no text equivalent. */
+.u-visually-hidden{
+  position:absolute; width:1px; height:1px;
+  margin:-1px; padding:0; border:0;
+  clip-path:inset(50%); overflow:hidden; white-space:nowrap;
+}
+
 /* Eyebrow — condensed caps, the board's label vernacular */
 .eyebrow{
   font-size:var(--t-label);letter-spacing:.18em;text-transform:uppercase;
@@ -1566,3 +1574,120 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   .pchoose:hover .pchoose__shot img,
   .pchoose:focus-visible .pchoose__shot img{transform:none}
 }
+
+/* ---------------------------------------------------------------------------
+   Back and Home, on every screen inside the demonstration portal.
+
+   Two plain buttons, deliberately small and quiet: they are wayfinding, not a
+   call to action, and they sit above the screen's own content rather than
+   competing with it. `tone` exists because the same control appears on paper
+   (inside a portal body) and on the board (on the chooser's green header),
+   and a single colour would vanish on one of them.
+   --------------------------------------------------------------------------- */
+.dnav{
+  display:flex; gap:var(--s1); flex-wrap:wrap;
+  margin:0 0 var(--s3);
+}
+.dnav__btn{
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:transparent; border:var(--hair) solid var(--rule); border-radius:2px;
+  padding:.4rem .7rem; cursor:pointer;
+  font:inherit; font-size:var(--t-small); color:var(--ink-2);
+  transition:color .18s ease, border-color .18s ease;
+}
+.dnav__btn:hover{color:var(--brass); border-color:var(--brass)}
+.dnav--board .dnav__btn{color:var(--board-ink); border-color:var(--board-rule)}
+.dnav--board .dnav__btn:hover{color:var(--board-brass); border-color:var(--board-brass)}
+.pick__head .dnav{justify-content:flex-start; margin-bottom:var(--s1)}
+
+/* ---------------------------------------------------------------------------
+   Timetable and screens.
+
+   Two halves on a wide viewport, stacked on a phone: what the screens in the
+   building are currently saying, and the times that drive them. The preview is
+   a picture of the output, not a live feed — see components/demo-screens.tsx
+   for what is and is not built behind this.
+   --------------------------------------------------------------------------- */
+.dscreen{
+  display:grid; gap:var(--s3);
+  align-items:start;
+}
+/* Grid items refuse to shrink below min-content unless told to, and the hall
+   screen's table has a wide min-content. Without this the column forces the
+   whole page sideways at 360px. */
+.dscreen > *{min-width:0}
+@media (min-width:62rem){
+  .dscreen{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:var(--s4)}
+}
+.dscreen__h{
+  margin:0 0 var(--s2); font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:var(--t-h3); line-height:1.15;
+}
+.dscreen__fig{
+  margin:0;
+  border:var(--hair) solid var(--rule); background:var(--paper-2);
+  padding:var(--s2);
+}
+.dscreen__note{
+  margin:var(--s2) 0 0; color:var(--ink-2); font-size:var(--t-small);
+}
+.dscreen__row{
+  margin:var(--s2) 0 0; padding:var(--s2);
+  background:var(--paper-2);
+  border:var(--hair) solid var(--rule); border-left:3px solid var(--brass);
+}
+.dscreen__label{
+  display:block; color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.1em; text-transform:uppercase;
+}
+.dscreen__value{display:block; margin-top:.35rem}
+
+/* The hall-screen preview. Board palette in both themes, because a television
+   in a prayer hall is dark at three in the afternoon and dark at nine at night.
+   Rendered from the same data as the table beside it — see demo-screens.tsx. */
+.hallscr{
+  background:var(--board); color:var(--board-ink);
+  padding:var(--s2);
+  font-size:clamp(.68rem,1.5vw,.85rem);
+  font-variant-numeric:tabular-nums;
+}
+.hallscr__top{
+  display:flex; align-items:baseline; justify-content:space-between; gap:var(--s2);
+  padding-bottom:.5rem; border-bottom:var(--hair) solid var(--board-rule);
+}
+.hallscr__brand{
+  min-width:0;
+  color:var(--board-ink-2);
+  font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.hallscr__clock{
+  flex:none;
+  font-family:Newsreader,Georgia,serif;
+  font-size:2.6em; line-height:1;
+}
+.hallscr__table{width:100%; border-collapse:collapse; margin-top:.6rem}
+.hallscr__table thead th{
+  padding:.3rem 0; text-align:right; font-weight:400;
+  color:var(--board-ink-2);
+  font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+}
+.hallscr__table thead th:first-child{text-align:left}
+.hallscr__table tbody th{
+  padding:.4rem 0; text-align:left; font-weight:400;
+  border-top:var(--hair) solid var(--board-rule);
+}
+.hallscr__table tbody td{
+  padding:.4rem 0 .4rem .6rem; text-align:right;
+  border-top:var(--hair) solid var(--board-rule);
+}
+.hallscr__next th,.hallscr__next td{color:var(--board-brass)}
+.hallscr__dot{margin-right:.4em}
+.hallscr__foot{
+  display:flex; flex-wrap:wrap; gap:.4rem var(--s2); justify-content:space-between;
+  margin-top:.6rem; padding-top:.5rem;
+  border-top:var(--hair) solid var(--board-rule);
+  color:var(--board-ink-2);
+  font-size:var(--t-label); letter-spacing:.06em;
+}
+.hallscr__ticker{color:var(--board-brass); text-transform:uppercase}

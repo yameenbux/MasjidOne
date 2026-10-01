@@ -164,6 +164,15 @@ export const DEMO_JUMUAH = [
   { label: "Second Jumuʿah", time: "14:00" },
 ];
 
+/** The time printed on the hall-screen preview.
+ *
+ *  Fixed, not `new Date()`, and that is the point: the sample times below are
+ *  fixed too, so a real clock would have the preview announce ʿAsr as "next" at
+ *  eleven at night. 15:52 sits between ʿAsr beginning (15:46) and its jamāʿah
+ *  (16:15), which is the only window where every number on that screen agrees
+ *  with every other one. Change the prayer times and change this with them. */
+export const DEMO_SCREEN_CLOCK = "15:52";
+
 /** Which prayer the page should mark as next. Keeps the table and the banner
  *  from drifting apart when either is edited. */
 export const DEMO_NEXT_JAMAAH = { name: "ʿAsr", at: "16:15", remindAt: "15:45" };
