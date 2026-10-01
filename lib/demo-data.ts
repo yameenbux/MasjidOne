@@ -122,6 +122,18 @@ export const DEMO_PUPILS: PupilRow[] = [
  */
 export const DEMO_CREDENTIALS = { user: "demo", pass: "demo" } as const;
 
+/**
+ * The parent's demonstration sign-in, kept separate from the staff one so a
+ * walkthrough can show both doors without one being mistaken for the other.
+ *
+ * A parent's sign-in is issued by the madrasah rather than self-registered:
+ * the office creates it against a household, which is why the field says
+ * "Your sign-in" rather than "Email". A good number of parents will not have
+ * an email address they check, and a portal that insists on one excludes the
+ * families the madrasah most needs to reach.
+ */
+export const DEMO_PARENT_CREDENTIALS = { user: "parent", pass: "parent" } as const;
+
 /* ---------------------------------------------------------------------------
    Congregation side
    --------------------------------------------------------------------------

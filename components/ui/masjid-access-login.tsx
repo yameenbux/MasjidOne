@@ -46,6 +46,13 @@ import { PoweredBy } from "@/components/ui/powered-by";
 export type MasjidAccessLoginProps = {
   /** Shown as the dominant heading. This is the white-label slot. */
   masjidName: string;
+  /**
+   * The smaller line under the masjid's name, saying which door this is.
+   * The masjid's name stays the largest thing on the screen either way —
+   * a parent should recognise their own masjid before they read anything
+   * else, and certainly before they read our name.
+   */
+  portalLabel?: string;
   /** Called with the typed credentials. Returns a message on failure. */
   onSignIn: (user: string, pass: string) => string | null;
   /** Small print under the form, e.g. the seeded demo credentials. */
@@ -71,6 +78,7 @@ const BLOBS = [
 
 export function MasjidAccessLogin({
   masjidName,
+  portalLabel = "Madrasah & congregation portal",
   onSignIn,
   hint,
   className,
@@ -168,7 +176,7 @@ export function MasjidAccessLogin({
               thing on the screen, because the masjid is whose building this
               is. MasjidOne's credit lives in the footer below. */}
           <h1 className="mlogin__name">{masjidName}</h1>
-          <p className="mlogin__sub">Madrasah &amp; congregation portal</p>
+          <p className="mlogin__sub">{portalLabel}</p>
         </header>
 
         <form onSubmit={submit} noValidate>
