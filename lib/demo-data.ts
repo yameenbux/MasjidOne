@@ -444,15 +444,23 @@ export const DEMO_CONGREGATION = {
 
 /* ---- Committee and roles, and what the system has been doing ---- */
 
-/** The five roles the platform actually defines. Parent is listed because the
- *  role exists in the schema; it is marked unused because `user_roles` holds
- *  zero parent accounts, which is also why parent access stays tagged in
- *  development everywhere on this site. */
+/** The five roles the platform actually defines.
+ *
+ *  Parent is listed with nobody holding it because this demonstration masjid
+ *  has not invited its families yet — which is what day one looks like, and
+ *  what the "Invite the parents" button above the table is for.
+ *
+ *  IT IS NOT UNBUILT, and the flag below does not mean that. An earlier version
+ *  of this comment said parent access was measured by `user_roles` holding zero
+ *  parent accounts; that is the wrong column and it led to parent access being
+ *  tagged "in development" across eleven places on the public site while it was
+ *  complete and callable. `is_parent()` reads madrasah_parent_logins, which
+ *  create_parent_login writes. See CLAUDE.md, content rule 1. */
 export type RoleRow = {
   role: string;
   people: number;
   can: string;
-  /** True where the role is defined but nobody holds it yet. */
+  /** True where the role is built and ready but nobody has been issued it yet. */
   unused?: boolean;
 };
 

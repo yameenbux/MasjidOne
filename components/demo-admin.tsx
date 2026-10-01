@@ -160,7 +160,7 @@ export function DemoAdmin({
         <nav className="dadmin__tabs" aria-label="Sections">
           {(
             [
-              ["registers", `Registers · ${open} open`],
+              ["registers", `Registers · ${open} awaiting lock`],
               ["fees", `Fees · ${DEMO_FEE_SUMMARY.inArrears} in arrears`],
               ["pupils", "Pupils"],
               ["calendar", "Calendar"],

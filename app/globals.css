@@ -2291,3 +2291,68 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   color:var(--ink-2); max-width:44rem; line-height:1.7;
 }
 .dfilter__empty strong{color:var(--ink)}
+
+/* ===================================================================
+   Hall screen as a chooser thumbnail
+   -------------------------------------------------------------------
+   The portal chooser used to show a picture of a hall screen. It is now the
+   same component the Timetable view renders, so the two can never show a
+   masjid two different timetables.
+
+   The box has to mirror what .pchoose__shot img gets in BOTH layouts — the
+   narrow rule below and the wide override inside the 64em query — because
+   those rules target `img` and a rendered screen is not one. Getting that
+   wrong clips the timetable at Zuhr, which is worse than the stale picture it
+   replaced.
+
+   The type is sized in cqh — a share of the box's own height — so six prayer
+   rows, a header and a footer fit at any of those heights without a second
+   set of font sizes to keep in step.
+   =================================================================== */
+
+.pchoose__live{
+  display:block; width:100%;
+  height:clamp(4rem,13vh,6.5rem);
+  overflow:hidden;
+  container-type:size;
+  transition:transform .4s cubic-bezier(.2,1,.3,1);
+}
+@media (min-width:64em){
+  .pchoose__live{height:min(30vh,14rem); margin-bottom:calc(var(--s4) * -1)}
+  .pchoose:hover .pchoose__live,
+  .pchoose:focus-visible .pchoose__live{transform:scale(1.04)}
+}
+
+.hallscr--compact{
+  height:100%;
+  padding:.45em .6em;
+  /* A share of the box's own height. The whole screen measures about sixteen
+     of its own font-sizes tall once every rule below is in em, so this fits at
+     any box height with a little headroom. */
+  font-size:5.5cqh;
+  line-height:1.25;
+  display:flex; flex-direction:column;
+}
+/* EVERY absolute length inside has to become em, or the block stops shrinking
+   with the type and the timetable is clipped at Zuhr. The base rules set
+   padding and three font sizes in rem, which is what broke the first attempt. */
+.hallscr--compact .hallscr__top{padding-bottom:.4em; gap:.6em}
+.hallscr--compact .hallscr__brand{font-size:.85em; letter-spacing:.08em}
+.hallscr--compact .hallscr__clock{font-size:1.6em}
+.hallscr--compact .hallscr__table{margin-top:.4em}
+.hallscr--compact .hallscr__table thead th{padding:.2em 0; font-size:.8em; letter-spacing:.08em}
+.hallscr--compact .hallscr__table tbody th{padding:.22em 0}
+.hallscr--compact .hallscr__table tbody td{padding:.22em 0 .22em .5em}
+.hallscr--compact .hallscr__foot{
+  margin-top:.4em; padding-top:.4em; gap:.3em .6em; font-size:.8em;
+}
+/* The ticker is the first thing to overflow at this size; clip it cleanly
+   rather than let it wrap and push the timetable out of the box. */
+.hallscr--compact .hallscr__ticker{
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52%;
+}
+@media (prefers-reduced-motion:reduce){
+  .pchoose__live,
+  .pchoose:hover .pchoose__live,
+  .pchoose:focus-visible .pchoose__live{transition:none; transform:none}
+}

@@ -376,7 +376,7 @@ export function DemoOffice({
                       <th scope="row">
                         {r.role}
                         {r.unused ? (
-                          <span className="dadmin__muted"> · not in use yet</span>
+                          <span className="dadmin__muted"> · no invitations sent yet</span>
                         ) : null}
                       </th>
                       <td className={r.unused ? "dadmin__num dadmin__muted" : "dadmin__num"}>
@@ -390,9 +390,12 @@ export function DemoOffice({
             </div>
 
             <p className="dcong__said">
-              The parent role is defined and reaches nothing yet, because no
-              parent has an account. It is listed rather than hidden — a role
-              that exists in the system should be visible in the system.
+              The parent role is built and ready to issue; this masjid has
+              simply not invited its families yet, which is what day one looks
+              like. Use the button above and a household signs in to the same
+              app it already has for jamāʿah times. The role is listed rather
+              than hidden — a role that exists in the system should be visible
+              in the system.
             </p>
 
             <h2 className="dadmin__h">

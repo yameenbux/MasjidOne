@@ -40,9 +40,18 @@ export type ChooserOption = {
   key: string;
   title: string;
   blurb: string;
-  /** File name inside public/devices. */
-  img: string;
+  /** File name inside public/devices. Ignored when `preview` is given. */
+  img?: string;
   alt: string;
+  /**
+   * A live preview rendered from the demo's own data, preferred over `img`.
+   *
+   * The congregation options use this. A picture of a hall screen goes stale
+   * the moment anybody edits a prayer time, and then the chooser and the
+   * Timetable view show the same masjid two different timetables two clicks
+   * apart — which contradicts the one claim the screen makes.
+   */
+  preview?: React.ReactNode;
 };
 
 export function demoImg(file: string) {
@@ -95,8 +104,17 @@ export function DemoChooser({
             <span className="pchoose__arrow">→</span>
           </span>
           <span className="pchoose__shot">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={demoImg(o.img)} alt={o.alt} loading="lazy" width={1600} height={1000} />
+            {o.preview ? (
+              /* Rendered, not photographed. role=img with the same label the
+                 picture carried, so a screen reader hears one description
+                 rather than reading out a whole timetable it cannot act on. */
+              <span className="pchoose__live" role="img" aria-label={o.alt}>
+                {o.preview}
+              </span>
+            ) : o.img ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={demoImg(o.img)} alt={o.alt} loading="lazy" width={1600} height={1000} />
+            ) : null}
           </span>
         </button>
       ))}

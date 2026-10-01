@@ -3,12 +3,12 @@
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
+import { HallScreen } from "@/components/demo-hall-screen";
 import {
   DEMO_PRAYERS,
   DEMO_JUMUAH,
   DEMO_NEXT_JAMAAH,
   DEMO_NOTICES,
-  DEMO_SCREEN_CLOCK,
 } from "@/lib/demo-data";
 
 /**
@@ -97,60 +97,7 @@ export function DemoScreens({
                   day. Rendered, an edit to the times moves both at once, which
                   is also what the real product does. It is still an interface
                   preview, not a photograph of a television. */}
-              <div className="hallscr">
-                <div className="hallscr__top">
-                  <span className="hallscr__brand">
-                    {masjidName} · Prayer hall
-                  </span>
-                  <span className="hallscr__clock">{DEMO_SCREEN_CLOCK}</span>
-                </div>
-                <table className="hallscr__table">
-                  <caption className="u-visually-hidden">
-                    What the prayer hall screen is showing: beginning and
-                    jamāʿah times, with the next jamāʿah marked.
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Prayer</th>
-                      <th scope="col">Begins</th>
-                      <th scope="col">Jamāʿah</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {DEMO_PRAYERS.map((p) => {
-                      const next = p.name === DEMO_NEXT_JAMAAH.name;
-                      return (
-                        <tr
-                          key={p.name}
-                          className={next ? "hallscr__next" : undefined}
-                        >
-                          <th scope="row">
-                            {next ? (
-                              <span aria-hidden="true" className="hallscr__dot">
-                                ▪
-                              </span>
-                            ) : null}
-                            {p.name}
-                            {next ? (
-                              <span className="u-visually-hidden"> — next</span>
-                            ) : null}
-                          </th>
-                          <td>{p.begins}</td>
-                          <td>{p.jamaah}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <div className="hallscr__foot">
-                  <span>
-                    {DEMO_JUMUAH.map((j) => `${j.label} ${j.time}`).join(" · ")}
-                  </span>
-                  <span className="hallscr__ticker">
-                    {onScreen ? onScreen.title : "No notice published"}
-                  </span>
-                </div>
-              </div>
+              <HallScreen masjidName={masjidName} />
               <figcaption>
                 One output, shown on every television in the building. Interface
                 preview — the design is fixed, the words are yours.

@@ -5,6 +5,7 @@ import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
 import { DemoChooser, type ChooserOption } from "@/components/demo-chooser";
 import { DemoAdmin } from "@/components/demo-admin";
 import { DemoScreens } from "@/components/demo-screens";
+import { HallScreen } from "@/components/demo-hall-screen";
 import { DemoOffice } from "@/components/demo-office";
 import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
 
@@ -79,39 +80,49 @@ function stageFromHash(): Stage {
   return (STAGES as readonly string[]).includes(h) ? (h as Stage) : "login";
 }
 
-const PORTAL_OPTIONS: [ChooserOption, ChooserOption] = [
-  {
-    key: "madrasah",
-    title: "Madrasah Portal",
-    blurb: "Registers, classes, families and fees.",
-    img: "admin-register.webp",
-    alt: "The madrasah register for one class, with the evening's attendance and the lock",
-  },
-  {
-    key: "congregation",
-    title: "Congregation Portal",
-    blurb: "Prayer times, screens, notices and giving.",
-    img: "hall-screen.webp",
-    alt: "A prayer hall screen showing the beginning and jamāʿah times with the next jamāʿah marked",
-  },
-];
+/* Built per render rather than held as constants, because the congregation
+   previews are rendered from the demo's own prayer data and carry the masjid's
+   name — which a committee can change on the sign-in screen before a call. */
+const HALL_ALT =
+  "A prayer hall screen showing the beginning and jamāʿah times with the next jamāʿah marked";
 
-const CONGREGATION_OPTIONS: [ChooserOption, ChooserOption] = [
-  {
-    key: "screens",
-    title: "Timetable & screens",
-    blurb: "The times, and what the screens say.",
-    img: "hall-screen.webp",
-    alt: "A prayer hall screen showing the beginning and jamāʿah times with the next jamāʿah marked",
-  },
-  {
-    key: "office",
-    title: "Masjid office",
-    blurb: "Hall hire, nikah, notices, donations and Gift Aid.",
-    img: "admin-committee.webp",
-    alt: "The committee and roles screen: who can edit times, notices, money and users",
-  },
-];
+function portalOptions(masjid: string): [ChooserOption, ChooserOption] {
+  return [
+    {
+      key: "madrasah",
+      title: "Madrasah Portal",
+      blurb: "Registers, classes, families and fees.",
+      img: "admin-register.webp",
+      alt: "The madrasah register for one class, with the evening's attendance and the lock",
+    },
+    {
+      key: "congregation",
+      title: "Congregation Portal",
+      blurb: "Prayer times, screens, notices and giving.",
+      alt: HALL_ALT,
+      preview: <HallScreen masjidName={masjid} compact />,
+    },
+  ];
+}
+
+function congregationOptions(masjid: string): [ChooserOption, ChooserOption] {
+  return [
+    {
+      key: "screens",
+      title: "Timetable & screens",
+      blurb: "The times, and what the screens say.",
+      alt: HALL_ALT,
+      preview: <HallScreen masjidName={masjid} compact />,
+    },
+    {
+      key: "office",
+      title: "Masjid office",
+      blurb: "Hall hire, nikah, notices, donations and Gift Aid.",
+      img: "admin-committee.webp",
+      alt: "The committee and roles screen: who can edit times, notices, money and users",
+    },
+  ];
+}
 
 export default function DemoPage() {
   const [masjid, setMasjid] = React.useState(DEMO_MASJID_DEFAULT);
@@ -183,7 +194,7 @@ export default function DemoPage() {
         <DemoChooser
           masjidName={masjid}
           ask="Where would you like to go?"
-          options={PORTAL_OPTIONS}
+          options={portalOptions(masjid)}
           onChoose={(k) => go(k as Stage)}
         />
       ) : null}
@@ -192,7 +203,7 @@ export default function DemoPage() {
         <DemoChooser
           masjidName={masjid}
           ask="Congregation — which part?"
-          options={CONGREGATION_OPTIONS}
+          options={congregationOptions(masjid)}
           onChoose={(k) => go(k as Stage)}
           nav={{ onBack: back, onHome: () => go("portals"), homeLabel: "Portals" }}
         />
