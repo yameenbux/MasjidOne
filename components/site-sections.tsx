@@ -2,7 +2,16 @@ import { SectionNav } from "@/components/ui/m-variable-font-hover-1";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { SpinningBorderLink } from "@/components/ui/spinning-border-button";
 import * as React from "react";
-import { DEMO_MAILTO } from "@/lib/site";
+import {
+  BASE_PATH,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_HREF,
+  CONTACT_READY,
+  CONTACT_MAILTO,
+  DEMO_HREF,
+} from "@/lib/site";
+import { DemoRequestForm } from "@/components/demo-request-form";
 import { MasjidOneComparison } from "@/components/masjidone-comparison";
 import { MasjidOneModulesDiagram } from "@/components/masjidone-modules-diagram";
 import { FeaturesSection } from "@/components/ui/feature";
@@ -33,7 +42,7 @@ export function SiteHeader() {
           <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z"/>
         </svg>
       </button>
-      <SpinningBorderLink href={DEMO_MAILTO}>Request a demo</SpinningBorderLink>
+      <SpinningBorderLink href={`${BASE_PATH}${DEMO_HREF}`}>Request a demo</SpinningBorderLink>
     </div>
   </div>
 </header>
@@ -89,7 +98,7 @@ export function Hero() {
 
     <div className="hero__act">
       <div className="btn-row rv" style={{ "--i": "1" } as React.CSSProperties}>
-        <SpinningBorderLink href={DEMO_MAILTO}>Request a demo</SpinningBorderLink>
+        <SpinningBorderLink href={`${BASE_PATH}${DEMO_HREF}`}>Request a demo</SpinningBorderLink>
         <a className="btn btn--ghost" href="#pricing"><span className="btn__t">See the pricing</span></a>
       </div>
       <p className="hero__note rv" style={{ "--i": "2" } as React.CSSProperties}>
@@ -295,6 +304,64 @@ export function Previews() {
         Interface preview. The same app a parent already has for jamāʿah times — no second app to install. This is the bridge.
       </figcaption>
     </figure>
+  </div>
+</section>
+  );
+}
+
+/**
+ * The contact section — deliberately the last thing on the page.
+ *
+ * It carries the same form as /request-a-demo/ rather than a link to it: a
+ * reader who has got this far has read the pricing and the FAQ and is as warm
+ * as they will ever be, and sending them to another page to start again loses
+ * some of them. The CTAs higher up the page still point at the dedicated page,
+ * because a reader who skips to the top button has not read any of it yet.
+ */
+export function Contact() {
+  return (
+<section className="sect wrap" id="contact">
+  <p className="eyebrow eyebrow--brass rv">Talk to us</p>
+  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>
+    Thirty minutes, and you will know.
+  </h2>
+  <p className="rv measure" style={{ "--i": "2" } as React.CSSProperties}>
+    We open the real system rather than a slide deck — a register marked, a
+    family&rsquo;s fees, the hall screen, and a parent finding their own child in
+    the app. Nothing to cancel if it is not for you.
+  </p>
+
+  <div className="cform__wrap rv" style={{ "--i": "3" } as React.CSSProperties}>
+    <DemoRequestForm idPrefix="home" />
+
+    <aside className="cform__aside">
+      <h3 className="cform__asidehead">
+                {CONTACT_READY || CONTACT_PHONE ? "Or reach us directly" : "Where to find us"}
+              </h3>
+      <dl className="cform__dl">
+        {CONTACT_READY ? (
+          <>
+            <dt>Email</dt>
+            <dd><a href={CONTACT_MAILTO}>{CONTACT_EMAIL}</a></dd>
+          </>
+        ) : null}
+        {CONTACT_PHONE ? (
+          <>
+            <dt>Phone</dt>
+            <dd><a href={`tel:${CONTACT_PHONE_HREF}`}>{CONTACT_PHONE}</a></dd>
+          </>
+        ) : null}
+        <dt>Based in</dt>
+        <dd>Bolton, and we will come to you.</dd>
+      </dl>
+
+      <h3 className="cform__asidehead">What happens next</h3>
+      <ol className="cform__steps">
+        <li>We reply within one working day, from a person.</li>
+        <li>A thirty-minute walkthrough at a time that suits the committee.</li>
+        <li>If it is a fit, your class lists go in before anyone is invoiced.</li>
+      </ol>
+    </aside>
   </div>
 </section>
   );

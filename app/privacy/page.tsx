@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
+import { BASE_PATH, CONTACT_READY } from "@/lib/site";
 import { openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -41,9 +42,10 @@ export default function PrivacyPage() {
 
       <h2>What this website collects</h2>
       <p>
-        <strong>Nothing, at present.</strong> This site is a set of static files
-        on a content delivery network. It has no accounts, no forms that post
-        anywhere, no analytics and no advertising.
+        <strong>Only what you type into the demo request form.</strong> This site
+        is a set of static files on a content delivery network. It has no
+        accounts, no analytics and no advertising, and there is nothing else on
+        it that collects anything.
       </p>
       <ul>
         <li>
@@ -66,9 +68,37 @@ export default function PrivacyPage() {
         so your browser makes a request to Google to fetch them.
       </p>
 
+      <h2>The demo request form</h2>
+      <p>
+        If you ask for a demonstration we collect what you enter: the
+        masjid&rsquo;s name and town, your own name, role, email address and
+        phone number if you give one, and your answers about which part of the
+        system interests you, roughly how many pupils the madrasah has, when you
+        might want to start, and anything you write in the message box.
+      </p>
+      <p>
+        We use it to arrange and prepare for that demonstration and for nothing
+        else. Our lawful basis is legitimate interests — you have asked us to get
+        in touch about a product. We hold it for as long as we are in
+        conversation and for up to two years afterwards so we can pick the thread
+        back up, then delete it. We do not add you to a mailing list and we do
+        not pass your details to anyone.
+      </p>
+      <p>
+        The form asks you not to include any pupil&rsquo;s details, and you
+        should not. It is an ordinary web form and it is not the route by which a
+        child&rsquo;s record reaches us.
+      </p>
+      <p>
+        At present the form hands your answers to your own email client, so
+        nothing reaches us until you press send there and no third party sees it
+        on the way. If that changes to a form that submits directly, the company
+        that processes it will be named here before it goes live.
+      </p>
+
       <h2>If you email us</h2>
       <p>
-        The demo buttons open your own email client. If you write to us we hold
+        If you would rather write to us than use the form, the same applies: we hold
         your message and contact details for as long as we are in conversation,
         and for up to two years afterwards so we can pick the thread back up. We
         do not add you to a mailing list, and we do not pass your details to
@@ -95,7 +125,11 @@ export default function PrivacyPage() {
       <p>
         Under UK GDPR you can ask for a copy of any personal data we hold about
         you, ask us to correct or delete it, or object to how we use it. Write to{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and we will
+        {CONTACT_READY ? (
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        ) : (
+          <a href={`${BASE_PATH}/request-a-demo/`}>our contact form</a>
+        )} and we will
         respond within one month.
       </p>
       <p>

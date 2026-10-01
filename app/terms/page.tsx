@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
-import { BASE_PATH, openGraphFor } from "@/lib/site";
+import { BASE_PATH, CONTACT_READY, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms and conditions",
@@ -130,7 +130,11 @@ export default function TermsPage() {
 
       <h2>5. Contact</h2>
       <p>
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        {CONTACT_READY ? (
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        ) : (
+          <a href={`${BASE_PATH}/request-a-demo/`}>our contact form</a>
+        )}
       </p>
     </LegalPage>
   );

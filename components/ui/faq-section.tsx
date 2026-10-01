@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { DEMO_MAILTO } from "@/lib/site";
+import { DEMO_HREF, BASE_PATH } from "@/lib/site";
 
 // Structure copied from the supplied block. Two things differ, both because
 // leaving them would break a rule the rest of the site holds to:
@@ -98,7 +98,7 @@ function FAQ() {
               </ul>
               <div className="">
                 <Button className="gap-4" variant="outline" asChild>
-                  <a href={DEMO_MAILTO}>
+                  <a href={`${BASE_PATH}${DEMO_HREF}`}>
                     Any questions? Reach out <PhoneCall aria-hidden="true" className="w-4 h-4" />
                   </a>
                 </Button>

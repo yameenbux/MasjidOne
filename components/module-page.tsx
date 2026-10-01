@@ -1,7 +1,7 @@
 import * as React from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-sections";
 import { SiteBehaviour } from "@/components/site-behaviour";
-import { BASE_PATH, SITE_ORIGIN, DEMO_MAILTO, PRICING } from "@/lib/site";
+import { BASE_PATH, SITE_ORIGIN, DEMO_HREF, PRICING } from "@/lib/site";
 
 /**
  * Shared shell for the module pages — one page per thing a committee actually
@@ -161,7 +161,7 @@ export function ModulePage({
           <p className="modp__lede measure">{lede}</p>
 
           <div className="btn-row">
-            <a className="btn" href={DEMO_MAILTO}>
+            <a className="btn" href={`${BASE_PATH}${DEMO_HREF}`}>
               <span className="btn__t">
                 Request a demo <span className="arw" aria-hidden="true">→</span>
               </span>
@@ -235,7 +235,7 @@ export function ModulePage({
             pricing and no paid add-ons. {plan.note}
           </p>
           <div className="btn-row">
-            <a className="btn" href={DEMO_MAILTO}>
+            <a className="btn" href={`${BASE_PATH}${DEMO_HREF}`}>
               <span className="btn__t">
                 Request a demo <span className="arw" aria-hidden="true">→</span>
               </span>

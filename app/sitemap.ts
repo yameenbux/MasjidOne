@@ -3,7 +3,8 @@ import { SITE_ORIGIN } from "@/lib/site";
 
 /**
  * With `output: 'export'` Next writes this to out/sitemap.xml at build time.
- * Every route on the site is listed; there are only four.
+ * Every indexable route is listed. The demo screens are deliberately absent —
+ * they are a sales tool, not a page worth ranking.
  */
 export const dynamic = "force-static";
 
@@ -31,6 +32,8 @@ const MODULES = [
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${SITE_ORIGIN}/`, lastModified, changeFrequency: "monthly", priority: 1 },
+    /* The one conversion on the site, so it outranks the module pages. */
+    { url: `${SITE_ORIGIN}/request-a-demo/`, lastModified, changeFrequency: "monthly", priority: 0.9 },
     ...MODULES.map((slug) => ({
       url: `${SITE_ORIGIN}/${slug}/`,
       lastModified,

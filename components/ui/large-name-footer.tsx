@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BrandMark } from "@/components/ui/brand-mark";
-import { DEMO_MAILTO } from "@/lib/site";
+import { DEMO_HREF } from "@/lib/site";
 
 /**
  * The supplied large-name footer, rebuilt for MasjidOne.
@@ -53,7 +53,7 @@ const LEGAL: FooterLink[] = [
 ];
 
 const TALK: FooterLink[] = [
-  { href: DEMO_MAILTO, label: "Request a demo" },
+  { href: `${BASE}${DEMO_HREF}`, label: "Request a demo" },
   { href: BASE + "/#pricing", label: "Published prices" },
   { href: BASE + "/#trust", label: "Leaving with your data" },
 ];

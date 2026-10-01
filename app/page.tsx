@@ -7,6 +7,7 @@ import {
   Setup,
   Previews,
   Trust,
+  Contact,
   SiteFooter,
 } from "@/components/site-sections";
 import { SiteBehaviour } from "@/components/site-behaviour";
@@ -44,6 +45,7 @@ export default function Home() {
         </section>
         <Setup />
         <Trust />
+        <Contact />
       </main>
       <SiteFooter />
       <SiteBehaviour />

@@ -21,15 +21,50 @@ export const SITE_ORIGIN = `${SITE_URL}${BASE_PATH}`;
 export { BASE_PATH };
 
 /**
- * Every "Request a demo" on the site opens an email here — there is no contact
- * section and no form, so this is the only route in. It is still a placeholder:
- * until it is replaced, all six CTAs open a message to an address that does not
- * exist. One line to change, deliberately.
+ * The inbox a demo request lands in. STILL A PLACEHOLDER: until it is replaced,
+ * the form below has nowhere to deliver and every route in is dead. One line.
  */
 export const CONTACT_EMAIL = "REPLACE-ME@masjidone.example";
 
-/** mailto with the subject prefilled, for the demo CTAs. */
-export const DEMO_MAILTO = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne demo request")}`;
+/**
+ * The phone number on the contact page. Mosque committees ring rather than
+ * write, so this is not decoration — for a good half of them it is the only
+ * channel they will use. Empty string hides the line entirely rather than
+ * printing a placeholder a committee might actually dial.
+ */
+export const CONTACT_PHONE = "";
+
+/** `+441234 567890` -> `+441234567890`, which is what a tel: href needs. */
+export const CONTACT_PHONE_HREF = CONTACT_PHONE.replace(/[^+\d]/g, "");
+
+/** True once CONTACT_EMAIL is a real address rather than the placeholder. */
+export const CONTACT_READY = !CONTACT_EMAIL.endsWith("@masjidone.example");
+
+/**
+ * Where the demo request form POSTs.
+ *
+ * Deliberately an environment variable rather than a constant, because the
+ * decision behind it is a hosting decision and has not been taken yet:
+ *
+ *   unset  — the form falls back to the visitor's own email client, carrying
+ *            every answer prefilled in the body. No third party, no account,
+ *            works today. The cost is that the visitor has to press send in
+ *            their own mail app, and some will not.
+ *   set    — the form POSTs there and the visitor never leaves the page. Any
+ *            endpoint that accepts a form POST will do (Formspree and the like,
+ *            or a Cloudflare Worker on a subdomain once one exists).
+ *
+ * Switching is a repository variable, not a code change, so the form does not
+ * have to be rewritten the day the endpoint is chosen. Whatever is chosen has
+ * to be named in the privacy policy as a processor before it goes live.
+ */
+export const FORM_ENDPOINT = process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "";
+
+/** The single destination for every "Request a demo" on the site. */
+export const DEMO_HREF = "/request-a-demo/";
+
+/** A plain mailto, for the places that offer the email itself as a courtesy. */
+export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne demo request")}`;
 
 /**
  * The published prices. One source, because three places quote them — the

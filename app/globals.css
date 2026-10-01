@@ -2065,3 +2065,157 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-label); letter-spacing:.06em; text-transform:uppercase;
 }
 .pmsg__body{margin:0; line-height:1.6; font-size:var(--t-small)}
+
+/* ===================================================================
+   Demo request form
+   -------------------------------------------------------------------
+   The one conversion on the site, so it is left-aligned, hairline-ruled
+   paper like everything else rather than a card. The pricing block is the
+   page's only deliberate card exception and that styling stays there.
+
+   Underlined inputs rather than boxes, which is the same vernacular as the
+   prayer-board rules and the demo login. Every colour is a token: this block
+   must survive the dark theme without a second definition.
+   =================================================================== */
+
+.cform__wrap{
+  display:grid; gap:var(--s4); margin-top:var(--s4);
+  /* min-width:0 or a long placeholder in the grid child forces the page sideways. */
+  grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:60em){
+  .cform__wrap{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:var(--s5)}
+}
+
+.cform__grid{
+  display:grid; gap:var(--s3) var(--s3);
+  grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:38em){
+  .cform__grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .cform__field--wide{grid-column:1 / -1}
+}
+
+.cform__field{margin:0; display:flex; flex-direction:column; gap:.4rem; min-width:0}
+.cform__field label{
+  color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+/* The required marker is an abbr so it carries a title rather than being a bare
+   asterisk a screen reader reads as "star". */
+.cform__field abbr{text-decoration:none; color:var(--brass); border:0}
+
+.cform__field input,
+.cform__field select,
+.cform__field textarea{
+  width:100%; min-width:0;
+  /* 44px minimum tap target — a committee member fills this in on a phone. */
+  min-height:2.75rem; padding:.6rem .15rem;
+  background:transparent; color:var(--ink);
+  border:0; border-bottom:var(--hair) solid var(--rule-2);
+  border-radius:0;
+  font:inherit; font-size:1rem;
+  transition:border-color .2s ease;
+}
+.cform__field textarea{resize:vertical; line-height:1.6}
+/* select needs its own reset or it keeps the platform chrome and ignores the rule. */
+.cform__field select{
+  -webkit-appearance:none; appearance:none;
+  padding-right:1.6rem; cursor:pointer;
+  /* The chevron is drawn in currentColor so it follows the theme rather than
+     needing a second asset or a hardcoded hex. */
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+                   linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 10px) 1.25rem,calc(100% - 5px) 1.25rem;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;
+}
+.cform__field input::placeholder,
+.cform__field textarea::placeholder{color:var(--ink-2); opacity:.65}
+
+.cform__field input:focus,
+.cform__field select:focus,
+.cform__field textarea:focus{outline:none; border-bottom-color:var(--brass)}
+/* Keyboard users keep a real outline — the border change alone is not enough. */
+.cform__field input:focus-visible,
+.cform__field select:focus-visible,
+.cform__field textarea:focus-visible{
+  outline:2px solid var(--brass); outline-offset:3px;
+}
+/* Only flag an invalid field once it has been left, not while it is being typed. */
+.cform__field input:not(:placeholder-shown):invalid{border-bottom-color:var(--brass-2)}
+
+.cform__hint{color:var(--ink-2); font-size:var(--t-small); line-height:1.5}
+
+.cform__actions{
+  display:flex; flex-direction:column; gap:var(--s2);
+  margin-top:var(--s4); padding-top:var(--s3);
+  border-top:var(--hair) solid var(--rule);
+}
+@media (min-width:38em){
+  .cform__actions{flex-direction:row; align-items:flex-start; gap:var(--s3)}
+}
+.cform__actions .btn{flex:0 0 auto}
+.cform__actions .btn[disabled]{opacity:.6; cursor:progress}
+.cform__legal{margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}
+
+.cform__error{
+  margin:var(--s3) 0 0; padding:.8rem var(--s2);
+  border-left:3px solid var(--brass);
+  background:var(--paper-2); color:var(--ink); font-size:var(--t-small);
+}
+
+/* Honeypot. Off-screen rather than display:none, because some bots skip fields
+   that are not rendered at all. aria-hidden on the wrapper keeps it away from
+   assistive technology, and tabindex -1 keeps it out of the tab order. */
+.cform__pot{
+  position:absolute; left:-9999px; width:1px; height:1px;
+  overflow:hidden; margin:0;
+}
+
+.cform__done{
+  margin-top:var(--s4); padding:var(--s3) 0;
+  border-top:var(--hair) solid var(--rule);
+  border-bottom:var(--hair) solid var(--rule);
+  max-width:42rem;
+}
+.cform__donehead{
+  margin:0 0 var(--s1); font-family:var(--font-newsreader),Georgia,serif;
+  font-size:clamp(1.25rem,3vw,1.6rem); color:var(--ink);
+}
+.cform__done p{color:var(--ink-2); line-height:1.7}
+
+/* The aside carries the phone, the email and what happens next. It is the half
+   a mosque committee actually reads, so it is not a footnote. */
+.cform__aside{
+  padding-top:var(--s2);
+  border-top:var(--hair) solid var(--rule);
+}
+@media (min-width:60em){
+  .cform__aside{
+    border-top:0; padding-top:0;
+    border-left:var(--hair) solid var(--rule); padding-left:var(--s4);
+  }
+}
+.cform__asidehead{
+  margin:var(--s3) 0 var(--s2); color:var(--ink-2);
+  font-family:var(--font-archivo),sans-serif; font-weight:600;
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+.cform__aside > .cform__asidehead:first-child{margin-top:0}
+.cform__dl{margin:0 0 var(--s3)}
+.cform__dl dt{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.cform__dl dd{margin:.2rem 0 var(--s2); color:var(--ink); overflow-wrap:break-word}
+/* Tailwind's preflight strips list markers from ol as well as ul, so the
+   numbering has to be asked for. It is a three-step sequence and the numbers
+   are the point of it. */
+.cform__steps{
+  margin:0 0 var(--s3); padding-left:1.4rem; color:var(--ink-2);
+  list-style:decimal;
+}
+.cform__steps::marker,.cform__steps li::marker{color:var(--brass); font-size:var(--t-small)}
+.cform__steps li{margin-bottom:.6rem; line-height:1.6}
+.cform__asidenote{margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}

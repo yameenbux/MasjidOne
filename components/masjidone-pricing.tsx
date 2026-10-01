@@ -1,7 +1,7 @@
 "use client";
 
 import { Pricing } from "@/components/ui/pricing";
-import { DEMO_MAILTO, PRICING, yearlyTotal } from "@/lib/site";
+import { DEMO_HREF, BASE_PATH, PRICING, yearlyTotal } from "@/lib/site";
 
 /**
  * MasjidOne's real published prices.
@@ -49,7 +49,7 @@ const masjidOnePlans = [
     description:
       "Built, and in a Bolton masjid now — the roll, the classes and the staff are on it. Setup is charged at signing; the monthly starts at go-live.",
     buttonText: "Request a demo",
-    href: DEMO_MAILTO,
+    href: `${BASE_PATH}${DEMO_HREF}`,
     isPopular: false,
   },
   {
@@ -71,7 +71,7 @@ const masjidOnePlans = [
     description:
       "Both sides are in a Bolton masjid now. The half a parent sees is the last piece.",
     buttonText: "Request a demo",
-    href: DEMO_MAILTO,
+    href: `${BASE_PATH}${DEMO_HREF}`,
     isPopular: true,
   },
   {
@@ -89,7 +89,7 @@ const masjidOnePlans = [
     ],
     description: "Charged once, not monthly. This is the only figure that falls.",
     buttonText: "Request a demo",
-    href: DEMO_MAILTO,
+    href: `${BASE_PATH}${DEMO_HREF}`,
     isPopular: false,
   },
 ];
