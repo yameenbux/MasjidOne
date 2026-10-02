@@ -116,6 +116,26 @@ product, one record of one family reachable from both sides, happens
 *inside* a masjid rather than between them. Separation buys nothing there
 and costs a great deal to run.
 
+**This is finished rather than planned.** Every function that reads a masjid
+now has a way to be told which one, and the last two learned on 2 October 2026.
+It was tested by inserting a second masjid and running the whole public surface
+against both, inside a transaction that always rolls back.
+
+> [!IMPORTANT]
+> **`sole_masjid()` raises once a second masjid exists, and must keep raising.**
+> It is tempting to give it a default. Do not: a signed-out visitor asking for
+> "the" masjid when there are two has not said enough, and a default would
+> serve one mosque's prayer times, brand or term dates to another's
+> congregation. A loud exception is the correct answer, and its message already
+> tells the caller to pass a slug.
+
+The rule that falls out of it, and the one that is easy to get backwards:
+**anonymous reads name the masjid; signed-in reads ask the session.** A public
+page passes a slug because nobody is signed in. A staff screen resolves
+`current_masjid()`, because the right answer is whichever masjid that person is
+standing in — which, for MasjidOne support, is not the one their build was
+compiled for.
+
 ---
 
 ## The stack, in four layers
@@ -187,15 +207,46 @@ branch, so **Settings → Pages → Source** must be **GitHub Actions**.
 | `NEXT_PUBLIC_BASE_PATH` | Only with **no** `public/CNAME`, served from `<user>.github.io/MasjidOne` | `/MasjidOne` |
 | `NEXT_PUBLIC_SITE_URL` | Only with **no** `public/CNAME` | the full origin |
 | `NEXT_PUBLIC_COMMIT_DATE` | Set by the workflow | the last commit date, for `sitemap.xml` |
+| `NEXT_PUBLIC_FORM_ENDPOINT` | To make the demo request form post rather than open a mail client | `https://forms.masjidone.co.uk/demo-request` |
 | `GOOGLE_SITE_VERIFICATION` | Only for a Search Console **URL-prefix** property | the token |
 
 A Search Console *Domain* property is verified by DNS at the registrar and
 needs none of this.
 
+### Where the demo request form posts
+
+`worker/` holds a Cloudflare Worker that takes a demo request and turns it into
+an email. **Written and tested, not yet deployed** — `worker/README.md` has the
+steps. Until `NEXT_PUBLIC_FORM_ENDPOINT` is set the form hands its answers to
+the visitor's own mail client instead.
+
+The alternative was a form company like Formspree: twenty minutes of work, and
+a business that then holds every enquiry a committee ever sends, in their
+dashboard, under their retention policy.
+
+> [!NOTE]
+> **A Worker does not mean "no processor in the privacy policy".** Cloudflare
+> carries the submission and is a processor under the GDPR, so the notice names
+> them. What it avoids is anybody keeping their own copy. The notice reads
+> `FORM_ENDPOINT` and prints the mailto wording or the Cloudflare wording to
+> match, so it cannot be left describing behaviour the site no longer has.
+
+It is free, conditionally, and the condition is worth knowing: Cloudflare
+meters outbound email to arbitrary recipients, but sending to a **verified
+destination address on your own account** is free on every plan. A contact form
+sends to one address, so the binding is pinned to it with
+`destination_address` — which keeps it free *and* means a bug cannot mail a
+third party. Widening it to also email the enquirer leaves the free case.
+
+Defences, since there is deliberately no captcha: a honeypot answered `200` so
+a bot does not retry, five posts a minute per IP, a 32 KB ceiling, per-field
+caps, an origin check, and the enquirer's address in `Reply-To` rather than
+`From`.
+
 ### What the site is
 
-Eight indexable pages, plus a demonstration tenant that is deliberately not
-indexed.
+Nine indexable pages, plus two things that are deliberately not indexed: the
+demonstration tenant, and the live support console we sign into ourselves.
 
 | Route | What it is |
 | --- | --- |
@@ -205,8 +256,10 @@ indexed.
 | `/mosque-app/` | Times, reminders, notices, giving |
 | `/mosque-website/` | The managed website |
 | `/mosque-donations/` | 0% commission and Gift Aid |
+| `/request-a-demo/` | The form, on its own page, where all eight CTAs point |
 | `/privacy/`, `/terms/` | Legal |
-| `/demo/` | The demonstration tenant — `noindex`, and disallowed in `robots.txt` |
+| `/demo/` | The demonstration tenant — `noindex`, disallowed in `robots.txt` |
+| `/admin/` | **The live support console.** Real sign-in, real masajid — `noindex`, disallowed, absent from the sitemap |
 
 The five module pages exist because one URL cannot rank for more than one
 intent. Each declares **its own** canonical and `openGraph.url`: the root
@@ -228,7 +281,16 @@ credential-harvesting shape.
 /demo/                          sign in with demo / demo
 /demo/?masjid=Masjid+e+Taqwa    the committee sees their own name
 /demo/#office                   open straight on a screen, mid-call
+/demo/teacher/                  a teacher: their classes, their register
+/demo/parent/                   a parent: their own children, nothing else
+/demo/app/                      the congregation app, opening signed out
+/demo/support/                  our console, as a committee would be shown it
+/demo/ticket/                   "Having issues? Log a ticket"
 ```
+
+The doors are deliberately separate. A parent is not a smaller administrator —
+they arrive to answer one question, and should never see a screen implying the
+rest of the madrasah is theirs to look at.
 
 Navigation is the URL, not component state. Each screen has a hash and the
 stage is derived from it, so the browser's back button — and the phone's back
@@ -240,6 +302,50 @@ The scale is deliberately **not** the real customer's, so a screenshot of the
 demo can never be mistaken for their data. Imagery rules live in
 `public/devices/README.md`: nothing in that folder is a screenshot, and no real
 child's record or family's fee history is ever published.
+
+### The live support console
+
+`/admin/` is the one page in this repository that touches the real platform.
+Everything else is marketing copy or a demonstration built from fixtures. Sign
+in with a real platform account, see the masajid MasjidOne supports, switch
+into one.
+
+It needed nothing new in the database. `my_masjids()` and
+`set_current_masjid()` have existed since the multi-masjid work and had
+**zero callers** — the first already returns every masjid to a platform admin,
+each flagged with whether you are inside it and whether entering counts as
+support access. This is a window onto functions that were already there.
+
+**Every gate is in Postgres, not in the page.** Someone who edits the
+JavaScript in their browser gets nothing:
+
+| Layer | What it does |
+| :--- | :--- |
+| `anon` holds no `EXECUTE` | Refused at the grant, before the function body runs |
+| `my_masjids()` | Returns nothing without `auth.uid()`, everything only to a platform admin |
+| `is_platform_admin()` | Requires `is_aal2()` — a completed second factor, so the console has a real authenticator step |
+| `set_current_masjid()` | Refuses a masjid you neither belong to nor administer, and writes `masjidone_support_access` into **their** audit trail when it is the latter |
+
+> [!IMPORTANT]
+> **Entering a masjid you hold a role at is not support access and is not
+> logged.** The audit row is written only when you are platform staff *and not*
+> a member. The console says which case it is on the card, rather than implying
+> a trail that is not being written.
+
+> [!NOTE]
+> **There is a second sign-in at the end, and it is not an oversight.** The
+> console is served from `masjidone.co.uk`; a masjid's portal is served from
+> its own domain, and a Supabase session lives in storage scoped to one origin,
+> so it cannot follow you. Entering still does the real work —
+> `set_current_masjid()` is server-side state, so you arrive pointed at the
+> right masjid. Carrying the session across would mean putting tokens in a URL
+> and re-enabling `detectSessionInUrl` on a portal that deliberately set it to
+> `false`.
+
+`/demo/support/` is the same screen built from fixtures. The two are
+deliberately the same shape: a committee shown the demo is being shown what we
+actually use, and if they drift apart the demo becomes a lie. **Change one,
+look at the other.**
 
 ### Where things live
 
@@ -254,6 +360,9 @@ child's record or family's fee history is ever published.
 | The module page layout | `components/module-page.tsx` |
 | The demo's screens | `components/demo-*.tsx` |
 | The demo's data | `lib/demo-data.ts` |
+| The live support console | `components/admin-console.tsx` |
+| Which platform it talks to | `lib/platform.ts` — and where each masjid's portal lives |
+| The demo request form's endpoint | `worker/` — see `worker/README.md` |
 | What Google reads | `components/structured-data.tsx` |
 | Canonical URL, contact address | `lib/site.ts` |
 | Colour, type and spacing | `app/globals.css` |
@@ -287,11 +396,16 @@ one that reported it.
 > access matters: the person who should change it can, and nobody else can.
 
 > [!WARNING]
-> **The support address is not live yet.** `CONTACT_EMAIL` in `lib/site.ts` is
-> still `REPLACE-ME@masjidone.example`, so the route in this diagram does not
-> currently exist. Until it is set, the "log a ticket" link, every "request a
-> demo" button and the subject access route in the privacy policy all go
-> nowhere.
+> **The support address is still not set.** `CONTACT_EMAIL` in `lib/site.ts` is
+> `REPLACE-ME@masjidone.example`, so the route in this diagram does not exist
+> yet. Every "request a demo" button and the subject access route in the
+> privacy policy depend on it, and so does the Worker's destination address —
+> one line closes all three.
+>
+> The *"Having issues? Log a ticket"* link no longer depends on it: it pointed
+> at a `mailto:` aimed at that placeholder, which meant the one control on the
+> demo meant for a committee that is stuck opened an empty mail window
+> addressed to nowhere. It opens `/demo/ticket/` instead.
 
 There is no overseas support desk and no outsourced queue. A masjid talks to
 the **MasjidOne support team** — the people who wrote the system and can fix it.
@@ -322,12 +436,18 @@ Only the setup fee falls.
 Three that catch people out:
 
 - **Never claim a feature that is not built, and never deny one that is.**
-  Parent access and Hifz/sabaq progress are in development; the madrasah
-  portal is not. Both halves of that rule have been broken here — the site
-  spent months telling committees the portal was not ready while badging it
-  Live two sections further up. `CLAUDE.md` records what was true on the day
-  it was written, so **query the database rather than trusting either
-  document**, including this one.
+  This README broke that rule itself until 2 October 2026: it said parent
+  access and Hifz/sabaq progress were in development. **Both are built**, and
+  have been — 16 parent functions and six progress functions, all enforcing.
+  They were tagged across eleven places on the site because their tables were
+  empty, and *zero rows means nobody has used it yet, not that it does not
+  exist*. Months of telling committees a shipped feature was coming.
+  Today **one thing carries the tag: the screen heartbeat**, and it is in the
+  demo rather than on the public site — there is no screens table in the
+  platform and no function takes a screen id. Nothing else is tagged.
+  The test is whether the *functions* exist and enforce, never whether rows
+  do, so **query the database rather than trusting either document**,
+  including this one.
 - **Never say no competitor does the whole masjid.** Several do the
   congregation side. The defensible claim is narrower and it is written
   down in `CLAUDE.md`.
@@ -336,7 +456,9 @@ Three that catch people out:
   Do not rewrite them into the present tense until they are done.
 
 British English throughout, and Arabic terms keep their diacritics:
-jamāʿah, Jumuʿah, janāzah, nikāḥ, Hifz, sadaqah, madrasah, masjid.
+jamāʿah, Jumuʿah, janāzah, Hifz, sadaqah, madrasah, masjid. ("nikah" is
+written plain throughout, in all thirteen places it appears — this list used to
+say otherwise and the code never did.)
 
 ---
 
