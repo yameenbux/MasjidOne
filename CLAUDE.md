@@ -72,25 +72,24 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > of the support console opens their own domain, which is why their design
 > survives it: CSS does not cross an origin.
 >
-> **The contract, and how far it reaches.** `masjids.theme` now holds
-> Taiyabah's real palette and `masjid_theme(slug)` reads it, publicly, because
-> a masjid's colours are already on their own website. Six semantic groups —
-> brand, accent, surface, ink, type, shape — never literal names like "plum",
-> so the same keys describe any masjid.
+> **Every masjid is designed, not themed.** Taiyabah's website, app and admin
+> portals were designed for Taiyabah. The next masjid's will be designed for
+> them. They are not one product with the variables swapped, and nothing here
+> should be built as though they were — a committee can already buy a skinnable
+> template elsewhere, and that is precisely the thing they are not buying here.
 >
-> **Accent is three values and that is the important part.** Taiyabah's own
-> stylesheet records that their gold reads 2.3:1 on a light card and is
-> unreadable there. An accent that works on the dark brand colour is almost
-> never the one that works as text on paper, so `on_brand` and `on_paper` are
-> separate and whoever sets a theme has to answer both. `lib/demo-themes.ts`
-> has a contrast check over every pairing the mapping produces; it caught a
-> palette at 4.43:1 the day it was written.
+> What the masajid have in common is **MasjidOne underneath**: the same
+> functions, the same database, the same rules about who may open a child's
+> record. Not a stylesheet.
 >
-> **No portal reads the column yet.** A masjid's design is still hand-built
-> into its own site, so "your own colours" remains part of what setup covers
-> and is not a switch anybody can flick. Say it that way. The demo's palette
-> picker is a demonstration of the principle, not a settings screen, and its
-> wording ("a masjid is **built** in its own colours") is load-bearing.
+> This was got wrong once, on 2 October 2026. `masjids.theme` was populated
+> with Taiyabah's palette, `masjid_theme(slug)` was added to read it, and the
+> demo gained a palette picker so a visitor could flick between three skins.
+> All of it argued for the templated model. It was reverted the same day —
+> `theme` is `{}`, the function has EXECUTE revoked from every role and is
+> commented DEAD pending a `DROP FUNCTION`, and the picker is a sentence again.
+> If you find yourself designing a theming system, you have taken the wrong
+> turning that this paragraph exists to mark.
 
 - **Typography:** `Newsreader` (serif) for headings and pull quotes,
   `Archivo` (sans) for everything else, loaded via `<link>` in `app/layout.tsx`.
@@ -305,19 +304,12 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   does *not* mean "no processor in the policy" — Cloudflare carries the
   submission and is a processor, named in the notice. What it avoids is a form
   company keeping its own copy of every enquiry.
-- **Make a portal read `masjid_theme()`.** The contract exists and holds
-  Taiyabah's real values (migration 136); nothing consumes it. Until something
-  does, a masjid's colours are hand-built into their own site and masjid two
-  means another hand-built site. The portal is the one to do first — it is the
-  screen a committee lives in, and its palette is already custom properties in
-  one `:root` block, so it is a swap rather than a rewrite. The app and the
-  hall screens are the reason the values are in the database rather than in
-  each site's CSS: neither can read a website's stylesheet.
-  **Decide build-time or runtime when you do it.** Baking the theme into each
-  site at build has no flash and no dependency at paint; reading it at runtime
-  lets a committee change their colours without a deploy, at the cost of a
-  round trip before the first paint. For a prayer-times screen on a wall,
-  baking is almost certainly right.
+- **Drop the dead `masjid_theme(text)` function.** One statement —
+  `DROP FUNCTION public.masjid_theme(text);` — in the Supabase SQL editor. It
+  is already unreachable (EXECUTE revoked from every role, `masjids.theme` back
+  to `{}`, comment marked DEAD), but it is a signpost toward a model this
+  product does not have. The drop could not be issued through the MCP tooling,
+  which timed out on it repeatedly while every other statement went through.
 - Do not add a captcha. reCAPTCHA is a Google tracker and would trigger the
   cookie banner this site deliberately avoids. The form has a honeypot.
 - Set `NEXT_PUBLIC_BASE_PATH` as a repository variable, or add a `CNAME` to

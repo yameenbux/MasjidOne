@@ -3461,22 +3461,3 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   margin:var(--s2) 0 0; max-width:34rem; color:var(--board-ink-2);
   font-size:var(--t-small); line-height:1.6;
 }
-
-/* The palette switcher on the portal chooser. Sits where the apology used to.
-   Each swatch paints itself in the palette it selects, so the control is the
-   evidence rather than a label for it. */
-.tpick{display:block; margin:var(--s2) 0 0; max-width:36rem}
-.tpick__lab{display:block; color:var(--board-ink-2); font-size:var(--t-small); line-height:1.6}
-.tpick__row{display:flex; flex-wrap:wrap; gap:var(--s1); margin-top:var(--s1)}
-.tpick__opt{
-  cursor:pointer; padding:.4rem .75rem; border-radius:2px;
-  font-size:var(--t-label); letter-spacing:.08em; text-transform:uppercase;
-  border:var(--hair) solid var(--board-ink-2); color:var(--board-ink-2);
-  background:transparent; line-height:1.4;
-}
-/* The selected one gains a ring rather than changing colour, because its
-   colour IS the information and must not move when it is picked. */
-.tpick__opt.is-on{box-shadow:0 0 0 2px var(--board), 0 0 0 3px currentColor}
-.tpick__opt:focus-within{outline:2px solid var(--board-brass); outline-offset:3px}
-.tpick__note{display:block; margin-top:var(--s1); color:var(--board-ink-2);
-  font-size:var(--t-label); line-height:1.5; opacity:.85}
