@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { PoweredBy } from "@/components/ui/powered-by";
-import { CONTACT_EMAIL } from "@/lib/site";
 import { DemoNav } from "@/components/demo-nav";
 
 /**
@@ -139,9 +138,14 @@ export function DemoChooser({
             ))}
           </p>
         ) : null}
+        {/* This pointed at a mailto: aimed at CONTACT_EMAIL, which is still
+            the placeholder address — so the one control on the demo meant for
+            a committee that is stuck opened an empty mail window addressed to
+            nowhere. It goes to a real screen now, carrying the masjid's name
+            so the ticket knows whose system it is about. */}
         <p className="pick__help">
           Having issues?{" "}
-          <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne support")}`}>
+          <a href={`ticket/?masjid=${encodeURIComponent(masjidName)}`}>
             Log a ticket
           </a>
         </p>

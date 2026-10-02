@@ -8,7 +8,14 @@ import {
   DEMO_SUPPORT_MASJIDS,
   DEMO_SUPPORT_USER,
   DEMO_SUPPORT_CREDENTIALS,
+  DEMO_TICKETS,
+  openTickets,
 } from "@/lib/demo-data";
+
+/** The way into a masjid, used by the queue and by the cards. */
+function enterHref(name: string) {
+  return `../?masjid=${encodeURIComponent(name)}&support=1#portals`;
+}
 
 /**
  * The MasjidOne support console.
@@ -31,6 +38,7 @@ import {
 
 export function DemoSupport() {
   const [signedIn, setSignedIn] = React.useState(false);
+  const open = DEMO_TICKETS.filter((t) => t.state !== "Answered");
 
   if (!signedIn) {
     return (
@@ -75,9 +83,80 @@ export function DemoSupport() {
       </header>
 
       <div className="dsup__body">
+        {/* WHAT CHANGED AND WHY. This console used to open on four masajid and
+            an Enter button, with no reason attached to any of them — it showed
+            that we can walk into a masjid's system without ever showing why we
+            would. That is the version of the pitch a committee pushes back on.
+            The queue goes first now: somebody asked, and entering is how we
+            answer them. */}
+        <section className="dsup__q" aria-label="Open tickets">
+          <h2 className="dsup__h">Waiting on us</h2>
+          <p className="dsup__lede">
+            {open.length} open · raised by the masajid themselves, not by
+            anything we watch from here.
+          </p>
+
+          <ul className="dsup__tix">
+            {open.map((t) => {
+              const m = DEMO_SUPPORT_MASJIDS.find((x) => x.slug === t.masjid)!;
+              return (
+                <li className="dsup__tix1" key={t.ref}>
+                  <div className="dsup__tixHead">
+                    <p className="dsup__tixRef">{t.ref}</p>
+                    <h3 className="dsup__tixSub">{t.subject}</h3>
+                    <p className="dsup__tixWho">
+                      {m.name} · {t.from}, {t.role} · {t.raised}
+                    </p>
+                  </div>
+
+                  <p className="dsup__tixBody">{t.detail}</p>
+
+                  <p className="dsup__tixTags">
+                    <span className={`dsup__urg dsup__urg--${t.urgency === "Stops us" ? "stop" : t.urgency === "Slows us down" ? "slow" : "ask"}`}>
+                      {t.urgency}
+                    </span>
+                    {/* The distinction the ticket form exists to record. Access
+                        is decided by is_platform_admin() and audited by
+                        set_current_masjid() either way — this says whether we
+                        were invited, which is not the same thing and should
+                        never be drawn as if it were a lock. */}
+                    {t.mayEnter ? (
+                      <span className="dsup__inv">They have asked us to look</span>
+                    ) : (
+                      <span className="dsup__uninv">
+                        <span aria-hidden="true">▪ </span>
+                        They have not asked us to sign in
+                      </span>
+                    )}
+                  </p>
+
+                  {/* A ticket that says "I would rather you did not open the
+                      record" cannot carry the same filled button as one that
+                      asked us in — the strongest control on the card would be
+                      the one the committee told us not to use. Still reachable,
+                      because is_platform_admin() is what decides and pretending
+                      otherwise would be the dishonest version; just no longer
+                      the obvious thing to do. */}
+                  <a
+                    className={`dsup__tixGo${t.mayEnter ? "" : " dsup__tixGo--quiet"}`}
+                    href={enterHref(m.name)}
+                  >
+                    Open {m.name}
+                    {t.mayEnter ? null : (
+                      <span className="u-visually-hidden"> — they have not asked us to</span>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
         <section aria-label="Masjids we support">
           <h2 className="dsup__h">Masjids we support</h2>
-          <p className="dsup__lede">Enter one to help with something.</p>
+          <p className="dsup__lede">
+            Everyone we look after, whether or not they have asked for anything.
+          </p>
 
           <ul className="dsup__grid">
             {DEMO_SUPPORT_MASJIDS.map((m) => (
@@ -100,6 +179,10 @@ export function DemoSupport() {
                     <dt>Pupils</dt>
                     <dd>{m.pupils ? m.pupils.toLocaleString("en-GB") : "—"}</dd>
                   </div>
+                  <div>
+                    <dt>Open tickets</dt>
+                    <dd>{openTickets(m.slug).length || "—"}</dd>
+                  </div>
                 </dl>
 
                 {m.flag ? (
@@ -115,10 +198,7 @@ export function DemoSupport() {
                     and the masjid, which was a click for information somebody
                     needs BEFORE they press Enter, not after. It is below the
                     cards now, where it is read first. */}
-                <a
-                  className="dsup__enter"
-                  href={`../?masjid=${encodeURIComponent(m.name)}&support=1#portals`}
-                >
+                <a className="dsup__enter" href={enterHref(m.name)}>
                   Enter
                   <span className="u-visually-hidden"> {m.name}</span>
                 </a>

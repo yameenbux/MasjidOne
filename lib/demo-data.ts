@@ -445,6 +445,136 @@ export const DEMO_SUPPORT_MASJIDS: SupportMasjid[] = [
   },
 ];
 
+/**
+ * SUPPORT TICKETS — the other half of the support console.
+ *
+ * The console used to list four masajid with an Enter button on each and no
+ * reason attached to any of them, which is the weak version of the pitch: it
+ * showed that we *can* get into a masjid's system without showing why we ever
+ * would. A ticket is the why. The committee asks, we open theirs, their audit
+ * records it, the ticket closes.
+ *
+ * NOT THE SAME THING as the "Requests" tab in the masjid office. That is the
+ * congregation asking the committee for a hall or a nikah. This is the
+ * committee asking us for help with the software. They travel in opposite
+ * directions and neither should imply the other.
+ *
+ * `mayEnter` is the part worth keeping honest. Nothing here grants access —
+ * is_platform_admin() does that, and set_current_masjid() audits it either way.
+ * It records whether the committee asked us to look, so our own people can see
+ * on the queue whether entering was invited or merely permitted. A console
+ * that did not show the difference would make every entry look the same.
+ */
+export type SupportTicket = {
+  ref: string;
+  /** Slug of a masjid in DEMO_SUPPORT_MASJIDS. */
+  masjid: string;
+  subject: string;
+  /** Who raised it, as they described themselves. */
+  from: string;
+  role: string;
+  raised: string;
+  urgency: "Stops us" | "Slows us down" | "A question";
+  state: "Waiting on us" | "With them" | "Answered";
+  detail: string;
+  /** Did they ask us to sign into their system to look? */
+  mayEnter: boolean;
+};
+
+export const DEMO_TICKETS: SupportTicket[] = [
+  {
+    ref: "T-4471",
+    masjid: "al-falah",
+    subject: "Foyer screen has been blank since Tuesday",
+    from: "Ibrahim Patel",
+    role: "Committee member",
+    raised: "Today 09:12",
+    urgency: "Slows us down",
+    state: "Waiting on us",
+    detail:
+      "The tall screen by the shoe racks went blank at some point on Tuesday. " +
+      "The prayer hall one is fine. Nobody has touched the player.",
+    mayEnter: true,
+  },
+  {
+    ref: "T-4468",
+    masjid: "bilal",
+    subject: "Class lists — we have them in a spreadsheet",
+    from: "Suhail Mahmood",
+    role: "Madrasah administrator",
+    raised: "Yesterday 17:40",
+    urgency: "Stops us",
+    state: "Waiting on us",
+    detail:
+      "First term starts in three weeks and we have 14 classes in an Excel " +
+      "file. Can someone load it for us rather than us typing it in twice.",
+    mayEnter: true,
+  },
+  {
+    ref: "T-4465",
+    masjid: "al-bayan",
+    subject: "A family says their sibling rate is wrong",
+    from: "Fatima Khatun",
+    role: "Madrasah administrator",
+    raised: "Monday 19:05",
+    urgency: "A question",
+    state: "Waiting on us",
+    detail:
+      "Household 1156 is showing a credit and the father thinks he has been " +
+      "charged for a child who left in July. I would rather you did not open " +
+      "the record — tell me where to look and I will check it myself.",
+    mayEnter: false,
+  },
+  {
+    ref: "T-4452",
+    masjid: "anwar",
+    subject: "Can two teachers share one register?",
+    from: "Qāriah Maryam Desai",
+    role: "Teacher",
+    raised: "Last week",
+    urgency: "A question",
+    state: "Answered",
+    detail:
+      "Answered the same day. Both teachers are on the class; whoever submits " +
+      "first locks it and the other sees it as taken.",
+    mayEnter: false,
+  },
+];
+
+/** Open tickets for one masjid — what the card counts and the queue lists. */
+export function openTickets(slug: string) {
+  return DEMO_TICKETS.filter((t) => t.masjid === slug && t.state !== "Answered");
+}
+
+/* Every ticket must belong to a masjid the console actually lists. A ticket
+   pointing at a slug that is not there would render a queue row the Enter
+   button could not act on — a dead end in the one screen whose whole job is
+   to be the way in. */
+{
+  const slugs = new Set(DEMO_SUPPORT_MASJIDS.map((m) => m.slug));
+  const orphan = DEMO_TICKETS.find((t) => !slugs.has(t.masjid));
+  if (orphan) {
+    throw new Error(
+      `Ticket ${orphan.ref} is filed against "${orphan.masjid}", which is not a masjid on the console.`,
+    );
+  }
+}
+
+/* The two masajid carrying a flag on their card are the two with an open
+   ticket, and that is not a coincidence — the flag is what the ticket is
+   about. If someone adds a flag without a ticket, the console says something
+   needs attention and then offers no way to act on it. */
+{
+  for (const m of DEMO_SUPPORT_MASJIDS) {
+    const open = openTickets(m.slug).length;
+    if (m.flag && open === 0) {
+      throw new Error(
+        `${m.name} is flagged "${m.flag}" but has no open ticket explaining it.`,
+      );
+    }
+  }
+}
+
 /** Who is signed in to the support console. */
 export const DEMO_SUPPORT_USER = {
   name: "Yameen Bux",

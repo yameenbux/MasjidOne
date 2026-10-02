@@ -3141,3 +3141,155 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
 }
 .dsup__open:hover{opacity:.88}
+
+/* ---------------------------------------------------------------------------
+   The support queue, and the ticket a masjid raises to fill it.
+
+   The console opens on this now rather than on the masjid cards. A list of
+   four masajid with Enter buttons answers "can you get into our system?" with
+   "yes"; the queue answers the question underneath it, which is "why would
+   you?" — because somebody there asked, by name, at a time, about one thing.
+
+   Left-aligned, hairline-ruled, no card chrome. The pricing block is the one
+   place on this site allowed to be centred and rounded, and this is not it.
+--------------------------------------------------------------------------- */
+.dsup__q{margin-bottom:var(--s5)}
+.dsup__tix{list-style:none; margin:0; padding:0; display:grid; gap:var(--s3)}
+.dsup__tix1{
+  border-top:var(--hair) solid var(--rule); padding:var(--s3) 0 0;
+  display:grid; gap:var(--s2); max-width:52rem;
+}
+.dsup__tixHead{display:grid; gap:.2rem}
+.dsup__tixRef{
+  margin:0; color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.12em; text-transform:uppercase; font-variant-numeric:tabular-nums;
+}
+.dsup__tixSub{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.05rem,2.6vw,1.3rem); line-height:1.25; color:var(--ink);
+}
+.dsup__tixWho{margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}
+.dsup__tixBody{margin:0; color:var(--ink); line-height:1.7; max-width:46rem}
+.dsup__tixTags{
+  margin:0; display:flex; flex-wrap:wrap; gap:var(--s1) var(--s3);
+  align-items:baseline; font-size:var(--t-small);
+}
+.dsup__urg{
+  font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+  border:var(--hair) solid var(--rule-2); padding:.15rem .5rem; color:var(--ink-2);
+}
+.dsup__urg--stop{color:var(--brass); border-color:var(--brass)}
+.dsup__inv{color:var(--ink-2)}
+/* The one that changes what our own people may do next, so it carries the
+   same brass marker the heartbeat and the arrears rows use. */
+.dsup__uninv{color:var(--brass); font-weight:600}
+.dsup__tixGo{
+  justify-self:start; text-decoration:none; min-height:2.75rem;
+  padding:.6rem var(--s2); background:var(--cta-bg); color:var(--cta-fg);
+  border:var(--hair) solid var(--cta-bg); border-radius:2px;
+  font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+  display:inline-flex; align-items:center;
+}
+.dsup__tixGo:hover{opacity:.88}
+.dsup__tixGo--quiet{
+  background:transparent; color:var(--ink-2); border-color:var(--rule-2);
+}
+.dsup__tixGo--quiet:hover{color:var(--ink); border-color:var(--ink-2); opacity:1}
+
+/* ---- The committee's side of it: /demo/ticket/ ------------------------- */
+.dtkt{display:flex; flex-direction:column; flex:1; background:var(--paper)}
+.dtkt__top{
+  background:var(--board); color:var(--board-ink); padding:var(--s3) var(--s3);
+  display:flex; flex-wrap:wrap; gap:var(--s2) var(--s3);
+  align-items:center; justify-content:space-between;
+}
+.dtkt__brand{display:flex; align-items:center; gap:var(--s2)}
+.dtkt__mark{width:2rem; height:2rem; color:var(--board-brass); flex:none}
+.dtkt__eyebrow{
+  margin:0; color:var(--board-brass); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.dtkt__h{
+  margin:.1rem 0 0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.35rem,4vw,1.9rem); line-height:1.15; color:var(--board-ink);
+}
+.dtkt__back{color:var(--board-brass); font-size:var(--t-small); text-decoration:none}
+.dtkt__back:hover{text-decoration:underline}
+
+.dtkt__body{flex:1; padding:var(--s4) var(--s3); width:100%; max-width:52rem}
+.dtkt__lede{margin:0 0 var(--s4); color:var(--ink-2); line-height:1.7; max-width:46rem}
+.dtkt__form{display:grid; gap:var(--s3)}
+/* auto-fit rather than two fixed columns: at 360px each pair stacks without a
+   media query, and nothing is ever narrower than a thumb can tap. */
+.dtkt__row{
+  display:grid; gap:var(--s3);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));
+}
+.dtkt__f{display:grid; gap:.35rem}
+.dtkt__lab{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.dtkt__in{
+  font:inherit; color:var(--ink); background:var(--paper-2);
+  border:none; border-bottom:var(--hair) solid var(--rule-2);
+  padding:.6rem .1rem; min-height:2.75rem; border-radius:0;
+}
+.dtkt__in:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+.dtkt__ta{min-height:7rem; line-height:1.6; resize:vertical; padding:.6rem}
+
+.dtkt__fs{border:none; margin:0; padding:0; display:grid; gap:.35rem}
+.dtkt__urg{
+  display:grid; gap:var(--s2);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));
+}
+.dtkt__opt{
+  display:grid; gap:.1rem; padding:var(--s2);
+  border:var(--hair) solid var(--rule); background:var(--paper-2); cursor:pointer;
+}
+.dtkt__opt.is-on{border-color:var(--brass)}
+.dtkt__opt input{margin:0 0 .3rem; justify-self:start}
+.dtkt__optT{font-variation-settings:"wght" 600}
+.dtkt__optH{color:var(--ink-2); font-size:var(--t-small); line-height:1.5}
+
+.dtkt__warn{
+  margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6;
+  border-left:3px solid var(--brass); padding-left:var(--s2); max-width:44rem;
+}
+.dtkt__consent{
+  display:grid; grid-template-columns:auto 1fr; gap:var(--s2);
+  align-items:start; line-height:1.7; padding:var(--s3);
+  background:var(--paper-2); border-left:3px solid var(--brass);
+}
+.dtkt__consent input{margin-top:.45rem}
+.dtkt__err{margin:0; color:var(--brass); font-weight:600}
+.dtkt__send,.dtkt__again{
+  justify-self:start; min-height:2.75rem; padding:.7rem var(--s3); cursor:pointer;
+  background:var(--cta-bg); color:var(--cta-fg);
+  border:var(--hair) solid var(--cta-bg); border-radius:2px;
+  font:inherit; font-size:var(--t-label);
+  letter-spacing:.12em; text-transform:uppercase;
+}
+.dtkt__send:hover,.dtkt__again:hover{opacity:.88}
+
+.dtkt__done{max-width:46rem}
+.dtkt__done:focus-visible{outline:2px solid var(--brass); outline-offset:4px}
+.dtkt__ref{
+  margin:0; color:var(--brass); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase; font-variant-numeric:tabular-nums;
+}
+.dtkt__doneH{
+  margin:.3rem 0 var(--s3); font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.4rem,4vw,2rem); line-height:1.15; color:var(--ink);
+}
+.dtkt__doneP{margin:0 0 var(--s3); line-height:1.7; color:var(--ink)}
+.dtkt__small{margin:0 0 var(--s3); color:var(--ink-2); font-size:var(--t-small)}
+
+/* Board, not paper. PoweredBy draws its mark and its brass in --board-brass,
+   which is the value tuned for the green — on paper it came out at 2.12:1 and
+   the credit was effectively invisible in light mode. Every other portal
+   footer in the demo is board for the same reason. */
+.dtkt__foot{
+  padding:var(--s3); background:var(--board); color:var(--board-ink-2);
+  display:flex; justify-content:flex-end;
+}
