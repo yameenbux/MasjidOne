@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
-import { BASE_PATH, CONTACT_READY } from "@/lib/site";
+import { BASE_PATH, CONTACT_READY, FORM_ENDPOINT } from "@/lib/site";
 import { openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -89,12 +89,39 @@ export default function PrivacyPage() {
         should not. It is an ordinary web form and it is not the route by which a
         child&rsquo;s record reaches us.
       </p>
-      <p>
-        At present the form hands your answers to your own email client, so
-        nothing reaches us until you press send there and no third party sees it
-        on the way. If that changes to a form that submits directly, the company
-        that processes it will be named here before it goes live.
-      </p>
+      {/* WRITTEN BOTH WAYS ON PURPOSE, and switched by the same variable the
+          form itself reads. The old wording promised that whoever processed the
+          form "will be named here before it goes live", which is a promise
+          somebody has to remember to keep on the day the endpoint is set. This
+          way the notice cannot be wrong in either state: set
+          NEXT_PUBLIC_FORM_ENDPOINT and the copy changes with the behaviour. */}
+      {FORM_ENDPOINT ? (
+        <>
+          <p>
+            The form submits to an endpoint we run ourselves on our own
+            Cloudflare account, at <code>forms.masjidone.co.uk</code>. There is
+            no form company in the middle: nobody sells us a form service, keeps
+            a copy of your enquiry, or has a dashboard with your details in it.
+            What you send is turned into an email to us and is not stored at the
+            endpoint.
+          </p>
+          <p>
+            Cloudflare carries it, and that makes them a processor acting on our
+            instructions, so we name them: Cloudflare, Inc., under their data
+            processing addendum and standard contractual clauses. They handle
+            the submission in transit and send the resulting email; they do not
+            keep it afterwards. Like any network provider they hold short-lived
+            logs, including IP addresses, which is also true of our host.
+          </p>
+        </>
+      ) : (
+        <p>
+          At present the form hands your answers to your own email client, so
+          nothing reaches us until you press send there and no third party sees
+          it on the way. When it changes to a form that submits directly, this
+          paragraph changes with it and names whoever carries it.
+        </p>
+      )}
 
       <h2>If you email us</h2>
       <p>

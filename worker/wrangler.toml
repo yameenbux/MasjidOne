@@ -1,0 +1,72 @@
+# The demo-request endpoint. Deployed separately from the site, which is a
+# static export on GitHub Pages and has no server of its own.
+#
+# NOTHING SECRET BELONGS IN THIS FILE. The repository is public. The destination
+# address below is a mailbox meant to be written to, not a credential; anything
+# that is a credential goes in `wrangler secret put`, never here.
+name = "masjidone-forms"
+main = "src/index.js"
+compatibility_date = "2026-10-02"
+workers_dev = false
+
+# The address the form posts to. The site sets NEXT_PUBLIC_FORM_ENDPOINT to
+# exactly this plus /demo-request.
+[[routes]]
+pattern = "forms.masjidone.co.uk/*"
+zone_name = "masjidone.co.uk"
+
+[vars]
+# Must be on a domain onboarded to Cloudflare Email Service, or every send is
+# rejected with E_SENDER_NOT_VERIFIED. This is the From, not the reply address —
+# the enquirer's own address goes in Reply-To by the Worker.
+SEND_FROM = "forms@masjidone.co.uk"
+
+# Where enquiries land. MUST BE THE SAME ADDRESS as destination_address below.
+#
+# Both exist because they do different jobs: this one is what the Worker asks
+# for, that one is what Cloudflare will permit. The documentation says the Worker
+# can omit `to` and the binding's address will be used — it cannot; the runtime
+# throws. Verified by running it.
+SEND_TO = "REPLACE-ME@masjidone.co.uk"  # placeholder; see README step 1
+
+# Pinned to ONE destination, for two reasons that both matter:
+#   1. Sending to a verified destination address on your own account is free on
+#      every plan and does not count against the monthly quota. Sending anywhere
+#      else needs the Workers Paid plan and is metered.
+#   2. A bug in the Worker cannot mail a third party, because the address is not
+#      in the Worker's reach at all.
+# REPLACE the address below with the one you verify in Email Routing, then
+# deploy. It must be verified first or the binding will not send to it.
+#
+# USE A MASJIDONE ADDRESS, NOT A PERSONAL ONE. This file is in a public
+# repository and git history is permanent. It should be the same address as
+# CONTACT_EMAIL in lib/site.ts — the one already meant to be printed on the
+# website — so there is nothing here that was not going to be public anyway.
+#
+# This is the hard stop: whatever the Worker asks for, Cloudflare will only
+# deliver to this address. Keep it identical to SEND_TO above.
+[[send_email]]
+name = "EMAIL"
+destination_address = "REPLACE-ME@masjidone.co.uk"
+
+# 5 submissions per minute per IP. Generous for a person filling in one form,
+# useless to anybody trying to flood the inbox. Nothing to create first — the
+# namespace id is just an integer label scoped to your account.
+#
+# Cloudflare's own guidance says not to key a rate limit on IP, because many
+# people can share one. That guidance is about limiting IDENTIFIED users, and
+# here there are none: the whole point of the endpoint is that anybody may post
+# to it without signing in, so the connecting IP is the only stable thing that
+# is not supplied by the sender. The cost of the shared-IP case is a committee
+# behind one office connection being asked to wait a minute after their fifth
+# submission, which is not a real failure for this form.
+#
+# The limit is per Cloudflare location and eventually consistent, so treat it as
+# a flood guard rather than an accounting system.
+[[ratelimits]]
+name = "RATE_LIMIT"
+namespace_id = "1"
+
+  [ratelimits.simple]
+  limit = 5
+  period = 60

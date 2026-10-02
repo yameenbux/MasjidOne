@@ -10,3 +10,7 @@ next-env.d.ts
 # counts, competitor notes and any tier described as a decoy must never be
 # pushed to it. The pricing-strategy skill writes here.
 founder/
+
+# The form Worker's own dependencies.
+worker/node_modules/
+worker/.wrangler/

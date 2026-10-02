@@ -39,6 +39,16 @@ jobs:
           # <user>.github.io/MasjidOne rather than a custom domain.
           NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
           NEXT_PUBLIC_COMMIT_DATE: ${{ env.COMMIT_DATE }}
+          # Where the demo request form posts. Unset, the form falls back to
+          # handing its answers to the visitor's own mail client. Set, it posts
+          # to the Worker in worker/ and the privacy notice's wording changes
+          # with it — both read this one value, so they cannot disagree.
+          #   https://forms.masjidone.co.uk/demo-request
+          # This line was missing, which would have been an expensive silence:
+          # setting the repository variable would have changed nothing, the
+          # deploy would have gone green, and the form would have quietly kept
+          # using the mailto fallback.
+          NEXT_PUBLIC_FORM_ENDPOINT: ${{ vars.NEXT_PUBLIC_FORM_ENDPOINT }}
           # Only needed for a Search Console URL-prefix property. A Domain
           # property is verified by DNS at the registrar and needs nothing here.
           GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
