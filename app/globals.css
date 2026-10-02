@@ -3066,7 +3066,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   line-height:1.5; font-weight:600;
 }
 .dsup__enter{
-  margin-top:auto; min-height:2.75rem; padding:.6rem var(--s2); cursor:pointer;
+  margin-top:auto; text-decoration:none; min-height:2.75rem; padding:.6rem var(--s2); cursor:pointer;
   background:var(--cta-bg); color:var(--cta-fg);
   border:var(--hair) solid var(--cta-bg); border-radius:2px;
   font:inherit; font-size:var(--t-label);
@@ -3075,31 +3075,22 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .dsup__enter:hover{opacity:.88}
 
-.dsup__back{
-  min-height:2.75rem; padding:.5rem var(--s2); margin-bottom:var(--s3);
-  background:transparent; color:var(--ink-2);
-  border:var(--hair) solid var(--rule-2); border-radius:0;
-  font:inherit; font-size:var(--t-label); letter-spacing:.1em;
-  text-transform:uppercase; cursor:pointer;
+/* What used to be a screen of its own, now below the cards where it is read
+   before the click rather than after it. Board on paper so it reads as a
+   condition of entry and not as a footnote. */
+.dsup__terms{
+  margin-top:var(--s4); padding:var(--s3);
+  background:var(--board); color:var(--board-ink-2);
+  border-left:3px solid var(--board-brass); max-width:52rem;
 }
-.dsup__back:hover{border-color:var(--brass); color:var(--brass)}
-
-/* Standing in somebody else's system is a thing the screen should say, not a
-   thing it should let you forget. */
-.dsup__inside{
-  padding:var(--s3); margin-bottom:var(--s3);
-  background:var(--board); color:var(--board-ink);
-  border-left:3px solid var(--board-brass);
+.dsup__termsH{
+  margin:0 0 var(--s2); font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.15rem,2.8vw,1.45rem); line-height:1.2; color:var(--board-ink);
 }
-.dsup__insideH{
-  margin:0 0 var(--s2); font-family:Newsreader,Georgia,serif;
-  font-size:clamp(1.25rem,3vw,1.6rem); line-height:1.2;
-}
-.dsup__insideH strong{font-weight:400; color:var(--board-brass)}
-.dsup__insideP{margin:0 0 var(--s2); color:var(--board-ink-2); line-height:1.7; max-width:44rem}
-.dsup__insideP:last-child{margin-bottom:0}
-.dsup__insideP strong{color:var(--board-ink)}
-.dsup__insideP code{
+.dsup__termsP{margin:0 0 var(--s2); line-height:1.7}
+.dsup__termsP:last-child{margin-bottom:0}
+.dsup__termsP strong{color:var(--board-ink)}
+.dsup__termsP code{
   background:rgba(147,166,155,.18); color:var(--board-ink);
   padding:.1em .35em; border-radius:2px; font-size:.92em;
 }

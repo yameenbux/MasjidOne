@@ -8,7 +8,6 @@ import {
   DEMO_SUPPORT_MASJIDS,
   DEMO_SUPPORT_USER,
   DEMO_SUPPORT_CREDENTIALS,
-  type SupportMasjid,
 } from "@/lib/demo-data";
 
 /**
@@ -32,7 +31,6 @@ import {
 
 export function DemoSupport() {
   const [signedIn, setSignedIn] = React.useState(false);
-  const [entered, setEntered] = React.useState<SupportMasjid | null>(null);
 
   if (!signedIn) {
     return (
@@ -77,113 +75,76 @@ export function DemoSupport() {
       </header>
 
       <div className="dsup__body">
-        {entered ? (
-          <section aria-label={`Inside ${entered.name}`}>
-            <button
-              type="button"
-              className="dsup__back"
-              onClick={() => setEntered(null)}
-            >
-              ← All masajid
-            </button>
+        <section aria-label="Masjids we support">
+          <h2 className="dsup__h">Masjids we support</h2>
+          <p className="dsup__lede">Enter one to help with something.</p>
 
-            {/* The banner is the whole ethic of this screen. You are standing in
-                somebody else's system and it says so, to you, in their words. */}
-            <div className="dsup__inside" role="status">
-              <p className="dsup__insideH">
-                You are inside <strong>{entered.name}</strong>
-              </p>
-              <p className="dsup__insideP">
-                Support access. You are not a member of this masjid, so this has
-                been written into <strong>their</strong> audit trail — not ours —
-                as <code>masjidone_support_access</code>, against your name and
-                the time. The committee can see it whenever they look.
-              </p>
-              <p className="dsup__insideP">
-                One masjid at a time. Nothing in the system reads across masajid
-                at once, so no screen anywhere shows you two congregations
-                together.
-              </p>
-            </div>
-
-            <dl className="dsup__facts">
-              <div><dt>Town</dt><dd>{entered.town}</dd></div>
-              <div><dt>Plan</dt><dd>{entered.plan}</dd></div>
-              <div><dt>Pupils on roll</dt><dd>{entered.pupils ? entered.pupils.toLocaleString("en-GB") : "—"}</dd></div>
-              <div><dt>State</dt><dd>{entered.state}</dd></div>
-            </dl>
-
-            {/* The handoff. Without this the console stops at a summary and
-                "get into the masjid" is a sentence rather than a thing you can
-                do. ?masjid= is the slot the staff demo already reads; support=1
-                is what makes it keep the band across every page. */}
-            <a
-              className="dsup__open"
-              href={`../?masjid=${encodeURIComponent(entered.name)}&support=1#portals`}
-            >
-              Open {entered.name}&rsquo;s portals
-              <span aria-hidden="true"> →</span>
-            </a>
-            <p className="dsup__next">
-              Their madrasah portal, their office and their screens, exactly as
-              their own committee sees them — with a band across the top, on
-              every page, saying whose system you are in.
-            </p>
-          </section>
-        ) : (
-          <section aria-label="Masjids we support">
-            <h2 className="dsup__h">Masjids we support</h2>
-            <p className="dsup__lede">
-              Enter one to help with something. Entering a masjid you do not
-              belong to is written into that masjid&rsquo;s own audit trail, with
-              your name against it.
-            </p>
-
-            <ul className="dsup__grid">
-              {DEMO_SUPPORT_MASJIDS.map((m) => (
-                <li className="dsup__card" key={m.slug}>
-                  <div className="dsup__cardTop">
-                    <h3 className="dsup__cardName">{m.name}</h3>
-                    <span
-                      className={`dsup__state dsup__state--${m.state
-                        .toLowerCase()
-                        .replace(/\s+/g, "-")}`}
-                    >
-                      {m.state}
-                    </span>
-                  </div>
-                  <p className="dsup__cardTown">{m.town}</p>
-
-                  <dl className="dsup__cardFacts">
-                    <div><dt>Plan</dt><dd>{m.plan}</dd></div>
-                    <div>
-                      <dt>Pupils</dt>
-                      <dd>{m.pupils ? m.pupils.toLocaleString("en-GB") : "—"}</dd>
-                    </div>
-                  </dl>
-
-                  {m.flag ? (
-                    <p className="dsup__flag">
-                      <span aria-hidden="true">▪ </span>
-                      {m.flag}
-                    </p>
-                  ) : m.note ? (
-                    <p className="dsup__note">{m.note}</p>
-                  ) : null}
-
-                  <button
-                    type="button"
-                    className="dsup__enter"
-                    onClick={() => setEntered(m)}
+          <ul className="dsup__grid">
+            {DEMO_SUPPORT_MASJIDS.map((m) => (
+              <li className="dsup__card" key={m.slug}>
+                <div className="dsup__cardTop">
+                  <h3 className="dsup__cardName">{m.name}</h3>
+                  <span
+                    className={`dsup__state dsup__state--${m.state
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
                   >
-                    Enter
-                    <span className="u-visually-hidden"> {m.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+                    {m.state}
+                  </span>
+                </div>
+                <p className="dsup__cardTown">{m.town}</p>
+
+                <dl className="dsup__cardFacts">
+                  <div><dt>Plan</dt><dd>{m.plan}</dd></div>
+                  <div>
+                    <dt>Pupils</dt>
+                    <dd>{m.pupils ? m.pupils.toLocaleString("en-GB") : "—"}</dd>
+                  </div>
+                </dl>
+
+                {m.flag ? (
+                  <p className="dsup__flag">
+                    <span aria-hidden="true">▪ </span>
+                    {m.flag}
+                  </p>
+                ) : m.note ? (
+                  <p className="dsup__note">{m.note}</p>
+                ) : null}
+
+                {/* Straight in. There used to be a summary screen between this
+                    and the masjid, which was a click for information somebody
+                    needs BEFORE they press Enter, not after. It is below the
+                    cards now, where it is read first. */}
+                <a
+                  className="dsup__enter"
+                  href={`../?masjid=${encodeURIComponent(m.name)}&support=1#portals`}
+                >
+                  Enter
+                  <span className="u-visually-hidden"> {m.name}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          {/* What used to be its own screen. It belongs here: a committee's
+              first question is whether we can get into their system, and the
+              answer should be in front of our own people every time they do. */}
+          <div className="dsup__terms">
+            <h3 className="dsup__termsH">The committee will know you were there</h3>
+            <p className="dsup__termsP">
+              Entering a masjid you do not belong to writes{" "}
+              <code>masjidone_support_access</code> into{" "}
+              <strong>their</strong> audit trail — not ours — against your name
+              and the time. They can see it whenever they look, and nobody has
+              to be told it happened.
+            </p>
+            <p className="dsup__termsP">
+              <strong>One masjid at a time.</strong> Nothing in the system reads
+              across masajid at once, so no screen anywhere puts two
+              congregations in front of you together.
+            </p>
+          </div>
+        </section>
       </div>
 
       <footer className="dsup__foot">
