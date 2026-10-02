@@ -196,6 +196,7 @@ export default function DemoPage() {
           ask="Where would you like to go?"
           options={portalOptions(masjid)}
           doors={[
+            { href: "support/", label: "MasjidOne support" },
             { href: "app/", label: "The congregation app" },
             { href: "teacher/", label: "A teacher" },
             { href: "parent/", label: "A parent" },

@@ -373,6 +373,89 @@ export const DEMO_APP_REACH = {
   android: 568,
 } as const;
 
+/**
+ * The MasjidOne support console — the masajid we look after.
+ *
+ * MIRRORS A MODEL THAT IS ALREADY BUILT, and the detail is the point.
+ * set_current_masjid(slug) lets a platform admin enter a masjid they are not a
+ * member of, and when it does, it writes `masjidone_support_access` into THAT
+ * MASJID'S OWN admin_audit — not ours. It returns support_access: true so the
+ * screen can say out loud whose system you are standing in. is_platform_admin()
+ * gates it, and there is deliberately no function anywhere that reads across
+ * masajid at once.
+ *
+ * That constraint is the reassurance, not the limitation. "Can your people get
+ * into our system?" has one good answer: yes, one masjid at a time, and your
+ * own audit log records every time we do it. A console that quietly showed
+ * every masjid's data on one screen would be the wrong thing to build and
+ * would be a harder conversation with a committee.
+ *
+ * Invented, like the rest of the demonstration. These are not customers.
+ */
+export type SupportMasjid = {
+  name: string;
+  town: string;
+  slug: string;
+  plan: "Madrasah" | "Masjid Complete";
+  /** Pupils on roll, or 0 where the madrasah side is not in use. */
+  pupils: number;
+  state: "Live" | "Setting up" | "Trial";
+  /** What support would want to see before entering. */
+  note?: string;
+  /** Something needing attention, shown against the card. */
+  flag?: string;
+};
+
+export const DEMO_SUPPORT_MASJIDS: SupportMasjid[] = [
+  {
+    name: "Masjid al-Bayān",
+    town: "Bolton",
+    slug: "al-bayan",
+    plan: "Masjid Complete",
+    pupils: 438,
+    state: "Live",
+    note: "Everything in use. 1,180 phones on the app.",
+  },
+  {
+    name: "Masjid al-Falāḥ",
+    town: "Blackburn",
+    slug: "al-falah",
+    plan: "Masjid Complete",
+    pupils: 312,
+    state: "Live",
+    flag: "A hall screen has not checked in for two days",
+  },
+  {
+    name: "Madrasah Anwār al-ʿUlūm",
+    town: "Preston",
+    slug: "anwar",
+    plan: "Madrasah",
+    pupils: 196,
+    state: "Live",
+    note: "Madrasah only. No congregation side.",
+  },
+  {
+    name: "Masjid Bilāl",
+    town: "Oldham",
+    slug: "bilal",
+    plan: "Masjid Complete",
+    pupils: 0,
+    state: "Setting up",
+    flag: "Class lists not imported yet — first term starts in three weeks",
+  },
+];
+
+/** Who is signed in to the support console. */
+export const DEMO_SUPPORT_USER = {
+  name: "Yameen Bux",
+  role: "Platform administrator",
+} as const;
+
+/* The support console's demonstration sign-in. A plain pair like the other
+   doors — this repository is public, so no real address and no real password
+   goes anywhere near it. The live account is in the platform, where it belongs. */
+export const DEMO_SUPPORT_CREDENTIALS = { user: "support", pass: "support" } as const;
+
 export const DEMO_SCREENS: ScreenRow[] = [
   { name: "Prayer hall", shape: "Landscape", secondsAgo: 18 },
   { name: "Women's section", shape: "Landscape", secondsAgo: 44 },
