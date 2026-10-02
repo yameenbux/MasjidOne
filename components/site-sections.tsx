@@ -58,8 +58,9 @@ export function Hero() {
       <h1 className="rv" style={{ "--i": "1" } as React.CSSProperties}>The madrasah and the congregation, <em>on one system</em>.</h1>
       <p className="hero__sub rv" style={{ "--i": "2" } as React.CSSProperties}>
         Prayer times, the congregation app, your website, the hall screens and
-        donations — running today. Registers, fees and parent access join the
-        same system, from the same record of the same family.
+        donations are live today. The madrasah — registers, fees, Hifz and
+        parent access — is built on the same record of the same family, and
+        already holds a Bolton masjid&rsquo;s full roll.
       </p>
     </div>
 
@@ -121,7 +122,7 @@ export function Hero() {
 export function Walkthrough() {
   return (
 <section className="sect wrap film-sect" id="walkthrough">
-  <p className="eyebrow eyebrow--brass rv">See it running</p>
+  <p className="eyebrow eyebrow--brass rv">See it working</p>
   <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>The madrasah portal, in a Bolton masjid, this term.</h2>
   <figure className="film rv" style={{ "--i": "2" } as React.CSSProperties}>
     <video

@@ -160,8 +160,9 @@ export function MasjidOneHero() {
       </h1>
       <p className="stack__sub">
         Prayer times, the congregation app, your website, the hall screens and
-        donations — running today. Registers, fees and parent access join the
-        same system, from the same record of the same family.
+        donations are live today. The madrasah — registers, fees, Hifz and
+        parent access — is built on the same record of the same family, and
+        already holds a Bolton masjid&rsquo;s full roll.
       </p>
       <div className="stack__act">
         <SpinningBorderLink href={`${BASE}${DEMO_HREF}`}>Request a demo</SpinningBorderLink>
@@ -173,7 +174,7 @@ export function MasjidOneHero() {
           is a good screen away. This puts it one tap from the hero without
           dropping a video into the middle of a pinned, scroll-driven centre. */}
       <p className="stack__watch">
-        <a href="#walkthrough">Watch it running at a Bolton masjid · 58 seconds</a>
+        <a href="#walkthrough">Watch the madrasah portal at a Bolton masjid · 58 seconds</a>
       </p>
       <p className="stack__note">
         Interface previews · example data, no masjid named

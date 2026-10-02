@@ -45,8 +45,10 @@ export default function TermsPage() {
       </p>
       <p>
         The content, design and code are ours and all rights are reserved. The
-        screenshots of Taiyabah Masjid&rsquo;s site, app and hall screens are
-        used with their permission; their name and logo remain theirs.
+        walkthrough video was recorded at Taiyabah Masjid and is used with their
+        permission; their name and logo remain theirs. Every other image on this
+        site is an interface preview rather than a capture of a real masjid, and
+        the captions say so.
       </p>
       <p>
         We try to keep the site accurate, but it describes a product that is
