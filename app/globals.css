@@ -3121,3 +3121,32 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   padding:var(--s3); background:var(--board); color:var(--board-ink-2);
 }
 .dsup__footNote{margin:0; font-size:var(--t-small)}
+
+/* The support band. Sits under the demonstration strip and follows you through
+   every page of a masjid you entered from the support console — brass on board
+   like the strip above it, because it carries the same kind of message: this
+   is not what it looks like, and here is what it actually is. */
+.dsupband{
+  position:sticky; top:0; z-index:49;
+  display:flex; flex-wrap:wrap; gap:.4rem var(--s2); align-items:baseline;
+  margin:0; padding:.55rem var(--s2);
+  background:var(--board); color:var(--board-ink-2);
+  border-bottom:var(--hair) solid var(--board-rule);
+  font-size:var(--t-small);
+}
+.dsupband > strong:first-child{
+  color:var(--board-brass); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.dsupband strong{color:var(--board-ink)}
+.dsupband a{margin-left:auto; color:var(--board-brass)}
+
+/* The way into a masjid from the console. */
+.dsup__open{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:2.75rem; padding:.6rem var(--s3); margin-bottom:var(--s3);
+  background:var(--cta-bg); color:var(--cta-fg); text-decoration:none;
+  border:var(--hair) solid var(--cta-bg); border-radius:2px;
+  font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+}
+.dsup__open:hover{opacity:.88}

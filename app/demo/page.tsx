@@ -126,10 +126,16 @@ function congregationOptions(masjid: string): [ChooserOption, ChooserOption] {
 
 export default function DemoPage() {
   const [masjid, setMasjid] = React.useState(DEMO_MASJID_DEFAULT);
+  /* Arrived from the support console. The band then follows you through every
+     page, because the one thing somebody must not be able to forget is whose
+     system they are standing in. */
+  const [support, setSupport] = React.useState(false);
   const [stage, setStage] = React.useState<Stage>("login");
 
   React.useEffect(() => {
-    const raw = new URLSearchParams(window.location.search).get("masjid");
+    const params = new URLSearchParams(window.location.search);
+    setSupport(params.get("support") === "1");
+    const raw = params.get("masjid");
     if (raw) {
       // Trim, collapse whitespace and cap the length. The value lands in a
       // heading at display size and React escapes it, so the only real risk is
@@ -166,6 +172,17 @@ export default function DemoPage() {
           invented pupils and invented balances.
         </span>
       </p>
+
+      {support ? (
+        <p className="dsupband" role="status">
+          <strong>Support access</strong>
+          <span>
+            You are in <strong>{masjid}</strong>&rsquo;s system as MasjidOne
+            support. Recorded in their audit trail.
+          </span>
+          <a href="support/">Leave</a>
+        </p>
+      ) : null}
 
       {stage === "login" ? (
         <MasjidAccessLogin

@@ -113,10 +113,21 @@ export function DemoSupport() {
               <div><dt>State</dt><dd>{entered.state}</dd></div>
             </dl>
 
+            {/* The handoff. Without this the console stops at a summary and
+                "get into the masjid" is a sentence rather than a thing you can
+                do. ?masjid= is the slot the staff demo already reads; support=1
+                is what makes it keep the band across every page. */}
+            <a
+              className="dsup__open"
+              href={`../?masjid=${encodeURIComponent(entered.name)}&support=1#portals`}
+            >
+              Open {entered.name}&rsquo;s portals
+              <span aria-hidden="true"> →</span>
+            </a>
             <p className="dsup__next">
-              From here you would open their madrasah portal, their office or
-              their screens exactly as their own committee sees them — the same
-              pages, with a band across the top saying whose system you are in.
+              Their madrasah portal, their office and their screens, exactly as
+              their own committee sees them — with a band across the top, on
+              every page, saying whose system you are in.
             </p>
           </section>
         ) : (
