@@ -3469,7 +3469,11 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    rather than the phone layout a narrow box would trigger. */
 .lscr__monitor{
   position:relative; aspect-ratio:16/9; overflow:hidden;
-  background:var(--board); border:var(--hair) solid var(--rule-2);
+  /* Paper, not board, BECAUSE OF THE LOGO. A masjid's mark is usually dark ink
+     on transparency; on the deep green it would disappear and the monitor would
+     look empty again, which is the whole thing this is fixing. A light plate is
+     the safe surface for an image nobody here has seen. */
+  background:var(--paper-2); border:var(--hair) solid var(--rule-2);
   /* The container the frame scales against. inline-size, and declared on the
      PARENT of the thing that reads it — container-type and a cq unit on the
      same element is a self-reference the browser resolves against the viewport
@@ -3489,6 +3493,12 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   /* The preview is a picture, not a thing to use. Clicking into a scaled frame
      lands on the wrong element, so pointer events go to the card instead. */
   pointer-events:none;
+}
+/* Behind the frame, centred, and deliberately modest — it is a resting state,
+   not a badge. Contained so a wide letterhead-shaped mark is never cropped. */
+.lscr__logo{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:46%; height:46%; object-fit:contain; opacity:.9;
 }
 .lscr__cap{color:var(--ink-2); font-size:var(--t-label); line-height:1.5}
 .lscr__cap a{color:var(--brass)}

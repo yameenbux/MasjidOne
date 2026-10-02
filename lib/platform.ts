@@ -64,6 +64,20 @@ export const MASJID_SCREENS: Record<string, string> = {
   taiyabah: "https://taiyabahwebsite.ysbdesigns.uk/",
 };
 
+/**
+ * A public file in the platform's storage, by the path masjid_brand() returns.
+ *
+ * The `brand` bucket is public on purpose — a masjid's logo is on their own
+ * website, their letterhead and their emails. Nothing private is served from
+ * it, and the console reads it with the publishable key like any visitor.
+ */
+export function brandAsset(storagePath: string) {
+  return `${PLATFORM_URL}/storage/v1/object/public/brand/${storagePath}`;
+}
+
+/** What masjid_brand(slug) returns: current images keyed by what they are. */
+export type Brand = Record<string, { path: string; alt_text: string | null }>;
+
 export type MasjidRow = {
   slug: string;
   name: string;

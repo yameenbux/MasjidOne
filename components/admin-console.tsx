@@ -9,7 +9,9 @@ import {
   PLATFORM_ANON_KEY,
   MASJID_PORTALS,
   MASJID_SCREENS,
+  brandAsset,
   type MasjidRow,
+  type Brand,
 } from "@/lib/platform";
 import { LiveScreen } from "@/components/ui/live-screen";
 import { attention, type Facts, type Item } from "@/lib/attention";
@@ -82,6 +84,10 @@ export function AdminConsole() {
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [masjids, setMasjids] = React.useState<MasjidRow[] | null>(null);
+  /* Each masjid's current images, by slug. Read after the list rather than
+     with it: the list is one call and should not wait on a brand lookup per
+     masjid before anything appears. */
+  const [brands, setBrands] = React.useState<Record<string, Brand>>({});
   const [who, setWho] = React.useState<string>("");
   const [entering, setEntering] = React.useState<string | null>(null);
   const [entered, setEntered] = React.useState<{ slug: string; name: string; support: boolean } | null>(null);
@@ -120,8 +126,19 @@ export function AdminConsole() {
       setError(readable(e.message));
       return;
     }
-    setMasjids((data ?? []) as MasjidRow[]);
+    const rows = (data ?? []) as MasjidRow[];
+    setMasjids(rows);
     setStage("list");
+
+    /* Logos, in parallel, and failures are swallowed on purpose: a masjid with
+       no logo loaded is not a problem to report, it is just a darker monitor. */
+    const got = await Promise.all(
+      rows.map(async (m) => {
+        const r = await sb.rpc("masjid_brand", { p_masjid: m.slug });
+        return [m.slug, (r.data ?? {}) as Brand] as const;
+      }),
+    );
+    setBrands(Object.fromEntries(got));
   }
 
   /* The second factor. A platform admin without one cannot pass
@@ -365,7 +382,18 @@ export function AdminConsole() {
                     {m.town} · <code>{m.slug}</code>
                   </p>
                   {MASJID_SCREENS[m.slug] ? (
-                    <LiveScreen src={MASJID_SCREENS[m.slug]} label={`${m.name} — live`} />
+                    <LiveScreen
+                      src={MASJID_SCREENS[m.slug]}
+                      label={`${m.name} — live`}
+                      logo={
+                        brands[m.slug]?.logo
+                          ? {
+                              url: brandAsset(brands[m.slug].logo.path),
+                              alt: brands[m.slug].logo.alt_text ?? m.name,
+                            }
+                          : null
+                      }
+                    />
                   ) : null}
 
                   <p className={m.support ? "lsup__sup" : "lsup__own"}>
