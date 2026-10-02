@@ -72,12 +72,25 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > of the support console opens their own domain, which is why their design
 > survives it: CSS does not cross an origin.
 >
-> **Two things this is not yet.** `masjids.theme` is a `jsonb` column that
-> exists, is `{}` for Taiyabah, and is read by nothing — a masjid's design is
-> hand-built into their own site at setup, not configured. And nothing on the
-> public site or in the demo tells a committee any of this, so a committee
-> shown the green demo reasonably assumes green is what they get. Both are
-> recorded under Open items.
+> **The contract, and how far it reaches.** `masjids.theme` now holds
+> Taiyabah's real palette and `masjid_theme(slug)` reads it, publicly, because
+> a masjid's colours are already on their own website. Six semantic groups —
+> brand, accent, surface, ink, type, shape — never literal names like "plum",
+> so the same keys describe any masjid.
+>
+> **Accent is three values and that is the important part.** Taiyabah's own
+> stylesheet records that their gold reads 2.3:1 on a light card and is
+> unreadable there. An accent that works on the dark brand colour is almost
+> never the one that works as text on paper, so `on_brand` and `on_paper` are
+> separate and whoever sets a theme has to answer both. `lib/demo-themes.ts`
+> has a contrast check over every pairing the mapping produces; it caught a
+> palette at 4.43:1 the day it was written.
+>
+> **No portal reads the column yet.** A masjid's design is still hand-built
+> into its own site, so "your own colours" remains part of what setup covers
+> and is not a switch anybody can flick. Say it that way. The demo's palette
+> picker is a demonstration of the principle, not a settings screen, and its
+> wording ("a masjid is **built** in its own colours") is load-bearing.
 
 - **Typography:** `Newsreader` (serif) for headings and pull quotes,
   `Archivo` (sans) for everything else, loaded via `<link>` in `app/layout.tsx`.
@@ -292,17 +305,19 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   does *not* mean "no processor in the policy" — Cloudflare carries the
   submission and is a processor, named in the notice. What it avoids is a form
   company keeping its own copy of every enquiry.
-- **Per-masjid design is a setup service, not a feature.** Taiyabah's plum and
-  gold are hand-built into their own site. `masjids.theme` exists as `jsonb`,
-  is `{}`, and nothing reads it. That is fine for one masjid and does not
-  scale: masjid two means another hand-built site. Before selling "your own
-  colours" as something the system does, either wire `theme` through the
-  portals or keep describing it as what it is — part of what setup includes.
-  The £499 setup fee is the honest home for it.
-- **The demo is in MasjidOne's colours and never says so.** `?masjid=` swaps
-  the name; it cannot swap the palette. A committee is shown a bottle-green
-  portal with their name on it and nothing corrects the obvious inference. Say
-  it once where they will see it rather than leaving them to find out.
+- **Make a portal read `masjid_theme()`.** The contract exists and holds
+  Taiyabah's real values (migration 136); nothing consumes it. Until something
+  does, a masjid's colours are hand-built into their own site and masjid two
+  means another hand-built site. The portal is the one to do first — it is the
+  screen a committee lives in, and its palette is already custom properties in
+  one `:root` block, so it is a swap rather than a rewrite. The app and the
+  hall screens are the reason the values are in the database rather than in
+  each site's CSS: neither can read a website's stylesheet.
+  **Decide build-time or runtime when you do it.** Baking the theme into each
+  site at build has no flash and no dependency at paint; reading it at runtime
+  lets a committee change their colours without a deploy, at the cost of a
+  round trip before the first paint. For a prayer-times screen on a wall,
+  baking is almost certainly right.
 - Do not add a captcha. reCAPTCHA is a Google tracker and would trigger the
   cookie banner this site deliberately avoids. The form has a honeypot.
 - Set `NEXT_PUBLIC_BASE_PATH` as a repository variable, or add a `CNAME` to

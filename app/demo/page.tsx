@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
+import { DEMO_THEMES, themeVars, DEMO_THEME_NOTE } from "@/lib/demo-themes";
 import { DemoChooser, type ChooserOption } from "@/components/demo-chooser";
 import { DemoAdmin } from "@/components/demo-admin";
 import { DemoScreens } from "@/components/demo-screens";
@@ -126,6 +127,10 @@ function congregationOptions(masjid: string): [ChooserOption, ChooserOption] {
 
 export default function DemoPage() {
   const [masjid, setMasjid] = React.useState(DEMO_MASJID_DEFAULT);
+  /* Which masjid's colours the demonstration is wearing. The screens, the
+     rules and the data behind them do not change with it — that is the point
+     of letting somebody switch it while they watch. */
+  const [themeKey, setThemeKey] = React.useState("masjidone");
   /* Arrived from the support console. The band then follows you through every
      page, because the one thing somebody must not be able to forget is whose
      system they are standing in. */
@@ -163,7 +168,7 @@ export default function DemoPage() {
   const back = React.useCallback(() => window.history.back(), []);
 
   return (
-    <div className="dshell">
+    <div className="dshell" style={themeVars(DEMO_THEMES.find((t) => t.key === themeKey)?.theme ?? null)}>
       {/* Permanent, on every screen, above everything. */}
       <p className="dstrip">
         <strong>Demonstration</strong>
@@ -213,12 +218,11 @@ export default function DemoPage() {
           ask="Where would you like to go?"
           options={portalOptions(masjid)}
           brandNote={
-            <>
-              These are MasjidOne&apos;s colours, not yours. A masjid&apos;s own
-              portal is built in its own palette and typeface during setup —
-              Taiyabah&apos;s is plum and gold — so only the name here is
-              standing in for yours.
-            </>
+            /* This used to be a sentence apologising that the green was ours
+               and not theirs. An admission is weaker than a demonstration:
+               the same screens repaint while nothing else moves, which is the
+               whole proposition in one control. */
+            <ThemePicker value={themeKey} onChange={setThemeKey} />
           }
           doors={[
             { href: "support/", label: "MasjidOne support" },
@@ -270,5 +274,58 @@ export default function DemoPage() {
         />
       ) : null}
     </div>
+  );
+}
+
+/**
+ * The control that repaints the demonstration.
+ *
+ * Radios, not a select: the whole value is seeing the options side by side and
+ * watching the page change under your thumb mid-sentence. A dropdown hides
+ * three quarters of that behind a click.
+ *
+ * Each swatch is drawn in the palette it selects, so the control is itself the
+ * evidence — brand colour behind, accent in front, which is the pairing the
+ * screens are mostly made of.
+ */
+function ThemePicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (key: string) => void;
+}) {
+  return (
+    <span className="tpick">
+      <span className="tpick__lab">A masjid is built in its own colours. Try one:</span>
+      <span className="tpick__row">
+        {DEMO_THEMES.map((t) => (
+          <label
+            key={t.key}
+            className={`tpick__opt${value === t.key ? " is-on" : ""}`}
+            style={
+              t.theme
+                ? {
+                    background: t.theme.brand.deep,
+                    color: t.theme.accent.on_brand,
+                    borderColor: t.theme.accent.on_brand,
+                  }
+                : undefined
+            }
+          >
+            <input
+              type="radio"
+              name="demo-theme"
+              value={t.key}
+              checked={value === t.key}
+              onChange={() => onChange(t.key)}
+              className="u-visually-hidden"
+            />
+            {t.label}
+          </label>
+        ))}
+      </span>
+      <span className="tpick__note">{DEMO_THEME_NOTE}</span>
+    </span>
   );
 }
