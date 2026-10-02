@@ -8,8 +8,10 @@ import {
   PLATFORM_URL,
   PLATFORM_ANON_KEY,
   MASJID_PORTALS,
+  MASJID_SCREENS,
   type MasjidRow,
 } from "@/lib/platform";
+import { LiveScreen } from "@/components/ui/live-screen";
 import { attention, type Facts, type Item } from "@/lib/attention";
 
 /**
@@ -362,6 +364,10 @@ export function AdminConsole() {
                   <p className="lsup__cardTown">
                     {m.town} · <code>{m.slug}</code>
                   </p>
+                  {MASJID_SCREENS[m.slug] ? (
+                    <LiveScreen src={MASJID_SCREENS[m.slug]} label={`${m.name} — live`} />
+                  ) : null}
+
                   <p className={m.support ? "lsup__sup" : "lsup__own"}>
                     {m.support ? (
                       <>

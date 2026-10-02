@@ -45,6 +45,25 @@ export const MASJID_PORTALS: Record<string, string> = {
   taiyabah: "https://taiyabahwebsite.ysbdesigns.uk/portal/",
 };
 
+/**
+ * The page a masjid's hall screens show — their own front page, which carries
+ * the prayer timetable. The console frames it so opening a masjid starts with
+ * what the building is actually displaying right now, rather than a name and a
+ * button.
+ *
+ * NOT THE HEARTBEAT, and must not be confused with it. This says what the page
+ * renders. It cannot say whether a television in the building is switched on
+ * and pointed at it — nothing in the platform can, because there is no screens
+ * table and no function takes a screen id. A preview that loads here proves the
+ * page is alive, not that anybody is looking at it.
+ *
+ * Separate from MASJID_PORTALS on purpose: one is the staff door, this is the
+ * public face, and a masjid may well change one without the other.
+ */
+export const MASJID_SCREENS: Record<string, string> = {
+  taiyabah: "https://taiyabahwebsite.ysbdesigns.uk/",
+};
+
 export type MasjidRow = {
   slug: string;
   name: string;

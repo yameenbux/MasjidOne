@@ -3461,3 +3461,34 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   margin:var(--s2) 0 0; max-width:34rem; color:var(--board-ink-2);
   font-size:var(--t-small); line-height:1.6;
 }
+
+/* ---- A masjid's live page, framed, on the support console --------------- */
+.lscr{margin:0; display:grid; gap:.4rem}
+/* 16/9 because that is what is on the wall. The frame is rendered at a desk
+   width and scaled down, so the preview shows the layout a television gets
+   rather than the phone layout a narrow box would trigger. */
+.lscr__monitor{
+  position:relative; aspect-ratio:16/9; overflow:hidden;
+  background:var(--board); border:var(--hair) solid var(--rule-2);
+  /* The container the frame scales against. inline-size, and declared on the
+     PARENT of the thing that reads it — container-type and a cq unit on the
+     same element is a self-reference the browser resolves against the viewport
+     instead, which is how a previous frame in this repo ended up clipped. */
+  container-type:inline-size;
+}
+.lscr__frame{
+  position:absolute; top:0; left:0;
+  width:1280px; height:720px; border:0;
+  transform-origin:top left;
+  /* Rendered at desk width and scaled to whatever the monitor happens to be,
+     so the preview shows the layout a television gets rather than the phone
+     layout a 300px-wide frame would trigger. A fixed scale was wrong the
+     moment a card was a different width — with one masjid on the console the
+     grid stretches the card to 900px and a .235 scale filled a quarter of it. */
+  transform:scale(calc(100cqw / 1280));
+  /* The preview is a picture, not a thing to use. Clicking into a scaled frame
+     lands on the wrong element, so pointer events go to the card instead. */
+  pointer-events:none;
+}
+.lscr__cap{color:var(--ink-2); font-size:var(--t-label); line-height:1.5}
+.lscr__cap a{color:var(--brass)}
