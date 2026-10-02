@@ -3377,7 +3377,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .lsup__out:hover{background:var(--board-brass); color:var(--board)}
 
-.lsup__body{flex:1; padding:var(--s4) var(--s3); width:100%; max-width:64rem}
+.lsup__body{flex:1; padding:var(--s4) var(--s3); width:100%; max-width:82rem}
 .lsup__h{
   margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
   font-size:clamp(1.4rem,4vw,2rem); line-height:1.15; color:var(--ink);
@@ -3387,8 +3387,20 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .lsup__small{margin:0 0 var(--s3); color:var(--ink-2); font-size:var(--t-small); line-height:1.6; max-width:46rem}
 .lsup__grid{
   list-style:none; margin:0; padding:0; display:grid; gap:var(--s3);
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));
+  /* FOUR ACROSS, AND FOUR EXACTLY. auto-fill was tried and is the wrong tool:
+     it fits as many tracks as will go, so widening the console from 64rem to
+     82rem silently turned four columns into five and shrank every monitor.
+     auto-fit is worse at one masjid — it collapses the empty tracks and
+     stretches the single card across the whole row, which is how this page
+     ended up looking like a page about Taiyabah rather than a console for a
+     fleet. A fixed count at each width is the only version that does what it
+     says. */
+  grid-template-columns:1fr;
 }
+@media (min-width:34rem){ .lsup__grid{grid-template-columns:repeat(2,1fr)} }
+@media (min-width:52rem){ .lsup__grid{grid-template-columns:repeat(3,1fr)} }
+@media (min-width:70rem){ .lsup__grid{grid-template-columns:repeat(4,1fr)} }
+
 .lsup__card2{
   border:var(--hair) solid var(--rule); background:var(--paper-2);
   padding:var(--s3); display:flex; flex-direction:column; gap:var(--s2);
@@ -3420,6 +3432,20 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .lsup__enter:hover{opacity:.88}
 .lsup__enter:disabled{opacity:.55; cursor:default}
+
+/* An empty slot. Dashed and inert on purpose: there is nothing behind it yet —
+   no onboarding flow to start — so it must not look like a button that is
+   simply not working. It is a space marked out, which is what it is. */
+.lsup__slot{
+  border:var(--hair) dashed var(--rule-2); background:transparent;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:var(--s1); padding:var(--s3); min-height:12rem; text-align:center;
+}
+.lsup__slotMark{
+  font-size:1.6rem; line-height:1; color:var(--rule-2);
+  font-variant-numeric:tabular-nums;
+}
+.lsup__slotT{color:var(--ink-2); font-size:var(--t-small); line-height:1.4}
 
 .lsup__entered{max-width:46rem}
 .lsup__enteredH{
@@ -3498,7 +3524,21 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    not a badge. Contained so a wide letterhead-shaped mark is never cropped. */
 .lscr__logo{
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:46%; height:46%; object-fit:contain; opacity:.9;
+  /* Larger than it was, because the monitor is now a quarter of the width it
+     had. Taiyabah's lock-up is 780x552, so contain fits it to the height and
+     these percentages leave a comfortable margin rather than a stamp. */
+  width:72%; height:62%; object-fit:contain; opacity:.9;
 }
-.lscr__cap{color:var(--ink-2); font-size:var(--t-label); line-height:1.5}
+.lscr__cap{
+  color:var(--ink-2); font-size:var(--t-label); line-height:1.5;
+  /* One line at a quarter width: the address is long and wrapping it pushes
+     the Enter buttons out of step across the row. */
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+/* Said once under the grid rather than in four captions. */
+.lscr__note{
+  margin:var(--s3) 0 0; max-width:46rem; color:var(--ink-2);
+  font-size:var(--t-small); line-height:1.6;
+}
+.lscr__note strong{color:var(--ink)}
 .lscr__cap a{color:var(--brass)}

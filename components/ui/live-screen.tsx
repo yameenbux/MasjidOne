@@ -82,16 +82,37 @@ export function LiveScreen({
           />
         ) : null}
       </div>
+      {/* Short, because four of these sit in a row. What a blank monitor means
+          and what it cannot tell you is said once under the grid instead of
+          four times across it — see LiveScreenNote. */}
       <figcaption className="lscr__cap">
         <a href={src} target="_blank" rel="noopener noreferrer">
           {host}
-        </a>{" "}
-        — live. <strong>A blank monitor is not a verdict:</strong> some sites
-        refuse to be framed, so open it before concluding anything. And whether
-        a television in the building is switched on and pointed at this is not
-        something the platform can see.
+        </a>
       </figcaption>
     </figure>
+  );
+}
+
+/**
+ * What the monitors above do not tell you, said once.
+ *
+ * It used to sit in every caption. At one masjid that was thorough; at four
+ * across a row it was the same three lines of small print four times, which is
+ * how a caveat stops being read. Once, under the grid, is where somebody
+ * actually takes it in — and it is never omitted, because a live picture is
+ * persuasive and these are precisely the conclusions it invites and cannot
+ * support.
+ */
+export function LiveScreenNote() {
+  return (
+    <p className="lscr__note">
+      <strong>A blank monitor is not a verdict.</strong> Some sites refuse to be
+      framed, so open one before concluding anything is wrong with it. And
+      whether a television in the building is switched on and pointed at the
+      page is not something the platform can see — there is no screens table and
+      nothing takes a screen id.
+    </p>
   );
 }
 

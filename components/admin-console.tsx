@@ -13,7 +13,7 @@ import {
   type MasjidRow,
   type Brand,
 } from "@/lib/platform";
-import { LiveScreen } from "@/components/ui/live-screen";
+import { LiveScreen, LiveScreenNote } from "@/components/ui/live-screen";
 import { attention, type Facts, type Item } from "@/lib/attention";
 
 /**
@@ -417,7 +417,22 @@ export function AdminConsole() {
                   </button>
                 </li>
               ))}
+
+              {/* Empty slots up to a full row of four. Not decoration and not a
+                  promise: the console is for a fleet, and at one masjid a lone
+                  stretched card makes it look like a page about Taiyabah rather
+                  than a page about everybody we look after. They fill in as
+                  masajid arrive and disappear once there are four, rather than
+                  being three fixed boxes that would look wrong at five. */}
+              {Array.from({ length: Math.max(0, 4 - (masjids?.length ?? 0)) }).map((_, i) => (
+                <li className="lsup__slot" key={`slot-${i}`} aria-hidden="true">
+                  <span className="lsup__slotMark">+</span>
+                  <span className="lsup__slotT">Add a new masjid here</span>
+                </li>
+              ))}
             </ul>
+
+            {masjids !== null && masjids.length > 0 ? <LiveScreenNote /> : null}
 
             {masjids !== null && masjids.length === 0 ? (
               <p className="lsup__p">
