@@ -3293,3 +3293,144 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   padding:var(--s3); background:var(--board); color:var(--board-ink-2);
   display:flex; justify-content:flex-end;
 }
+
+/* ---------------------------------------------------------------------------
+   The LIVE support console at /admin/.
+
+   Visually the twin of .dsup (the demonstration at /demo/support/) because it
+   is the same screen doing the real job — but a separate class, so that
+   changing how the demo looks can never silently change the thing our own
+   people sign into, or the reverse.
+
+   One deliberate difference: this one carries no brass "DEMONSTRATION" strip,
+   so the board header sits directly under the browser chrome. Nothing on this
+   page is sample data.
+--------------------------------------------------------------------------- */
+.lsup{display:flex; flex-direction:column; flex:1; background:var(--paper)}
+
+/* Sign-in: one card, centred, because there is exactly one thing to do. The
+   left-aligned rule the rest of the site follows is about reading; this is a
+   form with two fields and no reading. */
+.lsup--in{align-items:center; justify-content:center; padding:var(--s4) var(--s3)}
+.lsup__card{
+  width:100%; max-width:26rem; background:var(--board); color:var(--board-ink);
+  padding:var(--s4) var(--s3); border-top:3px solid var(--board-brass);
+}
+.lsup__mark{width:2.25rem; height:2.25rem; color:var(--board-brass)}
+.lsup__co{
+  margin:var(--s2) 0 0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.6rem,5vw,2.1rem); line-height:1.1; color:var(--board-ink);
+}
+.lsup__sub{
+  margin:.15rem 0 var(--s4); color:var(--board-brass);
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+.lsup__form{display:grid; gap:var(--s3)}
+.lsup__f{display:grid; gap:.35rem}
+.lsup__lab{
+  color:var(--board-ink-2); font-size:var(--t-label);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.lsup__in{
+  font:inherit; color:var(--board-ink); background:transparent;
+  border:none; border-bottom:var(--hair) solid var(--board-brass);
+  padding:.6rem .1rem; min-height:2.75rem; border-radius:0;
+}
+.lsup__in:focus-visible{outline:2px solid var(--board-brass); outline-offset:3px}
+/* Tabular, because a six-digit code read off a phone is read a digit at a
+   time and proportional figures make that harder than it needs to be. */
+.lsup__code{font-variant-numeric:tabular-nums; letter-spacing:.5em; font-size:1.3rem}
+.lsup__note{margin:0; color:var(--board-ink-2); line-height:1.7; font-size:var(--t-small)}
+.lsup__note strong{display:block; color:var(--board-ink)}
+.lsup__err{margin:0; color:var(--board-brass); font-weight:600; line-height:1.6}
+.lsup__go{
+  justify-self:start; min-height:2.75rem; padding:.7rem var(--s3); cursor:pointer;
+  background:var(--board-brass); color:var(--board);
+  border:var(--hair) solid var(--board-brass); border-radius:2px;
+  font:inherit; font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+}
+.lsup__go:hover{opacity:.9}
+.lsup__go:disabled{opacity:.55; cursor:default}
+
+/* ---- signed in --------------------------------------------------------- */
+.lsup__top{
+  background:var(--board); color:var(--board-ink); padding:var(--s3);
+  display:flex; flex-wrap:wrap; gap:var(--s2) var(--s3);
+  align-items:center; justify-content:space-between;
+}
+.lsup__brand{display:flex; align-items:center; gap:var(--s2)}
+.lsup__topMark{width:2rem; height:2rem; color:var(--board-brass); flex:none}
+.lsup__topCo{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.3rem,4vw,1.7rem); line-height:1.1; color:var(--board-ink);
+}
+.lsup__topSub{
+  margin:.1rem 0 0; color:var(--board-brass);
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+.lsup__who{text-align:right; display:grid; gap:.3rem; justify-items:end}
+.lsup__name{margin:0; color:var(--board-ink); font-size:var(--t-small)}
+.lsup__out{
+  background:none; border:var(--hair) solid var(--board-brass); color:var(--board-brass);
+  font:inherit; font-size:var(--t-label); letter-spacing:.1em; text-transform:uppercase;
+  padding:.35rem .7rem; min-height:2.25rem; cursor:pointer; border-radius:2px;
+}
+.lsup__out:hover{background:var(--board-brass); color:var(--board)}
+
+.lsup__body{flex:1; padding:var(--s4) var(--s3); width:100%; max-width:64rem}
+.lsup__h{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.4rem,4vw,2rem); line-height:1.15; color:var(--ink);
+}
+.lsup__lede{margin:var(--s1) 0 var(--s3); color:var(--ink-2); line-height:1.7}
+.lsup__p{margin:0 0 var(--s3); color:var(--ink); line-height:1.7; max-width:46rem}
+.lsup__small{margin:0 0 var(--s3); color:var(--ink-2); font-size:var(--t-small); line-height:1.6; max-width:46rem}
+.lsup__grid{
+  list-style:none; margin:0; padding:0; display:grid; gap:var(--s3);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));
+}
+.lsup__card2{
+  border:var(--hair) solid var(--rule); background:var(--paper-2);
+  padding:var(--s3); display:flex; flex-direction:column; gap:var(--s2);
+}
+.lsup__cardTop{display:flex; flex-wrap:wrap; gap:var(--s1); align-items:baseline; justify-content:space-between}
+.lsup__cardName{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:1.2rem; line-height:1.2; color:var(--ink);
+}
+.lsup__now{
+  font-size:var(--t-label); letter-spacing:.1em; text-transform:uppercase;
+  color:var(--brass); border:var(--hair) solid var(--brass); padding:.1rem .4rem;
+}
+.lsup__cardTown{margin:0; color:var(--ink-2); font-size:var(--t-small)}
+.lsup__cardTown code,.lsup__p code{
+  background:var(--paper); padding:.1em .35em; border-radius:2px; font-size:.92em;
+}
+/* The distinction the audit trail turns on, so it is said on the card and not
+   only after the click. */
+.lsup__sup{margin:0; color:var(--brass); font-weight:600; font-size:var(--t-small); line-height:1.5}
+.lsup__own{margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.5}
+.lsup__enter{
+  margin-top:auto; align-self:flex-start; text-decoration:none;
+  min-height:2.75rem; padding:.6rem var(--s2); cursor:pointer;
+  background:var(--cta-bg); color:var(--cta-fg);
+  border:var(--hair) solid var(--cta-bg); border-radius:2px;
+  font:inherit; font-size:var(--t-label); letter-spacing:.12em; text-transform:uppercase;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.lsup__enter:hover{opacity:.88}
+.lsup__enter:disabled{opacity:.55; cursor:default}
+
+.lsup__entered{max-width:46rem}
+.lsup__enteredH{
+  margin:0 0 var(--s3); font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.4rem,4vw,2rem); line-height:1.15; color:var(--ink);
+}
+.lsup__back{
+  display:block; margin-top:var(--s3); background:none; border:none; padding:0;
+  font:inherit; color:var(--brass); cursor:pointer; text-decoration:underline;
+}
+.lsup__foot{
+  border-top:var(--hair) solid var(--rule); padding:var(--s3);
+  background:var(--board); display:flex; justify-content:flex-end;
+}

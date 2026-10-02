@@ -1,0 +1,367 @@
+"use client";
+
+import * as React from "react";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { PoweredBy } from "@/components/ui/powered-by";
+import { BrandMark } from "@/components/ui/brand-mark";
+import {
+  PLATFORM_URL,
+  PLATFORM_ANON_KEY,
+  MASJID_PORTALS,
+  type MasjidRow,
+} from "@/lib/platform";
+
+/**
+ * The LIVE MasjidOne support console. Not the demonstration — this one signs
+ * into the real platform and lists the real masajid.
+ *
+ * ITS DEMO TWIN is components/demo-support.tsx, at /demo/support/, built from
+ * fixtures. The two are deliberately the same shape: a committee shown the
+ * demo is being shown what we actually use, and if they drift apart the demo
+ * becomes a lie. Change one, look at the other.
+ *
+ * NOTHING HERE DECIDES WHO MAY DO WHAT. Every gate is in Postgres:
+ *
+ *   my_masjids()             returns every masjid to a platform admin, and
+ *                            only your own to anybody else. It is the listing.
+ *   set_current_masjid(slug) refuses unless you are a member OR a platform
+ *                            admin, and when it is the latter it writes
+ *                            masjidone_support_access into THAT MASJID'S audit
+ *                            trail, against your name and the time.
+ *   is_platform_admin()      requires is_aal2() — a session that has completed
+ *                            a second factor. A password alone is not enough.
+ *
+ * So this file is a window onto those, not a lock. Someone who edits the
+ * JavaScript in their browser gets nothing: the database refuses them exactly
+ * as it refused them before. That is the point of putting the rules there.
+ *
+ * WHY THERE IS A SECOND SIGN-IN AT THE END. The console is served from
+ * masjidone.co.uk; a masjid's portal is served from its own domain. A Supabase
+ * session lives in storage scoped to one origin, so it cannot follow you
+ * across. Entering still does real work — set_current_masjid() is server-side
+ * state and persists — so you arrive at their portal already pointed at the
+ * right masjid. You just have to sign in there. Carrying the session across
+ * would mean passing tokens through a URL and re-enabling detectSessionInUrl
+ * on a portal that deliberately switched it off. That is a decision about
+ * somebody else's live system holding children's records, not a detail to
+ * change quietly here.
+ */
+
+function client(): SupabaseClient {
+  return createClient(PLATFORM_URL, PLATFORM_ANON_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+  });
+}
+
+type Stage = "password" | "mfa" | "list";
+
+export function AdminConsole() {
+  const sb = React.useMemo(client, []);
+  const [stage, setStage] = React.useState<Stage>("password");
+  const [busy, setBusy] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [masjids, setMasjids] = React.useState<MasjidRow[] | null>(null);
+  const [who, setWho] = React.useState<string>("");
+  const [entering, setEntering] = React.useState<string | null>(null);
+  const [entered, setEntered] = React.useState<{ slug: string; name: string; support: boolean } | null>(null);
+  const [factorId, setFactorId] = React.useState<string | null>(null);
+  const [challengeId, setChallengeId] = React.useState<string | null>(null);
+
+  /* An existing session should not make you sign in again. getSession() reads
+     storage; the aal check decides whether you still owe a second factor. */
+  React.useEffect(() => {
+    let live = true;
+    (async () => {
+      const { data } = await sb.auth.getSession();
+      if (!live || !data.session) return;
+      const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aal?.currentLevel === "aal2") {
+        setWho(data.session.user.email ?? "");
+        void loadMasjids();
+      } else if (aal?.nextLevel === "aal2") {
+        setWho(data.session.user.email ?? "");
+        await beginChallenge();
+      }
+    })();
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function loadMasjids() {
+    setBusy(true);
+    const { data, error: e } = await sb.rpc("my_masjids");
+    setBusy(false);
+    if (e) {
+      setError(e.message);
+      return;
+    }
+    setMasjids((data ?? []) as MasjidRow[]);
+    setStage("list");
+  }
+
+  /* The second factor. A platform admin without one cannot pass
+     is_platform_admin() at all, so there is no path here that skips it. */
+  async function beginChallenge() {
+    const { data, error: e } = await sb.auth.mfa.listFactors();
+    if (e) {
+      setError(e.message);
+      return;
+    }
+    const totp = data?.totp?.[0];
+    if (!totp) {
+      setError(
+        "This account has no second factor enrolled, and the platform will not " +
+          "treat it as an administrator without one. Enrol one in the masjid portal first.",
+      );
+      return;
+    }
+    const ch = await sb.auth.mfa.challenge({ factorId: totp.id });
+    if (ch.error) {
+      setError(ch.error.message);
+      return;
+    }
+    setFactorId(totp.id);
+    setChallengeId(ch.data.id);
+    setStage("mfa");
+  }
+
+  async function signIn(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    setBusy(true);
+    setError(null);
+    const { data, error: err } = await sb.auth.signInWithPassword({
+      email: String(form.get("email") ?? "").trim(),
+      password: String(form.get("password") ?? ""),
+    });
+    setBusy(false);
+    if (err) {
+      /* Deliberately not "no such user" or "wrong password" — which of the two
+         it was is information worth having only to somebody guessing. */
+      setError("That sign-in was not accepted.");
+      return;
+    }
+    setWho(data.user?.email ?? "");
+    await beginChallenge();
+  }
+
+  async function verify(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!factorId || !challengeId) return;
+    const code = String(new FormData(e.currentTarget).get("code") ?? "").trim();
+    setBusy(true);
+    setError(null);
+    const { error: err } = await sb.auth.mfa.verify({ factorId, challengeId, code });
+    setBusy(false);
+    if (err) {
+      setError("That code was not accepted. Codes last 30 seconds — try the next one.");
+      return;
+    }
+    await loadMasjids();
+  }
+
+  async function enter(m: MasjidRow) {
+    setEntering(m.slug);
+    setError(null);
+    const { error: e } = await sb.rpc("set_current_masjid", { p_slug: m.slug });
+    setEntering(null);
+    if (e) {
+      setError(e.message);
+      return;
+    }
+    setEntered({ slug: m.slug, name: m.name, support: m.support });
+  }
+
+  async function signOut() {
+    await sb.auth.signOut();
+    setStage("password");
+    setMasjids(null);
+    setEntered(null);
+    setWho("");
+  }
+
+  /* ---- sign in ---------------------------------------------------------- */
+  if (stage === "password" || stage === "mfa") {
+    return (
+      <div className="lsup lsup--in">
+        <div className="lsup__card">
+          <BrandMark className="lsup__mark" />
+          <h1 className="lsup__co">MasjidOne</h1>
+          <p className="lsup__sub">Support console</p>
+
+          {stage === "password" ? (
+            <form onSubmit={signIn} className="lsup__form">
+              <label className="lsup__f">
+                <span className="lsup__lab">Email</span>
+                <input name="email" type="email" className="lsup__in" autoComplete="username" required />
+              </label>
+              <label className="lsup__f">
+                <span className="lsup__lab">Password</span>
+                <input
+                  name="password"
+                  type="password"
+                  className="lsup__in"
+                  autoComplete="current-password"
+                  required
+                />
+              </label>
+              {error ? <p className="lsup__err" role="alert">{error}</p> : null}
+              <button type="submit" className="lsup__go" disabled={busy}>
+                {busy ? "Checking…" : "Sign in"}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={verify} className="lsup__form">
+              <p className="lsup__note">
+                {who ? <strong>{who}</strong> : null} The platform will not treat
+                this account as an administrator on a password alone.
+              </p>
+              <label className="lsup__f">
+                <span className="lsup__lab">Code from your authenticator</span>
+                <input
+                  name="code"
+                  className="lsup__in lsup__code"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  required
+                  autoFocus
+                />
+              </label>
+              {error ? <p className="lsup__err" role="alert">{error}</p> : null}
+              <button type="submit" className="lsup__go" disabled={busy}>
+                {busy ? "Checking…" : "Verify"}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ---- the masajid ------------------------------------------------------ */
+  const portal = entered ? MASJID_PORTALS[entered.slug] : undefined;
+
+  return (
+    <div className="lsup">
+      <header className="lsup__top">
+        <div className="lsup__brand">
+          <BrandMark className="lsup__topMark" />
+          <div>
+            <h1 className="lsup__topCo">MasjidOne</h1>
+            <p className="lsup__topSub">Support console · live</p>
+          </div>
+        </div>
+        <div className="lsup__who">
+          <p className="lsup__name">{who}</p>
+          <button type="button" className="lsup__out" onClick={signOut}>
+            Sign out
+          </button>
+        </div>
+      </header>
+
+      <div className="lsup__body">
+        {entered ? (
+          <div className="lsup__entered" role="status">
+            <h2 className="lsup__enteredH">You are now in {entered.name}</h2>
+            <p className="lsup__p">
+              {entered.support ? (
+                <>
+                  You do not hold a role at {entered.name}, so this was recorded
+                  as <code>masjidone_support_access</code> in{" "}
+                  <strong>their</strong> audit trail, against your name and the
+                  time.
+                </>
+              ) : (
+                <>
+                  Nothing was written to their audit trail, because this is not
+                  support access — you hold a role at {entered.name}, so you
+                  entered as one of their own administrators.
+                </>
+              )}
+            </p>
+            {portal ? (
+              <>
+                <a className="lsup__enter" href={portal} target="_blank" rel="noopener noreferrer">
+                  Open {entered.name}&apos;s portal
+                </a>
+                <p className="lsup__small">
+                  Their portal is on their own domain, so it will ask you to
+                  sign in again — a session cannot follow you across origins.
+                  You will land pointed at {entered.name} either way, because
+                  that part is held in the database rather than in this browser.
+                </p>
+              </>
+            ) : (
+              <p className="lsup__small">
+                No portal address is recorded for this masjid, so there is
+                nothing to link to. You are still switched into it.
+              </p>
+            )}
+            <button type="button" className="lsup__back" onClick={() => setEntered(null)}>
+              ← Back to the list
+            </button>
+          </div>
+        ) : (
+          <>
+            <h2 className="lsup__h">Masjids we support</h2>
+            <p className="lsup__lede">
+              {masjids === null
+                ? "Reading…"
+                : `${masjids.length} ${masjids.length === 1 ? "masjid" : "masajid"} on the platform.`}
+            </p>
+            {error ? <p className="lsup__err" role="alert">{error}</p> : null}
+
+            <ul className="lsup__grid">
+              {(masjids ?? []).map((m) => (
+                <li className="lsup__card2" key={m.slug}>
+                  <div className="lsup__cardTop">
+                    <h3 className="lsup__cardName">{m.name}</h3>
+                    {m.current ? <span className="lsup__now">You are here</span> : null}
+                  </div>
+                  <p className="lsup__cardTown">
+                    {m.town} · <code>{m.slug}</code>
+                  </p>
+                  <p className={m.support ? "lsup__sup" : "lsup__own"}>
+                    {m.support ? (
+                      <>
+                        <span aria-hidden="true">▪ </span>
+                        Entering writes to their audit trail
+                      </>
+                    ) : (
+                      <>You hold a role here — entering is not support access</>
+                    )}
+                  </p>
+                  <button
+                    type="button"
+                    className="lsup__enter"
+                    onClick={() => enter(m)}
+                    disabled={entering === m.slug}
+                  >
+                    {entering === m.slug ? "Entering…" : "Enter"}
+                    <span className="u-visually-hidden"> {m.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {masjids !== null && masjids.length === 0 ? (
+              <p className="lsup__p">
+                The platform returned no masajid for this account. That means it
+                is not a platform administrator, not that there are none.
+              </p>
+            ) : null}
+          </>
+        )}
+      </div>
+
+      <footer className="lsup__foot">
+        <PoweredBy />
+      </footer>
+    </div>
+  );
+}
+
+export default AdminConsole;
