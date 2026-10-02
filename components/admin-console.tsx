@@ -47,6 +47,24 @@ import {
  * change quietly here.
  */
 
+/**
+ * What to put on screen when the platform says no.
+ *
+ * This console is ours, so the real message is usually the useful one — "there
+ * is no masjid called x" tells whoever is standing here exactly what to do.
+ * The exception is a bare network failure, which surfaces from supabase-js as
+ * "Failed to fetch" and tells nobody anything. Those get a sentence that names
+ * the actual situation instead.
+ */
+function readable(message: string | undefined): string {
+  const m = (message ?? "").trim();
+  if (!m) return "Something went wrong, and the platform did not say what.";
+  if (/failed to fetch|networkerror|load failed/i.test(m)) {
+    return "Could not reach the platform. Check the connection and try again — nothing was changed.";
+  }
+  return m;
+}
+
 function client(): SupabaseClient {
   return createClient(PLATFORM_URL, PLATFORM_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
@@ -94,7 +112,7 @@ export function AdminConsole() {
     const { data, error: e } = await sb.rpc("my_masjids");
     setBusy(false);
     if (e) {
-      setError(e.message);
+      setError(readable(e.message));
       return;
     }
     setMasjids((data ?? []) as MasjidRow[]);
@@ -106,7 +124,7 @@ export function AdminConsole() {
   async function beginChallenge() {
     const { data, error: e } = await sb.auth.mfa.listFactors();
     if (e) {
-      setError(e.message);
+      setError(readable(e.message));
       return;
     }
     const totp = data?.totp?.[0];
@@ -119,7 +137,7 @@ export function AdminConsole() {
     }
     const ch = await sb.auth.mfa.challenge({ factorId: totp.id });
     if (ch.error) {
-      setError(ch.error.message);
+      setError(readable(ch.error.message));
       return;
     }
     setFactorId(totp.id);
@@ -139,8 +157,14 @@ export function AdminConsole() {
     setBusy(false);
     if (err) {
       /* Deliberately not "no such user" or "wrong password" — which of the two
-         it was is information worth having only to somebody guessing. */
-      setError("That sign-in was not accepted.");
+         it was is information worth having only to somebody guessing. A network
+         failure is a different thing and saying "not accepted" for it sends
+         somebody hunting a password problem they do not have. */
+      setError(
+        /failed to fetch|networkerror|load failed/i.test(err.message ?? "")
+          ? readable(err.message)
+          : "That sign-in was not accepted.",
+      );
       return;
     }
     setWho(data.user?.email ?? "");
@@ -168,7 +192,7 @@ export function AdminConsole() {
     const { error: e } = await sb.rpc("set_current_masjid", { p_slug: m.slug });
     setEntering(null);
     if (e) {
-      setError(e.message);
+      setError(readable(e.message));
       return;
     }
     setEntered({ slug: m.slug, name: m.name, support: m.support });
