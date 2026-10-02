@@ -195,6 +195,11 @@ export default function DemoPage() {
           masjidName={masjid}
           ask="Where would you like to go?"
           options={portalOptions(masjid)}
+          doors={[
+            { href: "app/", label: "The congregation app" },
+            { href: "teacher/", label: "A teacher" },
+            { href: "parent/", label: "A parent" },
+          ]}
           onChoose={(k) => go(k as Stage)}
         />
       ) : null}

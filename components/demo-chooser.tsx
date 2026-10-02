@@ -64,6 +64,7 @@ export function DemoChooser({
   options,
   onChoose,
   nav,
+  doors,
 }: {
   masjidName: string;
   /** The question. Different one level down, so it is a prop. */
@@ -72,6 +73,8 @@ export function DemoChooser({
   onChoose: (key: string) => void;
   /** Absent at the top of the tree, where there is nowhere above to go. */
   nav?: React.ComponentProps<typeof DemoNav>;
+  /** The other doors. Shown at the top of the tree only. */
+  doors?: { href: string; label: string }[];
 }) {
   return (
     <div className="pick">
@@ -123,6 +126,19 @@ export function DemoChooser({
           line goes with it: a committee that cannot find the way to report a
           problem reports it by stopping using the thing. */}
       <footer className="pick__foot">
+        {/* The other doors. Teacher, parent and the congregation app were
+            reachable only by typing their URLs, which is fine when you know
+            them and useless in a meeting when you do not. */}
+        {doors?.length ? (
+          <p className="pick__doors">
+            <span className="pick__doorsLab">Other sign-ins</span>
+            {doors.map((d) => (
+              <a key={d.href} href={d.href}>
+                {d.label}
+              </a>
+            ))}
+          </p>
+        ) : null}
         <p className="pick__help">
           Having issues?{" "}
           <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne support")}`}>

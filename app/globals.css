@@ -2716,3 +2716,261 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   margin:var(--s3) 0 0; color:var(--ink-2);
   font-size:var(--t-small); line-height:1.7; max-width:44rem;
 }
+
+/* ===================================================================
+   Send to the app — the push composer and what has gone
+   =================================================================== */
+
+.dpush{margin:0 0 var(--s4); padding-bottom:var(--s3); border-bottom:var(--hair) solid var(--rule)}
+.dpush__lede{margin:.3rem 0 var(--s3); font-size:var(--t-small)}
+.dpush__form{
+  display:grid; gap:var(--s2) var(--s3); margin-bottom:var(--s3);
+  grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:46em){
+  .dpush__form{grid-template-columns:minmax(0,10rem) minmax(0,1fr)}
+  .dpush__field--wide{grid-column:1 / -1}
+}
+.dpush__field{margin:0; display:flex; flex-direction:column; gap:.3rem; min-width:0}
+.dpush__field label{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.dpush__field input,.dpush__field select{
+  width:100%; min-width:0; min-height:2.75rem; padding:.5rem .15rem;
+  background:transparent; color:var(--ink);
+  border:0; border-bottom:var(--hair) solid var(--rule-2); border-radius:0;
+  font:inherit; font-size:1rem;
+}
+.dpush__field select{
+  -webkit-appearance:none; appearance:none; padding-right:1.5rem; cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),
+                   linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 9px) 1.15rem,calc(100% - 4px) 1.15rem;
+  background-size:5px 5px,5px 5px; background-repeat:no-repeat;
+}
+.dpush__field input:focus,.dpush__field select:focus{outline:none; border-bottom-color:var(--brass)}
+.dpush__field input:focus-visible,.dpush__field select:focus-visible{outline:2px solid var(--brass); outline-offset:3px}
+.dpush__field input::placeholder{color:var(--ink-2); opacity:.6}
+.dpush__count{color:var(--ink-2); font-size:var(--t-small); font-variant-numeric:tabular-nums}
+
+/* It sits inside the form grid, so without this it lands in the 10rem topic
+   column and the label wraps a word or two per line. */
+.dpush__check{
+  grid-column:1 / -1;
+  display:flex; gap:.6rem; align-items:flex-start; margin:0;
+}
+.dpush__check input{
+  flex:0 0 auto; width:1.15rem; height:1.15rem; margin-top:.25rem;
+  accent-color:var(--brass);
+}
+.dpush__check label{color:var(--ink); line-height:1.6; min-width:0}
+
+.dpush__h{
+  margin:var(--s3) 0 var(--s2); color:var(--ink-2);
+  font-family:var(--font-archivo),sans-serif; font-weight:600;
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+.dpush__list{margin:0; padding:0; list-style:none}
+.dpush__row{
+  display:grid; gap:.2rem var(--s2); align-items:baseline;
+  grid-template-columns:minmax(0,1fr);
+  padding:var(--s2) 0; border-top:var(--hair) solid var(--rule);
+}
+.dpush__row:last-child{border-bottom:var(--hair) solid var(--rule)}
+@media (min-width:52em){
+  .dpush__row{grid-template-columns:6rem minmax(0,1.6fr) 7rem minmax(0,1fr)}
+}
+.dpush__kind{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.12em; text-transform:uppercase;
+}
+.dpush__title{font-weight:600; min-width:0; display:flex; flex-direction:column; gap:.15rem}
+.dpush__body{font-weight:400; color:var(--ink-2); font-size:var(--t-small)}
+.dpush__when,.dpush__reach{color:var(--ink-2); font-size:var(--t-small); min-width:0}
+.dpush__when{font-variant-numeric:tabular-nums}
+/* A failed send is the row that matters most, so it is the one that is loud. */
+.dpush__row--failed .dpush__title{color:var(--ink)}
+.dpush__failed{color:var(--brass); font-weight:600}
+
+/* ===================================================================
+   The congregation app
+   -------------------------------------------------------------------
+   A phone beside the argument for it. The phone is a frame, not a picture:
+   what is inside renders from the same fixtures as every other door, so the
+   times in the app cannot drift from the times on the hall screen.
+   =================================================================== */
+
+.dapp{min-height:100vh; display:flex; flex-direction:column; background:var(--paper)}
+.dapp__top{
+  display:flex; flex-wrap:wrap; gap:var(--s2); align-items:center;
+  justify-content:space-between;
+  padding:var(--s3) var(--s3);
+  background:var(--board); color:var(--board-ink);
+}
+.dapp__intro{margin:0 0 var(--s2); color:var(--ink-2); max-width:44rem; line-height:1.7}
+.dapp__intro strong{color:var(--ink)}
+
+.dapp__stage{
+  display:grid; gap:var(--s4); align-items:start; margin-top:var(--s3);
+  grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:56em){
+  /* The phone track is BOUNDED, not `auto`. With auto it sizes to the phone's
+     min-content, which grows on the Give tab (four amount buttons in a row) and
+     crushed the column beside it to 64px — the page then scrolled sideways
+     while no single element was wider than the viewport, which is why a
+     bounding-box scan found nothing. */
+  .dapp__stage{grid-template-columns:minmax(0,23.5rem) minmax(0,1fr)}
+}
+.dapp__stage > *{min-width:0}
+
+/* The handset. Bezel in board green so it reads as a device without a photo. */
+.dapp__phone{
+  width:min(22rem,100%); margin-inline:auto;
+  background:var(--board); border-radius:1.6rem; padding:.6rem;
+  border:var(--hair) solid var(--board-rule);
+}
+.dapp__screen{
+  background:var(--paper); border-radius:1.1rem; overflow:hidden;
+  display:flex; flex-direction:column; height:33rem;
+}
+.dapp__statusbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:.45rem .9rem; background:var(--paper-2);
+  color:var(--ink-2); font-size:var(--t-label);
+  font-variant-numeric:tabular-nums; letter-spacing:.06em;
+}
+.dapp__bars{letter-spacing:-.1em}
+.dapp__view{flex:1 1 auto; overflow-y:auto; padding:var(--s2) var(--s2) var(--s3)}
+
+/* THE BRIDGE CARD. The only element in the app that is not about the masjid as
+   a whole, and the whole reason the two halves are worth buying together. */
+.dapp__kids{
+  display:flex; flex-direction:column; gap:.45rem;
+  margin:0 0 var(--s2); padding:.7rem .8rem;
+  background:var(--board); color:var(--board-ink);
+  border-radius:.5rem; text-decoration:none;
+}
+.dapp__kids:hover{background:var(--board-rule)}
+.dapp__kidsTop{display:flex; justify-content:space-between; align-items:baseline}
+.dapp__kidsLab{
+  color:var(--board-brass); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.dapp__kidsGo{color:var(--board-brass)}
+.dapp__kid{display:flex; justify-content:space-between; align-items:center; gap:.5rem; min-width:0}
+.dapp__kidName{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.9rem}
+.dapp__kidWeek{display:flex; gap:.2rem; flex:0 0 auto}
+.dapp__mk{
+  width:1.1rem; height:1.1rem; display:grid; place-items:center;
+  border:var(--hair) solid var(--board-rule); border-radius:.15rem;
+  font-size:.6rem; color:var(--board-ink-2);
+}
+.dapp__mk--in{color:var(--board-brass); border-color:var(--board-brass)}
+.dapp__mk--absent{color:var(--board-ink); border-color:var(--board-ink)}
+.dapp__mk--late{color:var(--board-ink-2)}
+.dapp__kidsNote{color:var(--board-ink-2); font-size:var(--t-small)}
+
+.dapp__next{
+  display:flex; justify-content:space-between; align-items:baseline;
+  margin:0 0 var(--s2); padding-bottom:.5rem;
+  border-bottom:var(--hair) solid var(--rule);
+}
+.dapp__nextLab{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.dapp__nextVal{
+  font-family:Newsreader,Georgia,serif; font-size:1.3rem;
+  color:var(--brass); font-variant-numeric:tabular-nums;
+}
+.dapp__times{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
+.dapp__times thead th{
+  padding:.25rem 0; text-align:right; font-weight:400; color:var(--ink-2);
+  font-size:var(--t-label); letter-spacing:.1em; text-transform:uppercase;
+}
+.dapp__times thead th:first-child{text-align:left}
+.dapp__times tbody th{padding:.35rem 0; text-align:left; font-weight:400; border-top:var(--hair) solid var(--rule)}
+.dapp__times tbody td{padding:.35rem 0; text-align:right; border-top:var(--hair) solid var(--rule)}
+.dapp__isnext th,.dapp__isnext td{color:var(--brass); font-weight:600}
+.dapp__jumuah{margin:.5rem 0 0; color:var(--ink-2); font-size:var(--t-small)}
+
+.dapp__offset{margin-top:var(--s2); padding-top:var(--s2); border-top:var(--hair) solid var(--rule)}
+.dapp__offset label{display:block; margin-bottom:.4rem; font-size:.9rem}
+.dapp__offset input[type=range]{width:100%; accent-color:var(--brass); min-height:2.75rem}
+.dapp__hint{margin:.5rem 0 0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}
+
+.dapp__notices{margin:0; padding:0; list-style:none; display:grid; gap:var(--s2)}
+.dapp__notice{padding-bottom:var(--s2); border-bottom:var(--hair) solid var(--rule)}
+.dapp__noticeTop{display:flex; justify-content:space-between; gap:.5rem; margin:0 0 .25rem}
+.dapp__noticeKind,.dapp__noticeWhen{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.dapp__noticeTitle{margin:0 0 .2rem; font-weight:600; line-height:1.3}
+.dapp__notice--urgent .dapp__noticeTitle{color:var(--brass)}
+.dapp__noticeBody{margin:0; color:var(--ink-2); font-size:var(--t-small); line-height:1.6}
+
+.dapp__giveLab{
+  margin:0 0 var(--s2); color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.dapp__amounts{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.4rem}
+.dapp__amount{
+  min-height:2.75rem; padding:.5rem .2rem; cursor:pointer;
+  background:transparent; color:var(--ink);
+  border:var(--hair) solid var(--rule-2); border-radius:.3rem;
+  font:inherit; font-variant-numeric:tabular-nums;
+}
+.dapp__amount--on{background:var(--board); color:var(--board-ink); border-color:var(--board)}
+.dapp__check{display:flex; gap:.5rem; align-items:flex-start; margin:var(--s2) 0}
+.dapp__check input{flex:0 0 auto; width:1.1rem; height:1.1rem; margin-top:.2rem; accent-color:var(--brass)}
+.dapp__check label{font-size:.875rem; line-height:1.5; min-width:0}
+.dapp__pay{
+  width:100%; min-height:2.75rem; padding:.7rem; cursor:pointer;
+  background:var(--brass); color:var(--paper);
+  border:0; border-radius:.3rem; font:inherit; font-weight:600;
+}
+.dapp__more{margin:0; padding:0; list-style:none; display:grid; gap:0}
+.dapp__more li{
+  display:flex; flex-direction:column; gap:.1rem;
+  padding:.65rem 0; border-bottom:var(--hair) solid var(--rule);
+}
+.dapp__more span{color:var(--ink-2); font-size:var(--t-small)}
+
+.dapp__tabs{
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+  border-top:var(--hair) solid var(--rule); background:var(--paper-2);
+}
+.dapp__tab{
+  min-height:3rem; padding:.5rem .2rem; cursor:pointer;
+  background:transparent; border:0; border-top:2px solid transparent;
+  color:var(--ink-2); font:inherit; font-size:var(--t-label);
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.dapp__tab[aria-current="page"]{color:var(--brass); border-top-color:var(--brass); font-weight:600}
+
+.dapp__side{padding-top:var(--s2)}
+@media (min-width:56em){
+  .dapp__side{border-left:var(--hair) solid var(--rule); padding-left:var(--s4); padding-top:0}
+}
+.dapp__sideP{margin:var(--s1) 0 var(--s3); color:var(--ink-2); max-width:34rem; line-height:1.7}
+.dapp__sideP strong{color:var(--ink)}
+.dapp__facts{margin:0}
+.dapp__facts dt{
+  color:var(--ink-2); font-size:var(--t-label);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.dapp__facts dd{margin:.15rem 0 var(--s2); color:var(--ink)}
+/* The other doors, on the portal chooser only. Quiet — it is a way back in for
+   whoever is driving the demonstration, not a menu for the committee. */
+.pick__doors{
+  display:flex; flex-wrap:wrap; gap:.4rem var(--s2);
+  align-items:baseline; justify-content:center;
+  margin:0 0 var(--s1); color:var(--board-ink-2); font-size:var(--t-small);
+}
+.pick__doorsLab{
+  font-size:var(--t-label); letter-spacing:.14em; text-transform:uppercase;
+}
+.pick__doors a{color:var(--board-brass)}

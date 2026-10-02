@@ -5,6 +5,8 @@ import { PoweredBy } from "@/components/ui/powered-by";
 import { DemoNav } from "@/components/demo-nav";
 import { DEMO_ROLES, DEMO_AUDIT, DEMO_STAFF, DEMO_STAFF_SUMMARY, DEMO_LOGIN_STATE } from "@/lib/demo-data";
 import {
+  DEMO_PUSHES,
+  DEMO_APP_REACH,
   DEMO_REQUESTS,
   DEMO_NOTICES,
   DEMO_DONATIONS,
@@ -64,6 +66,31 @@ export function DemoOffice({
   onSignOut: () => void;
 }) {
   const [tab, setTab] = React.useState<Tab>("requests");
+
+  /* The push composer. A notification is the one thing on this portal that
+     cannot be taken back, so the draft is held here and only leaves on an
+     explicit confirmation that says so. */
+  const [push, setPush] = React.useState({
+    topic: "Masjid",
+    title: "",
+    body: "",
+    alsoPublish: true,
+  });
+  const [confirmPush, setConfirmPush] = React.useState(false);
+  const pushReady = push.title.trim().length > 3;
+
+  /* Same keyboard contract as the screens confirmation: focus enters on open,
+     Escape leaves. A modal that can only be dismissed with a mouse is a trap. */
+  const pushDialogRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!confirmPush) return;
+    pushDialogRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setConfirmPush(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [confirmPush]);
   /**
    * Nothing here writes anywhere — there is no server behind a static export.
    * Rather than leave the buttons inert, which demonstrates nothing, each one
@@ -203,6 +230,126 @@ export function DemoOffice({
               </button>
               <span className="dadmin__muted">Drafts go nowhere until you publish</span>
             </div>
+            {/* SEND TO THE APP.
+                Built: app_notification_start and app_notification_finish write
+                app_notifications, app_notifications_list reads it back, and one
+                has been sent for real. The shape below follows that table — a
+                topic, a title, a body, an optional link to a notice, a status
+                and a recipient count — rather than being invented for a demo.
+
+                A push is the one action in this portal that CANNOT BE UNDONE.
+                A prayer time can be changed back; a notification on fourteen
+                hundred lock screens cannot. That is why the confirmation says
+                so in those words instead of asking "are you sure". */}
+            <div className="dpush">
+              <h2 className="dadmin__h">Send to the app</h2>
+              <p className="dadmin__muted dpush__lede">
+                Reaches {DEMO_APP_REACH.devices.toLocaleString("en-GB")} phones —{" "}
+                {DEMO_APP_REACH.ios.toLocaleString("en-GB")} iPhone,{" "}
+                {DEMO_APP_REACH.android.toLocaleString("en-GB")} Android. One
+                message, both stores.
+              </p>
+
+              <div className="dpush__form">
+                <p className="dpush__field dpush__field--topic">
+                  <label htmlFor="push-topic">Topic</label>
+                  <select
+                    id="push-topic"
+                    value={push.topic}
+                    onChange={(e) => setPush((d) => ({ ...d, topic: e.target.value }))}
+                  >
+                    {["Janāzah", "Masjid", "Madrasah", "Appeal", "Reminder"].map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </p>
+                <p className="dpush__field dpush__field--wide">
+                  <label htmlFor="push-title">What it says</label>
+                  <input
+                    id="push-title"
+                    type="text"
+                    maxLength={65}
+                    placeholder="Janāzah after Zuhr today"
+                    value={push.title}
+                    onChange={(e) => setPush((d) => ({ ...d, title: e.target.value }))}
+                  />
+                  <span className="dpush__count">
+                    {push.title.length}/65 — a lock screen shows about this much
+                  </span>
+                </p>
+                <p className="dpush__field dpush__field--wide">
+                  <label htmlFor="push-body">The line underneath</label>
+                  <input
+                    id="push-body"
+                    type="text"
+                    maxLength={120}
+                    placeholder="Burial to follow at the cemetery."
+                    value={push.body}
+                    onChange={(e) => setPush((d) => ({ ...d, body: e.target.value }))}
+                  />
+                </p>
+                <p className="dpush__check">
+                  <input
+                    id="push-publish"
+                    type="checkbox"
+                    checked={push.alsoPublish}
+                    onChange={(e) => setPush((d) => ({ ...d, alsoPublish: e.target.checked }))}
+                  />
+                  <label htmlFor="push-publish">
+                    Publish the same words to the website and the hall screens
+                    <span className="dadmin__muted">
+                      {" "}— so a screen cannot say something the website is not
+                      also saying.
+                    </span>
+                  </label>
+                </p>
+              </div>
+
+              <div className="dcong__bar">
+                <button
+                  type="button"
+                  className="dcong__do"
+                  disabled={!pushReady}
+                  onClick={() => setConfirmPush(true)}
+                >
+                  Send to the app
+                </button>
+                <span className="dadmin__muted">
+                  {pushReady
+                    ? "This cannot be unsent."
+                    : "Write what it says before it can be sent."}
+                </span>
+              </div>
+
+              <h3 className="dpush__h">Already sent</h3>
+              <ul className="dpush__list">
+                {DEMO_PUSHES.map((n) => (
+                  <li className={`dpush__row dpush__row--${n.status}`} key={n.title}>
+                    <span className="dpush__kind">{n.topic}</span>
+                    <span className="dpush__title">
+                      {n.title}
+                      {n.body ? <span className="dpush__body">{n.body}</span> : null}
+                    </span>
+                    <span className="dpush__when">{n.when}</span>
+                    <span className="dpush__reach">
+                      {n.status === "sent" ? (
+                        <>
+                          {n.recipients?.toLocaleString("en-GB")} phones
+                          {n.alsoPublished ? (
+                            <span className="dadmin__muted"> · also on the website</span>
+                          ) : null}
+                        </>
+                      ) : n.status === "failed" ? (
+                        <span className="dpush__failed">Failed — {n.error}</span>
+                      ) : (
+                        "Sending…"
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <ul className="dcong__list">
               {DEMO_NOTICES.map((n) => (
                 <li key={n.title} className="dcong__item">
@@ -479,6 +626,72 @@ export function DemoOffice({
         ) : null}
 
       </div>
+
+      {/* A push cannot be recalled. The screens dialog says what a change will
+          reach; this one has to say what cannot be taken back, because that is
+          the difference between the two actions and the only thing somebody
+          needs to weigh in the second before they press it. */}
+      {confirmPush ? (
+        <div className="dmodal" role="presentation" onClick={() => setConfirmPush(false)}>
+          <div
+            className="dmodal__box"
+            ref={pushDialogRef}
+            tabIndex={-1}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="push-confirm-h"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="dmodal__h" id="push-confirm-h">
+              This cannot be unsent
+            </h2>
+            <ul className="dmodal__list">
+              <li>
+                <strong>{push.topic}</strong> — {push.title}
+                {push.body ? <span className="dadmin__muted"> · {push.body}</span> : null}
+              </li>
+              <li>
+                {DEMO_APP_REACH.devices.toLocaleString("en-GB")} phones:{" "}
+                {DEMO_APP_REACH.ios.toLocaleString("en-GB")} iPhone and{" "}
+                {DEMO_APP_REACH.android.toLocaleString("en-GB")} Android
+              </li>
+              {push.alsoPublish ? (
+                <li>Also published to the website and every hall screen</li>
+              ) : null}
+            </ul>
+            <p className="dmodal__reach">
+              It arrives on lock screens within about a minute. A notification
+              cannot be recalled once it has gone — you can send a correction,
+              but you cannot take this one back. It is recorded against your
+              name.
+            </p>
+            <div className="dmodal__acts">
+              <button
+                type="button"
+                className="dcong__do"
+                onClick={() => {
+                  setConfirmPush(false);
+                  setSaid(
+                    `Sent. "${push.title}" reached ${DEMO_APP_REACH.devices.toLocaleString("en-GB")} phones` +
+                      (push.alsoPublish ? ", the website and every screen." : ".") +
+                      " Recorded against your name.",
+                  );
+                  setPush((d) => ({ ...d, title: "", body: "" }));
+                }}
+              >
+                Yes, send it now
+              </button>
+              <button
+                type="button"
+                className="dscreen__cancel"
+                onClick={() => setConfirmPush(false)}
+              >
+                No, go back
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <footer className="dadmin__foot">
         <PoweredBy />

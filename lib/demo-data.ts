@@ -302,6 +302,77 @@ export type ScreenRow = {
   secondsAgo: number | null;
 };
 
+/**
+ * Push notifications sent to the congregation app.
+ *
+ * BUILT, and the shape here follows the real table rather than being invented:
+ * app_notifications carries topic, title, body, an optional notice_id, a
+ * status, the OneSignal id, a recipient count and an error. The office portal
+ * calls app_notification_start and app_notification_finish, and
+ * app_notifications_list reads them back. One has been sent for real.
+ *
+ * The recipient count is the honest part of this screen. A send either
+ * reached a number of devices or failed with a reason, and both are shown —
+ * a notification screen that only ever prints "Sent" teaches nobody anything
+ * about the one evening it mattered.
+ */
+export type PushRow = {
+  topic: string;
+  title: string;
+  body?: string;
+  when: string;
+  status: "sent" | "sending" | "failed";
+  /** Devices the push actually reached. Absent while sending or on failure. */
+  recipients?: number;
+  error?: string;
+  /** True where the same words were also published to the website and screens. */
+  alsoPublished?: boolean;
+};
+
+export const DEMO_PUSHES: PushRow[] = [
+  {
+    topic: "Janāzah",
+    title: "Janāzah after Zuhr today",
+    body: "Burial to follow at the cemetery. Lifts leaving from the car park.",
+    when: "Today 11:04",
+    status: "sent",
+    recipients: 1180,
+    alsoPublished: true,
+  },
+  {
+    topic: "Madrasah",
+    title: "Closed next week — half term",
+    body: "No classes Monday 26th to Thursday 29th October.",
+    when: "2 days ago",
+    status: "sent",
+    recipients: 1174,
+    alsoPublished: true,
+  },
+  {
+    topic: "Reminder",
+    title: "Jumuʿah is at 13:15 from this week",
+    when: "Last Thursday",
+    status: "sent",
+    recipients: 1168,
+  },
+  {
+    /* Kept deliberately. A list that only ever shows success is no use on the
+       evening somebody asks why a notice did not arrive. */
+    topic: "Appeal",
+    title: "Roof appeal — final week",
+    when: "Last month",
+    status: "failed",
+    error: "Rejected by the notification service — no devices registered yet",
+  },
+];
+
+/** What the congregation app is installed on. Both stores, one build. */
+export const DEMO_APP_REACH = {
+  devices: 1180,
+  ios: 612,
+  android: 568,
+} as const;
+
 export const DEMO_SCREENS: ScreenRow[] = [
   { name: "Prayer hall", shape: "Landscape", secondsAgo: 18 },
   { name: "Women's section", shape: "Landscape", secondsAgo: 44 },
