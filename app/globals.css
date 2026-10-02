@@ -2721,11 +2721,23 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    Send to the app — the push composer and what has gone
    =================================================================== */
 
-.dpush{margin:0 0 var(--s4); padding-bottom:var(--s3); border-bottom:var(--hair) solid var(--rule)}
-.dpush__lede{margin:.3rem 0 var(--s3); font-size:var(--t-small)}
+/* Its own tab now. It was a small heading 626px down the Notices tab with no
+   container, which read as loose form fields rather than a capability — the
+   founder could not find it, which is the only test that matters. */
+.dpush{margin:0}
+.dpush__head{
+  margin:0; font-family:Newsreader,Georgia,serif; font-weight:400;
+  font-size:clamp(1.5rem,3.4vw,2.1rem); line-height:1.1;
+  letter-spacing:-.012em;
+}
+.dpush__lede{margin:.4rem 0 var(--s3); font-size:var(--t-small); max-width:38rem}
+/* The composer sits in a panel so it reads as one thing to fill in rather
+   than as fields loose on the page. */
 .dpush__form{
   display:grid; gap:var(--s2) var(--s3); margin-bottom:var(--s3);
   grid-template-columns:minmax(0,1fr);
+  padding:var(--s3); max-width:46rem;
+  background:var(--paper-2); border:var(--hair) solid var(--rule);
 }
 @media (min-width:46em){
   .dpush__form{grid-template-columns:minmax(0,10rem) minmax(0,1fr)}

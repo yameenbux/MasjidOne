@@ -50,7 +50,7 @@ import {
 
 const money = (n: number) => `£${n.toLocaleString("en-GB")}`;
 
-type Tab = "requests" | "notices" | "giving" | "committee";
+type Tab = "requests" | "notices" | "push" | "giving" | "committee";
 
 export function DemoOffice({
   masjidName,
@@ -149,6 +149,7 @@ export function DemoOffice({
             [
               ["requests", `Requests · ${DEMO_CONGREGATION.needsYou}`],
               ["notices", `Notices · ${DEMO_CONGREGATION.drafts} draft`],
+              ["push", "App notifications"],
               ["giving", "Giving"],
               ["committee", "Committee"],
             ] as const
@@ -230,126 +231,6 @@ export function DemoOffice({
               </button>
               <span className="dadmin__muted">Drafts go nowhere until you publish</span>
             </div>
-            {/* SEND TO THE APP.
-                Built: app_notification_start and app_notification_finish write
-                app_notifications, app_notifications_list reads it back, and one
-                has been sent for real. The shape below follows that table — a
-                topic, a title, a body, an optional link to a notice, a status
-                and a recipient count — rather than being invented for a demo.
-
-                A push is the one action in this portal that CANNOT BE UNDONE.
-                A prayer time can be changed back; a notification on fourteen
-                hundred lock screens cannot. That is why the confirmation says
-                so in those words instead of asking "are you sure". */}
-            <div className="dpush">
-              <h2 className="dadmin__h">Send to the app</h2>
-              <p className="dadmin__muted dpush__lede">
-                Reaches {DEMO_APP_REACH.devices.toLocaleString("en-GB")} phones —{" "}
-                {DEMO_APP_REACH.ios.toLocaleString("en-GB")} iPhone,{" "}
-                {DEMO_APP_REACH.android.toLocaleString("en-GB")} Android. One
-                message, both stores.
-              </p>
-
-              <div className="dpush__form">
-                <p className="dpush__field dpush__field--topic">
-                  <label htmlFor="push-topic">Topic</label>
-                  <select
-                    id="push-topic"
-                    value={push.topic}
-                    onChange={(e) => setPush((d) => ({ ...d, topic: e.target.value }))}
-                  >
-                    {["Janāzah", "Masjid", "Madrasah", "Appeal", "Reminder"].map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </p>
-                <p className="dpush__field dpush__field--wide">
-                  <label htmlFor="push-title">What it says</label>
-                  <input
-                    id="push-title"
-                    type="text"
-                    maxLength={65}
-                    placeholder="Janāzah after Zuhr today"
-                    value={push.title}
-                    onChange={(e) => setPush((d) => ({ ...d, title: e.target.value }))}
-                  />
-                  <span className="dpush__count">
-                    {push.title.length}/65 — a lock screen shows about this much
-                  </span>
-                </p>
-                <p className="dpush__field dpush__field--wide">
-                  <label htmlFor="push-body">The line underneath</label>
-                  <input
-                    id="push-body"
-                    type="text"
-                    maxLength={120}
-                    placeholder="Burial to follow at the cemetery."
-                    value={push.body}
-                    onChange={(e) => setPush((d) => ({ ...d, body: e.target.value }))}
-                  />
-                </p>
-                <p className="dpush__check">
-                  <input
-                    id="push-publish"
-                    type="checkbox"
-                    checked={push.alsoPublish}
-                    onChange={(e) => setPush((d) => ({ ...d, alsoPublish: e.target.checked }))}
-                  />
-                  <label htmlFor="push-publish">
-                    Publish the same words to the website and the hall screens
-                    <span className="dadmin__muted">
-                      {" "}— so a screen cannot say something the website is not
-                      also saying.
-                    </span>
-                  </label>
-                </p>
-              </div>
-
-              <div className="dcong__bar">
-                <button
-                  type="button"
-                  className="dcong__do"
-                  disabled={!pushReady}
-                  onClick={() => setConfirmPush(true)}
-                >
-                  Send to the app
-                </button>
-                <span className="dadmin__muted">
-                  {pushReady
-                    ? "This cannot be unsent."
-                    : "Write what it says before it can be sent."}
-                </span>
-              </div>
-
-              <h3 className="dpush__h">Already sent</h3>
-              <ul className="dpush__list">
-                {DEMO_PUSHES.map((n) => (
-                  <li className={`dpush__row dpush__row--${n.status}`} key={n.title}>
-                    <span className="dpush__kind">{n.topic}</span>
-                    <span className="dpush__title">
-                      {n.title}
-                      {n.body ? <span className="dpush__body">{n.body}</span> : null}
-                    </span>
-                    <span className="dpush__when">{n.when}</span>
-                    <span className="dpush__reach">
-                      {n.status === "sent" ? (
-                        <>
-                          {n.recipients?.toLocaleString("en-GB")} phones
-                          {n.alsoPublished ? (
-                            <span className="dadmin__muted"> · also on the website</span>
-                          ) : null}
-                        </>
-                      ) : n.status === "failed" ? (
-                        <span className="dpush__failed">Failed — {n.error}</span>
-                      ) : (
-                        "Sending…"
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             <ul className="dcong__list">
               {DEMO_NOTICES.map((n) => (
                 <li key={n.title} className="dcong__item">
@@ -387,6 +268,130 @@ export function DemoOffice({
                 </li>
               ))}
             </ul>
+          </section>
+        ) : null}
+
+        {tab === "push" ? (
+          <section aria-label="App notifications">
+            {/* SEND TO THE APP.
+              Built: app_notification_start and app_notification_finish write
+              app_notifications, app_notifications_list reads it back, and one
+              has been sent for real. The shape below follows that table — a
+              topic, a title, a body, an optional link to a notice, a status
+              and a recipient count — rather than being invented for a demo.
+
+              A push is the one action in this portal that CANNOT BE UNDONE.
+              A prayer time can be changed back; a notification on fourteen
+              hundred lock screens cannot. That is why the confirmation says
+              so in those words instead of asking "are you sure". */}
+          <div className="dpush">
+            <h2 className="dpush__head">App notifications</h2>
+            <p className="dadmin__muted dpush__lede">
+              Reaches {DEMO_APP_REACH.devices.toLocaleString("en-GB")} phones —{" "}
+              {DEMO_APP_REACH.ios.toLocaleString("en-GB")} iPhone,{" "}
+              {DEMO_APP_REACH.android.toLocaleString("en-GB")} Android. One
+              message, both stores.
+            </p>
+
+            <div className="dpush__form">
+              <p className="dpush__field dpush__field--topic">
+                <label htmlFor="push-topic">Topic</label>
+                <select
+                  id="push-topic"
+                  value={push.topic}
+                  onChange={(e) => setPush((d) => ({ ...d, topic: e.target.value }))}
+                >
+                  {["Janāzah", "Masjid", "Madrasah", "Appeal", "Reminder"].map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </p>
+              <p className="dpush__field dpush__field--wide">
+                <label htmlFor="push-title">What it says</label>
+                <input
+                  id="push-title"
+                  type="text"
+                  maxLength={65}
+                  placeholder="Janāzah after Zuhr today"
+                  value={push.title}
+                  onChange={(e) => setPush((d) => ({ ...d, title: e.target.value }))}
+                />
+                <span className="dpush__count">
+                  {push.title.length}/65 — a lock screen shows about this much
+                </span>
+              </p>
+              <p className="dpush__field dpush__field--wide">
+                <label htmlFor="push-body">The line underneath</label>
+                <input
+                  id="push-body"
+                  type="text"
+                  maxLength={120}
+                  placeholder="Burial to follow at the cemetery."
+                  value={push.body}
+                  onChange={(e) => setPush((d) => ({ ...d, body: e.target.value }))}
+                />
+              </p>
+              <p className="dpush__check">
+                <input
+                  id="push-publish"
+                  type="checkbox"
+                  checked={push.alsoPublish}
+                  onChange={(e) => setPush((d) => ({ ...d, alsoPublish: e.target.checked }))}
+                />
+                <label htmlFor="push-publish">
+                  Publish the same words to the website and the hall screens
+                  <span className="dadmin__muted">
+                    {" "}— so a screen cannot say something the website is not
+                    also saying.
+                  </span>
+                </label>
+              </p>
+            </div>
+
+            <div className="dcong__bar">
+              <button
+                type="button"
+                className="dcong__do"
+                disabled={!pushReady}
+                onClick={() => setConfirmPush(true)}
+              >
+                Send to the app
+              </button>
+              <span className="dadmin__muted">
+                {pushReady
+                  ? "This cannot be unsent."
+                  : "Write what it says before it can be sent."}
+              </span>
+            </div>
+
+            <h3 className="dpush__h">Already sent</h3>
+            <ul className="dpush__list">
+              {DEMO_PUSHES.map((n) => (
+                <li className={`dpush__row dpush__row--${n.status}`} key={n.title}>
+                  <span className="dpush__kind">{n.topic}</span>
+                  <span className="dpush__title">
+                    {n.title}
+                    {n.body ? <span className="dpush__body">{n.body}</span> : null}
+                  </span>
+                  <span className="dpush__when">{n.when}</span>
+                  <span className="dpush__reach">
+                    {n.status === "sent" ? (
+                      <>
+                        {n.recipients?.toLocaleString("en-GB")} phones
+                        {n.alsoPublished ? (
+                          <span className="dadmin__muted"> · also on the website</span>
+                        ) : null}
+                      </>
+                    ) : n.status === "failed" ? (
+                      <span className="dpush__failed">Failed — {n.error}</span>
+                    ) : (
+                      "Sending…"
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
           </section>
         ) : null}
 
