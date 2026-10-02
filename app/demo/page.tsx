@@ -212,6 +212,14 @@ export default function DemoPage() {
           masjidName={masjid}
           ask="Where would you like to go?"
           options={portalOptions(masjid)}
+          brandNote={
+            <>
+              These are MasjidOne&apos;s colours, not yours. A masjid&apos;s own
+              portal is built in its own palette and typeface during setup —
+              Taiyabah&apos;s is plum and gold — so only the name here is
+              standing in for yours.
+            </>
+          }
           doors={[
             { href: "support/", label: "MasjidOne support" },
             { href: "app/", label: "The congregation app" },

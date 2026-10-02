@@ -64,6 +64,7 @@ export function DemoChooser({
   onChoose,
   nav,
   doors,
+  brandNote,
 }: {
   masjidName: string;
   /** The question. Different one level down, so it is a prop. */
@@ -74,6 +75,8 @@ export function DemoChooser({
   nav?: React.ComponentProps<typeof DemoNav>;
   /** The other doors. Shown at the top of the tree only. */
   doors?: { href: string; label: string }[];
+  /** The white-label note. Shown at the top of the tree only, not one level down. */
+  brandNote?: React.ReactNode;
 }) {
   return (
     <div className="pick">
@@ -85,6 +88,19 @@ export function DemoChooser({
         {nav ? <DemoNav {...nav} tone="board" /> : null}
         <h1 className="pick__masjid">{masjidName}</h1>
         <p className="pick__ask">{ask}</p>
+        {/* SAID ONCE, HERE, because this is the screen that invites the wrong
+            conclusion: a committee reads their own name at the top of a
+            bottle-green page and reasonably assumes bottle green is what they
+            get. It is not — Taiyabah's portal is plum and gold in Fraunces,
+            nothing like this. The name is the only thing ?masjid= can swap;
+            the palette belongs to MasjidOne and is not what a masjid receives.
+
+            Worded as what it actually is. There is no theming switch: a
+            masjid's colours are built into their own site during setup, which
+            is part of what the setup fee covers. Do not reword this into "pick
+            your colours in settings", which would be a feature claim and
+            masjids.theme is still an empty column nothing reads. */}
+        {brandNote ? <p className="pick__brand">{brandNote}</p> : null}
       </header>
 
       {options.map((o) => (

@@ -52,6 +52,33 @@ into real components, move its behaviour with it.
 
 Do not introduce new colours, fonts or spacing scales. Use what's defined.
 
+> **WHOSE DESIGN IS THIS?** Ask it before styling anything, because the answer
+> is not always MasjidOne's.
+>
+> The palette below — bottle green, paper, brass, Newsreader — is **MasjidOne's
+> own**, and belongs on MasjidOne's own surfaces: this marketing site, the
+> demonstration under `/demo/`, and the live support console at `/admin/`.
+>
+> **A masjid's surfaces carry the masjid's design, not ours.** Taiyabah's portal
+> is plum (`#3C0B2A`) and gold (`#C6A24C`) set in Fraunces, and that is correct
+> and must stay that way. The product is *powered by* MasjidOne; it does not
+> *look like* MasjidOne. Every masjid is meant to be its own in colour and
+> type, which is why `components/ui/powered-by.tsx` is a small footer credit
+> rather than a header lock-up — the masjid's name carries the top of their
+> screens, our credit carries the bottom.
+>
+> So never "make a masjid's portal consistent with the site". They are
+> deliberately inconsistent, and the inconsistency is the feature. The link out
+> of the support console opens their own domain, which is why their design
+> survives it: CSS does not cross an origin.
+>
+> **Two things this is not yet.** `masjids.theme` is a `jsonb` column that
+> exists, is `{}` for Taiyabah, and is read by nothing — a masjid's design is
+> hand-built into their own site at setup, not configured. And nothing on the
+> public site or in the demo tells a committee any of this, so a committee
+> shown the green demo reasonably assumes green is what they get. Both are
+> recorded under Open items.
+
 - **Typography:** `Newsreader` (serif) for headings and pull quotes,
   `Archivo` (sans) for everything else, loaded via `<link>` in `app/layout.tsx`.
   Numbers in timetables and prices use `font-variant-numeric: tabular-nums`.
@@ -265,6 +292,17 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   does *not* mean "no processor in the policy" — Cloudflare carries the
   submission and is a processor, named in the notice. What it avoids is a form
   company keeping its own copy of every enquiry.
+- **Per-masjid design is a setup service, not a feature.** Taiyabah's plum and
+  gold are hand-built into their own site. `masjids.theme` exists as `jsonb`,
+  is `{}`, and nothing reads it. That is fine for one masjid and does not
+  scale: masjid two means another hand-built site. Before selling "your own
+  colours" as something the system does, either wire `theme` through the
+  portals or keep describing it as what it is — part of what setup includes.
+  The £499 setup fee is the honest home for it.
+- **The demo is in MasjidOne's colours and never says so.** `?masjid=` swaps
+  the name; it cannot swap the palette. A committee is shown a bottle-green
+  portal with their name on it and nothing corrects the obvious inference. Say
+  it once where they will see it rather than leaving them to find out.
 - Do not add a captcha. reCAPTCHA is a Google tracker and would trigger the
   cookie banner this site deliberately avoids. The form has a honeypot.
 - Set `NEXT_PUBLIC_BASE_PATH` as a repository variable, or add a `CNAME` to

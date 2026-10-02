@@ -3453,3 +3453,11 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .lsup__attB{margin:.25rem 0 0; color:var(--ink-2); line-height:1.6; max-width:46rem}
 .lsup__attNote{border-top:var(--hair) solid var(--rule); padding-top:var(--s2)}
 .lsup__attNote strong{color:var(--ink)}
+
+/* The white-label note on the portal chooser. Quiet — it is a correction to an
+   assumption, not a selling line, and it sits under the question rather than
+   competing with the masjid's name above it. */
+.pick__brand{
+  margin:var(--s2) 0 0; max-width:34rem; color:var(--board-ink-2);
+  font-size:var(--t-small); line-height:1.6;
+}
