@@ -10,6 +10,7 @@ import {
   MASJID_PORTALS,
   type MasjidRow,
 } from "@/lib/platform";
+import { attention, type Facts, type Item } from "@/lib/attention";
 
 /**
  * The LIVE MasjidOne support console. Not the demonstration — this one signs
@@ -82,6 +83,8 @@ export function AdminConsole() {
   const [who, setWho] = React.useState<string>("");
   const [entering, setEntering] = React.useState<string | null>(null);
   const [entered, setEntered] = React.useState<{ slug: string; name: string; support: boolean } | null>(null);
+  const [facts, setFacts] = React.useState<Facts | null>(null);
+  const [factsError, setFactsError] = React.useState<string | null>(null);
   const [factorId, setFactorId] = React.useState<string | null>(null);
   const [challengeId, setChallengeId] = React.useState<string | null>(null);
 
@@ -196,6 +199,15 @@ export function AdminConsole() {
       return;
     }
     setEntered({ slug: m.slug, name: m.name, support: m.support });
+
+    /* Read what is wrong with the masjid, now that we are in it. Deliberately
+       after the switch rather than on the list: a list of five masajid should
+       not fire five reads of everything. */
+    setFacts(null);
+    setFactsError(null);
+    const { data, error: fe } = await sb.rpc("masjid_attention", { p_masjid: m.slug });
+    if (fe) setFactsError(readable(fe.message));
+    else setFacts(data as Facts);
   }
 
   async function signOut() {
@@ -306,6 +318,8 @@ export function AdminConsole() {
                 </>
               )}
             </p>
+            <AttentionList facts={facts} error={factsError} />
+
             {portal ? (
               <>
                 <a className="lsup__enter" href={portal} target="_blank" rel="noopener noreferrer">
@@ -385,6 +399,61 @@ export function AdminConsole() {
         <PoweredBy />
       </footer>
     </div>
+  );
+}
+
+/**
+ * What is wrong at this masjid, or an explicit "nothing is".
+ *
+ * An empty list has to SAY it is empty. A panel that renders nothing when
+ * there is nothing wrong is indistinguishable from one that failed to load,
+ * and the second is the state you would want to know about.
+ */
+function AttentionList({ facts, error }: { facts: Facts | null; error: string | null }) {
+  if (error) {
+    return (
+      <p className="lsup__err" role="alert">
+        Could not read what needs attention: {error}
+      </p>
+    );
+  }
+  if (!facts) return <p className="lsup__small">Reading what needs attention…</p>;
+
+  const items: Item[] = attention(facts);
+
+  return (
+    <section className="lsup__att" aria-label="What needs attention">
+      <h3 className="lsup__attH">
+        {items.length === 0
+          ? "Nothing here needs attention"
+          : `${items.length} thing${items.length === 1 ? "" : "s"} need${items.length === 1 ? "s" : ""} attention`}
+      </h3>
+
+      {items.length === 0 ? (
+        <p className="lsup__small">
+          Everything this console can see is as it should be. It cannot see
+          everything — see the note below.
+        </p>
+      ) : (
+        <ul className="lsup__attList">
+          {items.map((it) => (
+            <li className={`lsup__att1 lsup__att1--${it.level}`} key={it.head}>
+              <p className="lsup__attT">{it.head}</p>
+              <p className="lsup__attB">{it.body}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Said plainly rather than left as a silence that reads like a zero. */}
+      <p className="lsup__small lsup__attNote">
+        <strong>This cannot see the app or the screens.</strong> How many phones
+        have the app is held by the push provider, not in the database, and the
+        platform has no record of a television in a building at all — there is
+        no screens table and nothing takes a screen id. Neither absence means
+        zero; it means not visible from here.
+      </p>
+    </section>
   );
 }
 

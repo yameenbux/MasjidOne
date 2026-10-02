@@ -120,11 +120,34 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    nobody has asked for and that the "one timetable, not a wall of screens"
    pitch deliberately argues against.
 
-   **What is still true, and is a usage fact rather than a capability one:**
-   no register has been submitted, no fee paid, no progress entry written and
-   no parent has signed in at Taiyabah. So *"built"*, *"in a masjid"* and
-   *"it works"* are all defensible; *"running"*, *"every evening"* and *"in
-   daily use"* are not, until that changes.
+   **USAGE FACTS, which are not capability facts, and which split in two.
+   Re-checked against the live platform and OneSignal on 2 October 2026.**
+
+   *The congregation side is in daily use, and this file used to deny it.* The
+   app has sent **291 push notifications between 12 August and 2 October 2026**
+   — about 5.8 a day, fired automatically off the prayer timetable, the most
+   recent at 05:46 on the morning this was written ("Fajr jamāʿah is starting
+   now at the masjid"). None failed. The timetable itself is published, 365
+   days of it. So for prayer times and the app, *"running"*, *"every day"* and
+   *"in daily use in a masjid"* are now **defensible and were being needlessly
+   withheld**.
+
+   *But say nothing about reach.* Those 291 pushes reach **6 devices**. Six.
+   The demo's `DEMO_APP_REACH` fixture says 1,180 phones and is invented sample
+   data; it must never appear in a sentence about Taiyabah. "It runs every day"
+   is true. "A congregation uses it" is not.
+
+   *The madrasah side is still unused.* No register submitted, no attendance
+   mark, no fee charged or paid, no progress entry. One parent login exists,
+   created 29 September — ask whether that is a real family or a test before
+   claiming anything from it. The notice board has one notice written and
+   **none published**. So for the madrasah, *"built"*, *"in a masjid"* and
+   *"it works"* remain the limit; *"running"* and *"in daily use"* do not apply
+   and must not be borrowed from the congregation half.
+
+   The lesson this file keeps relearning: a usage claim goes stale in both
+   directions. It was wrong to claim use that had not happened, and it was
+   wrong to keep denying use that had started. Check, with a date.
 2. **Never claim "no competitor does the whole mosque."** It is false —
    several platforms do the congregation side. The true, defensible claim is
    narrower: *nobody joins the madrasah to the congregation.* Keep the copy
