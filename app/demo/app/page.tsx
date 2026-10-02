@@ -30,5 +30,17 @@ export default function AppDemoPage() {
     if (q) setMasjid(q.slice(0, 60));
   }, []);
 
-  return <DemoApp masjidName={masjid} />;
+  return (
+    <div className="dshell">
+      {/* Missing here too. Every other door carries it. */}
+      <p className="dstrip">
+        <strong>Demonstration</strong>
+        <span>
+          Sample data. Not a live masjid and not a real sign-in — invented
+          children, invented balances, an interface preview of the app.
+        </span>
+      </p>
+      <DemoApp masjidName={masjid} />
+    </div>
+  );
 }

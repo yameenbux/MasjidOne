@@ -2813,7 +2813,9 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    times in the app cannot drift from the times on the hall screen.
    =================================================================== */
 
-.dapp{min-height:100vh; display:flex; flex-direction:column; background:var(--paper)}
+/* Inside .dshell now, which owns the height. flex:1 fills what the
+   demonstration strip leaves rather than adding a viewport to it. */
+.dapp{flex:1; display:flex; flex-direction:column; background:var(--paper)}
 .dapp__top{
   display:flex; flex-wrap:wrap; gap:var(--s2); align-items:center;
   justify-content:space-between;
@@ -2995,7 +2997,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    after, each with a way in that is written into their audit trail.
    =================================================================== */
 
-.dsup{min-height:100vh; display:flex; flex-direction:column; background:var(--paper)}
+.dsup{flex:1; display:flex; flex-direction:column; background:var(--paper)}
 .dsup__top{
   display:flex; flex-wrap:wrap; gap:var(--s2) var(--s3);
   align-items:center; justify-content:space-between;
