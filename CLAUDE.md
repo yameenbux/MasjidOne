@@ -59,8 +59,8 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > own**, and belongs on MasjidOne's own surfaces: this marketing site, the
 > demonstration under `/demo/`, and the live support console at `/admin/`.
 >
-> **A masjid's surfaces carry the masjid's design, not ours.** Taiyabah's portal
-> is plum (`#3C0B2A`) and gold (`#C6A24C`) set in Fraunces, and that is correct
+> **A masjid's surfaces carry the masjid's design, not ours.** The founding
+> masjid's portal is plum (`#3C0B2A`) and gold (`#C6A24C`) set in Fraunces, and that is correct
 > and must stay that way. The product is *powered by* MasjidOne; it does not
 > *look like* MasjidOne. Every masjid is meant to be its own in colour and
 > type, which is why `components/ui/powered-by.tsx` is a small footer credit
@@ -72,9 +72,9 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > of the support console opens their own domain, which is why their design
 > survives it: CSS does not cross an origin.
 >
-> **Every masjid is designed, not themed.** Taiyabah's website, app and admin
-> portals were designed for Taiyabah. The next masjid's will be designed for
-> them. They are not one product with the variables swapped, and nothing here
+> **Every masjid is designed, not themed.** The first masjid's website, app and
+> admin portals were designed for that masjid. The next one's will be designed
+> for them. They are not one product with the variables swapped, and nothing here
 > should be built as though they were — a committee can already buy a skinnable
 > template elsewhere, and that is precisely the thing they are not buying here.
 >
@@ -83,7 +83,7 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > record. Not a stylesheet.
 >
 > This was got wrong once, on 2 October 2026. `masjids.theme` was populated
-> with Taiyabah's palette, `masjid_theme(slug)` was added to read it, and the
+> with the founding masjid's palette, `masjid_theme(slug)` was added to read it, and the
 > demo gained a palette picker so a visitor could flick between three skins.
 > All of it argued for the templated model. It was reverted the same day —
 > `theme` is `{}`, the function has EXECUTE revoked from every role and is
@@ -203,7 +203,7 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 
    *But say nothing about reach.* Those 291 pushes reach **6 devices**. Six.
    The demo's `DEMO_APP_REACH` fixture says 1,180 phones and is invented sample
-   data; it must never appear in a sentence about Taiyabah. "It runs every day"
+   data; it must never appear in a sentence about the live masjid. "It runs every day"
    is true. "A congregation uses it" is not.
 
    *The madrasah side is still unused.* No register submitted, no attendance
@@ -277,17 +277,28 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 4. **Do not name competitors on the public site.** The comparison happens in
    the room, not on the page. Naming them in `founder/` analysis is fine —
    the rule is about the page, not about what you are allowed to know.
-5. **Taiyabah Masjid may now be named.** Permission to use their name, logo
-   and screenshots was given on 16 September 2026. **The site no longer shows
-   their captures** — the hero and the previews both use MasjidOne interface
-   previews, and the note under the hero says so rather than claiming a
-   permission. Their captures are kept in `assets/devices-src/` and are the
-   only real-world evidence we hold, so if they go back on the page the note
-   has to change back with them. Two things still apply either way: get the
-   permission in writing as part of the founding-customer agreement, and never
-   publish a screen containing a real child's record or a real family's fee
-   history — see `public/devices/README.md`. Other customers stay unnamed until
-   they say otherwise.
+5. **We do not name the masajid we work with.** Changed 4 October 2026 at the
+   founder's instruction, and it replaces a rule that said the opposite.
+   A customer's records are their own business, and a committee weighing up who
+   to trust with five hundred children's details should not first be shown
+   another masjid's name used as advertising. The furthest any public copy goes
+   is **"a mosque in Bolton"**.
+   This is a position, not a limitation — say so when asked, because it lands
+   correctly with the people you are selling to. If a prospect wants a
+   reference, seek that masjid's permission and introduce them directly.
+   **Written permission is still required**, as part of the founding-customer
+   agreement, and it still matters: it is what makes the walkthrough video
+   usable at all. Permission to use a name is not an obligation to use it.
+   The site no longer shows any customer's captures — the hero and the previews
+   use MasjidOne interface previews and the note under the hero says so. Their
+   captures stay in `assets/devices-src/` and are the only real-world evidence
+   held, so if they ever go back on the page that note changes with them.
+   **Never publish a screen containing a real child's record or a real
+   family's fee history** — see `public/devices/README.md`.
+   Naming a customer in `founder/` analysis is fine; that folder is gitignored.
+   The rule is about anything a prospect, a crawler or a passer-by can read,
+   and **this repository is public**, so it covers code comments and committed
+   documentation too, not just rendered copy.
 6. **No social proof.** No customer counts, logos, testimonials or "popular"
    badges — there are no customers yet. The pricing block's badge says
    "Recommended", which is our own view, not a popularity claim.
@@ -328,7 +339,7 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 
 - Replace the three SVG previews with live screenshots (test student data
   only, never a real child's record). Partly done: `#previews` now leads with
-  a 58-second walkthrough of the madrasah portal recorded at Taiyabah
+  a 58-second walkthrough of the madrasah portal recorded at the founding masjid
   (`public/media/madrasah-portal.mp4`, confirmed free of real pupil data on
   28 September 2026). The stills under it are still interface previews, and
   the section's opening paragraph draws that distinction — if the stills are

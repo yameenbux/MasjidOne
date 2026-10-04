@@ -38,7 +38,7 @@ const TARGET_WIDTH = {
   "app-parent.png": 760,
   "app-qibla-zakat.png": 760,
 
-  // Taiyabah Masjid captures. No longer referenced by the site — the hero and
+  // The founding masjid's captures. No longer referenced by the site — the hero and
   // the previews both use the interface previews above — but kept here because
   // the permission to use them stands and they are the only real-world
   // evidence we hold. Re-running this script regenerates them into public/,

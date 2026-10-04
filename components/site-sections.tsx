@@ -133,7 +133,7 @@ export function Walkthrough() {
       poster={`${BASE}/media/madrasah-portal-poster.jpg`}
       width={1600}
       height={900}
-      aria-label="A fifty-eight second walkthrough of the MasjidOne madrasah portal, recorded at Taiyabah Masjid: the daily register, madrasah fees, and one record of the family."
+      aria-label="A fifty-eight second walkthrough of the MasjidOne madrasah portal, recorded at a mosque in Bolton: the daily register, madrasah fees, and one record of the family."
     >
       <source src={`${BASE}/media/madrasah-portal.mp4`} type="video/mp4" />
       Your browser cannot play this video. It is a fifty-eight second
@@ -141,8 +141,8 @@ export function Walkthrough() {
       record of the family.
     </video>
     <figcaption>
-      The register, the fees and one record of the family, recorded at
-      Taiyabah Masjid. Fifty-eight seconds. Pupil names in the recording are
+      The register, the fees and one record of the family, recorded at a mosque
+      in Bolton. Fifty-eight seconds. Pupil names in the recording are
       test data.
     </figcaption>
   </figure>

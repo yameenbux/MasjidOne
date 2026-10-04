@@ -46,8 +46,9 @@ export default function TermsPage() {
       </p>
       <p>
         The content, design and code are ours and all rights are reserved. The
-        walkthrough video was recorded at Taiyabah Masjid and is used with their
-        permission; their name and logo remain theirs. Every other image on this
+        walkthrough video was recorded at a mosque in Bolton and is used with their
+        permission; their name and marks remain theirs, and we do not name the
+        masajid we work with. Every other image on this
         site is an interface preview rather than a capture of a real masjid, and
         the captions say so.
       </p>

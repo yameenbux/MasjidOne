@@ -3405,7 +3405,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
      82rem silently turned four columns into five and shrank every monitor.
      auto-fit is worse at one masjid — it collapses the empty tracks and
      stretches the single card across the whole row, which is how this page
-     ended up looking like a page about Taiyabah rather than a console for a
+     ended up looking like a page about one masjid rather than a console for a
      fleet. A fixed count at each width is the only version that does what it
      says. */
   grid-template-columns:1fr;
@@ -3541,7 +3541,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .lscr__logo{
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   /* Larger than it was, because the monitor is now a quarter of the width it
-     had. Taiyabah's lock-up is 780x552, so contain fits it to the height and
+     had. The founding masjid's lock-up is 780x552, so contain fits it to the height and
      these percentages leave a comfortable margin rather than a stamp. */
   width:72%; height:62%; object-fit:contain; opacity:.9;
 }

@@ -355,7 +355,10 @@ These are commercial constraints with design consequences.
   promised *before a masjid is invoiced*. Present tense is not yet available.
 - **British English.** Arabic terms carry diacritics: jamāʿah, Jumuʿah,
   janāzah, Hifz, sadaqah, madrasah, masjid.
-- **Taiyabah Masjid may be named** (permission given 16 September 2026). Never
+- **No customer is named.** Permission to use the founding masjid's name was
+  given on 16 September 2026 and is still held, but it is not used: see
+  CLAUDE.md content rule 5. Public copy goes no further than "a mosque in
+  Bolton". Never
   publish a screen containing a real child's record or a real family's fee
   history.
 

@@ -28,7 +28,7 @@ const buildPlans = (madrasah: number, complete: number) => [
     yearlyPrice: String(yearlyTotal(madrasah)),
     period: "month",
     yearlyPeriod: "year",
-    // The portal is built and loaded at Taiyabah — the roll, the classes, the
+    // The portal is built and loaded at a masjid in Bolton — the roll, the classes, the
     // staff and their logins. The two features below that are not built carry
     // their own dev tag rather than the whole plan.
     //
