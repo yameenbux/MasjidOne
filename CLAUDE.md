@@ -116,6 +116,36 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
   the one deliberate exception** — it is centred, rounded and card-based
   because it was adopted as supplied. Don't spread that styling outward.
 
+## What MasjidOne delivers — FIVE products, and this list is canonical
+
+**Read this before writing any copy, leaflet, email or deck. Do not reconstruct
+it from memory.** It has been got wrong twice: a capability PDF went out on
+4 October 2026 omitting the website, and the corrected version still omitted the
+in-mosque screens. Both are things the site has always sold. The failure was
+deriving the list from recollection instead of from here.
+
+A masjid on **Masjid Complete** receives five finished things:
+
+| # | Product | Lives at | What it is |
+| --- | --- | --- | --- |
+| 1 | **A new website** | `/mosque-website/` | Built and maintained for them, with the timetable and notices updating themselves |
+| 2 | **A congregation app** | `/mosque-app/` | Per-person jamāʿah reminders, giving, hall and nikah bookings |
+| 3 | **In-mosque screens** | `/mosque-prayer-times-screens/` | Unlimited screens on ordinary televisions, off the same timetable |
+| 4 | **The madrasah portal** | `/madrasah-software/` | Office and teachers: registers, fees, Hifz progress, staff and DBS dates |
+| 5 | **The parent portal** | inside the congregation app | A parent sees their own children only — marks, fees, progress |
+
+**Madrasah** (the cheaper plan) is products 4 and 5 only.
+
+Donations with Gift Aid at 0% commission is a **feature** reached through the
+website and the app, not a sixth product — which is why `/mosque-donations/`
+exists as a page but does not appear above.
+
+**The screens are live and carry no tag.** What they display is built and
+running. The one thing tagged "In development" is the screen *heartbeat* — the
+"Are the screens alive?" monitoring panel in the demo, which answers whether a
+television is switched on and talking to us. Selling the screens is correct;
+claiming you can monitor them is not. See content rule 1.
+
 ## Content rules — these matter more than the code
 
 These are commercial claims. Getting one wrong loses a sale and a referral.
