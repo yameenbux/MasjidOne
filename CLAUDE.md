@@ -378,11 +378,19 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   `NEXT_PUBLIC_FORM_ENDPOINT` set to
   `https://forms.masjidone.co.uk/demo-request`.
   Two things about it that are easy to get wrong later:
-  **It is free, conditionally.** Cloudflare meters outbound email to arbitrary
-  recipients, but sending to a *verified destination address on your own
-  account* is free on every plan. The binding is pinned to one address with
-  `destination_address` for exactly that reason. Widening it to also email the
-  enquirer leaves the free case and puts you on the paid plan.
+  **IT IS NOT FREE — that claim was wrong and was corrected on 4 October 2026.**
+  Sending *to* a verified destination address is free on any plan, which is true
+  and is why the binding is pinned with `destination_address`. But Cloudflare
+  also says *"you can only send from your routing domains"*, so the **sender**
+  address forces a choice: enable Email Routing on `masjidone.co.uk` (free, and
+  it **replaces the root MX records**, breaking the mailboxes bought on
+  4 October), or onboard the domain to Email Sending, which the dashboard gates
+  behind **Workers Paid at $5/month** and which only touches the `cf-bounce`
+  subdomain. There is no free path that leaves the email working. See
+  `worker/README.md`.
+  Because Workers Paid includes 3,000 outbound emails a month, the old warning
+  that emailing the enquirer would "leave the free case" no longer applies — it
+  is a decision rather than a cost cliff.
   **The privacy notice switches itself.** `app/privacy/page.tsx` reads
   `FORM_ENDPOINT` and prints the mailto wording or the Worker wording
   accordingly, so the copy cannot be left describing the old behaviour. Do not

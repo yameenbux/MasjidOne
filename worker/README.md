@@ -19,20 +19,42 @@ processor and the privacy notice still names them — that part was not avoidabl
 and the notice says so — but nobody keeps a copy except us, and there is no
 service to cancel, no plan to outgrow and no account somebody else owns.
 
-## What it costs
+## What it costs — $5 a month, and the earlier claim of "free" was wrong
 
-Nothing, and for a documented reason rather than a hopeful one.
+This was documented as free. It is not, and the reason is worth understanding
+before paying anything, because the alternative is worse than the five dollars.
 
-Cloudflare meters outbound email to arbitrary recipients and that needs the
-Workers Paid plan. But **sending to a verified destination address on your own
-account is free on every plan** and does not count against the monthly quota.
-A contact form sends to exactly one address — ours — so it stays in the free
-case permanently. `wrangler.toml` pins the binding to that single address with
-`destination_address`, which keeps it free *and* means a bug in the Worker
-cannot mail anybody else.
+Cloudflare's rule, from their pricing and limits pages: *"Sends to verified
+destination addresses are always free… on any plan, including when only Email
+Routing is configured. **You can only send from your routing domains.**"* And:
+*"Sending to arbitrary recipients requires the Workers Paid plan."*
 
-If you ever widen that to send to the enquirer as well, you have left the free
-case and are on the paid plan. That is a decision, not a tweak.
+Read that second sentence carefully. Sending **to** `info@` is genuinely free.
+What is not free is sending **from** `forms@masjidone.co.uk`, because that
+address has to sit on a domain which is either:
+
+| Route | What it needs | What it costs |
+| --- | --- | --- |
+| A **routing** domain | Email Routing enabled on `masjidone.co.uk` | Free — **but it replaces the root MX records and the mailboxes bought on 4 October stop receiving mail** |
+| A **sending** domain | Email Sending, which the dashboard gates behind Workers Paid | **$5/month**, and it only touches the `cf-bounce` subdomain |
+
+So the choice is five dollars a month or a broken inbox. Pay the five dollars.
+
+Workers Paid also includes 3,000 outbound emails a month, which is the thing
+that would otherwise be metered. Sends to `info@` do not touch that allowance,
+so the quota is headroom rather than a running cost.
+
+**What the five dollars buys beyond this Worker:** the option of emailing the
+enquirer a confirmation, which was previously ruled out for leaving the free
+case. It is no longer a reason not to — though it is still a decision, not an
+automatic yes.
+
+**The free alternative, stated honestly:** leave `NEXT_PUBLIC_FORM_ENDPOINT`
+unset. The form then hands its answers to the visitor's own mail client,
+prefilled, addressed to `info@` — which is a real address now, so this is no
+longer broken, merely worse. It costs a visitor one extra step and loses the
+ones who will not take it. At zero enquiries a month that costs nothing; the
+day cold outreach starts it costs something unknowable.
 
 ## Setting it up
 
