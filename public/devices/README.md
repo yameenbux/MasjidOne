@@ -42,11 +42,11 @@ holds zero parent accounts.
 `admin-register` and `admin-fees` **do not**. This file used to group them with
 `app-parent` as "modules in development", which was wrong and had gone stale:
 the madrasah portal is built, and the home page has carried a Live badge and a
-"Running at Taiyabah Masjid" caption on both screens for some time, so this
+"Running at a named masjid" caption on both screens for some time, so this
 README was contradicting the site it governs.
 
 What is defensible about them, checked against the production database rather
-than assumed: the portal holds Taiyabah's full roll — pupils, classes, staff,
+than assumed: the portal holds that masjid's full roll — pupils, classes, staff,
 households and guardians, with teachers assigned to classes and fee rates set —
 and several thousand logged admin actions. It holds **no submitted register and
 no payment**. So "built, and configured in a masjid" is supported; "registers
@@ -63,7 +63,7 @@ because everything under `public/` is published verbatim and the sources are
 node scripts/optimise-devices.mjs
 ```
 
-That script also knows the Taiyabah Masjid captures, which are still in
+That script also knows the founding masjid's captures, which are still in
 `assets/devices-src/` but no longer referenced by the site. It will regenerate
 them into this folder, where they would ship unused — delete what you do not
 reference.

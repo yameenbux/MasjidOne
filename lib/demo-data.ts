@@ -6,7 +6,7 @@
  * publishing a real child's record or a real family's fee history is the one
  * thing the content rules never allow.
  *
- * The scale is deliberately NOT Taiyabah's. Their real roll is 552 pupils, 48
+ * The scale is deliberately NOT the live masjid's. Their real roll is 552 pupils, 48
  * classes, 41 staff and 330 households; if the demo used those numbers a
  * screenshot of it would read as a screenshot of them. 438/36/31/268 is the
  * same order of magnitude — big enough that paper registers plainly hurt, which

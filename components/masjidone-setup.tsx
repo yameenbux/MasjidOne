@@ -19,7 +19,7 @@ import { TileGrid, type Tile } from "@/components/ui/tile-grid";
  * The competitor pattern this borrows from says "a small team behind you",
  * "your messages written for you", "everything built for you". That is an
  * agency describing an agency, and it is charged at £399 a month. None of it
- * is true here and none of it is affordable at £79.
+ * is true here, and none of it is affordable at a maktab's monthly rate.
  *
  * Every tile below is something already committed elsewhere on this site: the
  * setup description in the FAQ, the waiver in the pricing section, and the

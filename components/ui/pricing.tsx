@@ -268,7 +268,7 @@ export function Pricing({
                     }}
                     // EDIT: `formatter` was removed from @number-flow/react.
                     // `format` with currency GBP and an en-GB locale already
-                    // renders £79, so the prop is no longer needed.
+                    // renders the figure with its £, so the prop is not needed.
                     locales="en-GB"
                     transformTiming={{
                       duration: 500,

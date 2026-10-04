@@ -59,8 +59,8 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > own**, and belongs on MasjidOne's own surfaces: this marketing site, the
 > demonstration under `/demo/`, and the live support console at `/admin/`.
 >
-> **A masjid's surfaces carry the masjid's design, not ours.** Taiyabah's portal
-> is plum (`#3C0B2A`) and gold (`#C6A24C`) set in Fraunces, and that is correct
+> **A masjid's surfaces carry the masjid's design, not ours.** The founding
+> masjid's portal is plum (`#3C0B2A`) and gold (`#C6A24C`) set in Fraunces, and that is correct
 > and must stay that way. The product is *powered by* MasjidOne; it does not
 > *look like* MasjidOne. Every masjid is meant to be its own in colour and
 > type, which is why `components/ui/powered-by.tsx` is a small footer credit
@@ -72,9 +72,9 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > of the support console opens their own domain, which is why their design
 > survives it: CSS does not cross an origin.
 >
-> **Every masjid is designed, not themed.** Taiyabah's website, app and admin
-> portals were designed for Taiyabah. The next masjid's will be designed for
-> them. They are not one product with the variables swapped, and nothing here
+> **Every masjid is designed, not themed.** The first masjid's website, app and
+> admin portals were designed for that masjid. The next one's will be designed
+> for them. They are not one product with the variables swapped, and nothing here
 > should be built as though they were — a committee can already buy a skinnable
 > template elsewhere, and that is precisely the thing they are not buying here.
 >
@@ -83,7 +83,7 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > record. Not a stylesheet.
 >
 > This was got wrong once, on 2 October 2026. `masjids.theme` was populated
-> with Taiyabah's palette, `masjid_theme(slug)` was added to read it, and the
+> with the founding masjid's palette, `masjid_theme(slug)` was added to read it, and the
 > demo gained a palette picker so a visitor could flick between three skins.
 > All of it argued for the templated model. It was reverted the same day —
 > `theme` is `{}`, the function has EXECUTE revoked from every role and is
@@ -115,6 +115,36 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 - Left-aligned, generous whitespace, hairline rules. **The pricing block is
   the one deliberate exception** — it is centred, rounded and card-based
   because it was adopted as supplied. Don't spread that styling outward.
+
+## What MasjidOne delivers — FIVE products, and this list is canonical
+
+**Read this before writing any copy, leaflet, email or deck. Do not reconstruct
+it from memory.** It has been got wrong twice: a capability PDF went out on
+4 October 2026 omitting the website, and the corrected version still omitted the
+in-mosque screens. Both are things the site has always sold. The failure was
+deriving the list from recollection instead of from here.
+
+A masjid on **Masjid Complete** receives five finished things:
+
+| # | Product | Lives at | What it is |
+| --- | --- | --- | --- |
+| 1 | **A new website** | `/mosque-website/` | Built and maintained for them, with the timetable and notices updating themselves |
+| 2 | **A congregation app** | `/mosque-app/` | Per-person jamāʿah reminders, giving, hall and nikah bookings |
+| 3 | **In-mosque screens** | `/mosque-prayer-times-screens/` | Unlimited screens on ordinary televisions, off the same timetable |
+| 4 | **The madrasah portal** | `/madrasah-software/` | Office and teachers: registers, fees, Hifz progress, staff and DBS dates |
+| 5 | **The parent portal** | inside the congregation app | A parent sees their own children only — marks, fees, progress |
+
+**Madrasah** (the cheaper plan) is products 4 and 5 only.
+
+Donations with Gift Aid at 0% commission is a **feature** reached through the
+website and the app, not a sixth product — which is why `/mosque-donations/`
+exists as a page but does not appear above.
+
+**The screens are live and carry no tag.** What they display is built and
+running. The one thing tagged "In development" is the screen *heartbeat* — the
+"Are the screens alive?" monitoring panel in the demo, which answers whether a
+television is switched on and talking to us. Selling the screens is correct;
+claiming you can monitor them is not. See content rule 1.
 
 ## Content rules — these matter more than the code
 
@@ -173,7 +203,7 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 
    *But say nothing about reach.* Those 291 pushes reach **6 devices**. Six.
    The demo's `DEMO_APP_REACH` fixture says 1,180 phones and is invented sample
-   data; it must never appear in a sentence about Taiyabah. "It runs every day"
+   data; it must never appear in a sentence about the live masjid. "It runs every day"
    is true. "A congregation uses it" is not.
 
    *The madrasah side is still unused.* No register submitted, no attendance
@@ -191,17 +221,50 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    several platforms do the congregation side. The true, defensible claim is
    narrower: *nobody joins the madrasah to the congregation.* Keep the copy
    on that line.
-3. **Pricing is fixed.** Madrasah £79/mo, Masjid Complete £179/mo, setup £499
-   once (waived on twelve months prepaid), 0% commission on donations. Do not
-   invent tiers, discounts or "from £" phrasing.
-   **Never discount the monthly — waive the setup fee instead.** The pricing
-   toggle shows the same rate two ways, and the invariant is arithmetic:
-   for a plan whose `period` is `month`, `yearlyPrice` must be exactly
-   `price × 12` (£79 → £948, £179 → £2,148). Anything less than 12× is a
-   discount on the monthly and is wrong. Only the setup card genuinely
-   falls, £499 → £0.
-   In the yearly view each card also prints its monthly rate underneath, so
-   a twelve-month total cannot be misread as a price rise. Keep that line.
+3. **Pricing is banded by madrasah size, and the bands are fixed.**
+   Changed 4 October 2026 from a single flat rate. The reason, because it will
+   be questioned: every credible competitor prices by student count, and a flat
+   rate across a market with a tenfold spread in institution size is wrong at
+   both ends at once — it overcharged the small maktab, which is the segment
+   with the most prospects, and undercharged the large madrasah. **The entry
+   price went down, not up.** An earlier reading had this backwards and was
+   built on comparing per-pupil cost to school management systems, which is the
+   wrong benchmark for a volunteer-run, donation-funded madrasah. See
+   `founder/price-pressure-test-2026-10-02.md`.
+
+   | Pupils | Madrasah | Masjid Complete |
+   | --- | --- | --- |
+   | up to 100 | £49 | £119 |
+   | 101–250 | £79 | £169 |
+   | 251–500 | £119 | £219 |
+   | over 500 | £159 | £269 |
+
+   Setup £499 once (waived on twelve months prepaid). 0% commission on
+   donations. Do not invent further tiers or discounts.
+   **The figures live in `PRICING_BANDS` in `lib/site.ts` and nowhere else.**
+   There is deliberately no `PRICING.madrasah` scalar: a single number is the
+   thing that is no longer true, and one left lying about would let a page print
+   it as though it were the price. Ranges come from `BAND_RANGE`, which is
+   derived, never typed. If you find a price written as a literal in prose,
+   that is a bug — the compiler cannot catch those, so grep for `£` after any
+   pricing change.
+   **A band is not per-pupil pricing, and the copy must keep that line.**
+   Per-pupil means the bill moves whenever a child joins; a band is one figure
+   for a size range that changes only at renewal, and only on crossing a
+   threshold. "No per-pupil charge" is still true and still worth saying.
+   What is no longer true, and was deleted on 4 October, is any promise that
+   growth is never a billing event. It is, at renewal. Do not reinstate it.
+   **Never discount the monthly — waive the setup fee instead.** The invariant
+   is arithmetic: for a plan whose `period` is `month`, `yearlyPrice` must be
+   exactly `price × 12` for that masjid's own band. Anything less is a discount
+   on the monthly and is wrong. Only the setup fee genuinely falls, £499 → £0.
+   In the yearly view each card also prints its monthly rate underneath, so a
+   twelve-month total cannot be misread as a price rise. Keep that line.
+   **Google reads the prices too.** `components/structured-data.tsx` publishes
+   `AggregateOffer` with `lowPrice`/`highPrice` derived from the bands. One
+   figure there while the page shows four is a mismatch a crawler is entitled
+   to treat as a lie. If the bands change, that follows automatically — do not
+   hardcode it.
    **The `pricing-strategy` skill does not override any of this.** It is an
    internal thinking aid and writes to `founder/`, which is gitignored
    because **this repository is public** — margins, break-even counts and a
@@ -214,17 +277,28 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 4. **Do not name competitors on the public site.** The comparison happens in
    the room, not on the page. Naming them in `founder/` analysis is fine —
    the rule is about the page, not about what you are allowed to know.
-5. **Taiyabah Masjid may now be named.** Permission to use their name, logo
-   and screenshots was given on 16 September 2026. **The site no longer shows
-   their captures** — the hero and the previews both use MasjidOne interface
-   previews, and the note under the hero says so rather than claiming a
-   permission. Their captures are kept in `assets/devices-src/` and are the
-   only real-world evidence we hold, so if they go back on the page the note
-   has to change back with them. Two things still apply either way: get the
-   permission in writing as part of the founding-customer agreement, and never
-   publish a screen containing a real child's record or a real family's fee
-   history — see `public/devices/README.md`. Other customers stay unnamed until
-   they say otherwise.
+5. **We do not name the masajid we work with.** Changed 4 October 2026 at the
+   founder's instruction, and it replaces a rule that said the opposite.
+   A customer's records are their own business, and a committee weighing up who
+   to trust with five hundred children's details should not first be shown
+   another masjid's name used as advertising. The furthest any public copy goes
+   is **"a mosque in Bolton"**.
+   This is a position, not a limitation — say so when asked, because it lands
+   correctly with the people you are selling to. If a prospect wants a
+   reference, seek that masjid's permission and introduce them directly.
+   **Written permission is still required**, as part of the founding-customer
+   agreement, and it still matters: it is what makes the walkthrough video
+   usable at all. Permission to use a name is not an obligation to use it.
+   The site no longer shows any customer's captures — the hero and the previews
+   use MasjidOne interface previews and the note under the hero says so. Their
+   captures stay in `assets/devices-src/` and are the only real-world evidence
+   held, so if they ever go back on the page that note changes with them.
+   **Never publish a screen containing a real child's record or a real
+   family's fee history** — see `public/devices/README.md`.
+   Naming a customer in `founder/` analysis is fine; that folder is gitignored.
+   The rule is about anything a prospect, a crawler or a passer-by can read,
+   and **this repository is public**, so it covers code comments and committed
+   documentation too, not just rendered copy.
 6. **No social proof.** No customer counts, logos, testimonials or "popular"
    badges — there are no customers yet. The pricing block's badge says
    "Recommended", which is our own view, not a popularity claim.
@@ -265,7 +339,7 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 
 - Replace the three SVG previews with live screenshots (test student data
   only, never a real child's record). Partly done: `#previews` now leads with
-  a 58-second walkthrough of the madrasah portal recorded at Taiyabah
+  a 58-second walkthrough of the madrasah portal recorded at the founding masjid
   (`public/media/madrasah-portal.mp4`, confirmed free of real pupil data on
   28 September 2026). The stills under it are still interface previews, and
   the section's opening paragraph draws that distinction — if the stills are

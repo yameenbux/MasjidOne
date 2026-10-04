@@ -34,7 +34,7 @@ import { DEMO_PARENT_CREDENTIALS } from "@/lib/demo-data";
  * Email is the username because the platform already works that way — a parent
  * login is a Supabase auth user keyed on address. The office-issued sign-in
  * stays available underneath for the households with no email at all; at
- * Taiyabah that is twelve of them, and they are not worth excluding.
+ * the founding masjid that is twelve of them, and they are not worth excluding.
  */
 
 const PROMPT_AFTER = 3;

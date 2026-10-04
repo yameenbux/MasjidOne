@@ -420,7 +420,7 @@ export function AdminConsole() {
 
               {/* Empty slots up to a full row of four. Not decoration and not a
                   promise: the console is for a fleet, and at one masjid a lone
-                  stretched card makes it look like a page about Taiyabah rather
+                  stretched card makes it look like a page about one masjid rather
                   than a page about everybody we look after. They fill in as
                   masajid arrive and disappear once there are four, rather than
                   being three fixed boxes that would look wrong at five. */}

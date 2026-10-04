@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING, openGraphFor } from "@/lib/site";
+import { BAND_RANGE, PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "A managed mosque website",
@@ -114,7 +114,8 @@ export default function MosqueWebsitePage() {
       ]}
       plan={{
         name: "Masjid Complete",
-        pounds: PRICING.complete,
+        from: BAND_RANGE.complete.from,
+        to: BAND_RANGE.complete.to,
         note: <>Your existing content is brought across as part of setup.</>,
       }}
     />

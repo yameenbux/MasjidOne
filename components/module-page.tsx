@@ -119,7 +119,7 @@ export function ModulePage({
   /** What is honestly not built yet on this page's subject. Omit if nothing. */
   pending?: React.ReactNode;
   pendingShot?: ModuleShot;
-  plan: { name: string; pounds: number; note: React.ReactNode };
+  plan: { name: string; from: number; to: number; note: React.ReactNode };
   children?: React.ReactNode;
 }) {
   const crumbs = {
@@ -229,10 +229,13 @@ export function ModulePage({
           <h2 className="measure">What it costs</h2>
           <p className="modp__lede measure">
             Part of <strong>{plan.name}</strong> at{" "}
-            <strong>£{plan.pounds} a month</strong>, with setup and migration
-            charged once at £{PRICING.setup} — waived outright on twelve months
-            prepaid. Unlimited pupils, teachers and screens; no per-pupil
-            pricing and no paid add-ons. {plan.note}
+            <strong>
+              £{plan.from} to £{plan.to} a month
+            </strong>
+            , by the size of your madrasah, with setup and migration charged
+            once at £{PRICING.setup} — waived outright on twelve months prepaid.
+            One price for your band: unlimited pupils, teachers and screens, and
+            your bill does not move when a child joins. {plan.note}
           </p>
           <div className="btn-row">
             <a className="btn" href={`${BASE_PATH}${DEMO_HREF}`}>

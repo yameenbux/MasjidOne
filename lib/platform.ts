@@ -12,7 +12,7 @@
  * actual protection, and every function the console calls checks
  * is_platform_admin(), which in turn requires a signed-in session that has
  * completed a second factor. The same two values are already published in the
- * Taiyabah portal's own config.js for the same reason.
+ * the masjid portal's own config.js for the same reason.
  *
  * THE SECRET / service_role KEY MUST NEVER APPEAR HERE or anywhere else that
  * reaches a browser. It bypasses RLS entirely. If GitHub's secret scanning
