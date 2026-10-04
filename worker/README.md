@@ -1,177 +1,145 @@
-> # PARKED — do not deploy this yet
->
-> **Reversed on 4 October 2026.** `masjidone.co.uk` is entirely on One.com —
-> domain, DNS and mail — and One.com enables DKIM automatically *only while the
-> domain uses their name servers*. Deploying this needs either Email Routing,
-> which replaces the root MX and breaks every mailbox, or Email Sending at
-> **$5/month**, which needs the DNS moved to Cloudflare and so costs the
-> automatic DKIM as well.
->
-> That is $5 a month plus losing working DKIM plus a migration that risks the
-> mail, to replace a fallback that works, for a form that has never received a
-> submission. **Revisit when the site has traffic enough to justify it.**
->
-> Nothing here is wasted: `wrangler.toml` carries the real addresses and
-> `npx wrangler deploy --dry-run` passes, so this is one command on the day it
-> is worth doing. Everything below stays accurate for that day.
-
 # The form endpoint
 
 The website is a static export on GitHub Pages and has no server. This is the
-one piece of the site that runs code, and it exists to do one thing: take a demo
-request and turn it into an email to us.
+one piece that runs code, and it exists to do one thing: take a demo request and
+turn it into an email to us.
 
 **Nothing in this directory is secret, and nothing secret may be added to it.**
-The repository is public and git history is permanent.
+The repository is public and git history is permanent. The Resend API key goes
+in `wrangler secret put`, never in a file.
 
-## Why this rather than Formspree
+## Why not Formspree
 
 A third-party form service is twenty minutes of work. The cost is that a company
 we do not control holds every enquiry a mosque committee ever sends us, in their
 dashboard, under their retention policy, and has to be named in our privacy
 notice as a processor of it.
 
-This way Cloudflare carries the submission and we hold it. Cloudflare is still a
-processor and the privacy notice still names them — that part was not avoidable
-and the notice says so — but nobody keeps a copy except us, and there is no
-service to cancel, no plan to outgrow and no account somebody else owns.
+We sell careful handling of families' records. "Your enquiry went to a form
+company" is a bad answer to a trustee who asks.
 
-## What it costs — $5 a month, and the earlier claim of "free" was wrong
+## Why not Cloudflare Email either — this changed on 4 October 2026
 
-This was documented as free. It is not, and the reason is worth understanding
-before paying anything, because the alternative is worse than the five dollars.
+It used to use Cloudflare's `send_email` binding. That is now ruled out, and the
+reasoning is here so nobody spends an evening rediscovering it:
 
-Cloudflare's rule, from their pricing and limits pages: *"Sends to verified
-destination addresses are always free… on any plan, including when only Email
-Routing is configured. **You can only send from your routing domains.**"* And:
-*"Sending to arbitrary recipients requires the Workers Paid plan."*
+| | |
+| --- | --- |
+| Cloudflare's docs | *"You must be using Cloudflare DNS to use Email Service."* |
+| Our DNS | entirely on One.com — domain, DNS and mail |
+| Moving it | costs One.com's **automatic DKIM**, which works today by itself |
+| Workers Free plan | outbound Email Sending reads **"Not available"** |
+| Email Routing instead | replaces the **root MX** and the mailboxes stop receiving |
 
-Read that second sentence carefully. Sending **to** `info@` is genuinely free.
-What is not free is sending **from** `forms@masjidone.co.uk`, because that
-address has to sit on a domain which is either:
+So: a paid plan, plus a DNS migration, plus losing working DKIM. For a contact
+form. No.
 
-| Route | What it needs | What it costs |
-| --- | --- | --- |
-| A **routing** domain | Email Routing enabled on `masjidone.co.uk` | Free — **but it replaces the root MX records and the mailboxes bought on 4 October stop receiving mail** |
-| A **sending** domain | Email Sending, which the dashboard gates behind Workers Paid | **$5/month**, and it only touches the `cf-bounce` subdomain |
+## What it does instead
 
-So the choice is five dollars a month or a broken inbox. Pay the five dollars.
+The Worker receives the POST and hands the message to **Resend's REST API**.
+Free tier: 3,000 a month, 100 a day, which a contact form will not come near.
+The Worker has no email binding any more, so it stays on the Workers free tier.
 
-Workers Paid also includes 3,000 outbound emails a month, which is the thing
-that would otherwise be metered. Sends to `info@` do not touch that allowance,
-so the quota is headroom rather than a running cost.
+**Resend verifies `send.masjidone.co.uk`, not the root domain.** That is the
+safety property, not a detail: its SPF, DKIM and bounce records then live on the
+subdomain and cannot collide with the root SPF record or disturb the MX that the
+One.com mailboxes depend on. Verifying the root would mean editing the root SPF,
+and two SPF records on one name is a broken configuration, not a merged one.
 
-**What the five dollars buys beyond this Worker:** the option of emailing the
-enquirer a confirmation, which was previously ruled out for leaving the free
-case. It is no longer a reason not to — though it is still a decision, not an
-automatic yes.
-
-**The free alternative, stated honestly:** leave `NEXT_PUBLIC_FORM_ENDPOINT`
-unset. The form then hands its answers to the visitor's own mail client,
-prefilled, addressed to `info@` — which is a real address now, so this is no
-longer broken, merely worse. It costs a visitor one extra step and loses the
-ones who will not take it. At zero enquiries a month that costs nothing; the
-day cold outreach starts it costs something unknowable.
+Resend transmits; it is not a dashboard somebody else reads your enquiries out
+of. It is still a processor and the privacy notice still names it — that part
+was never avoidable — but the enquiry lands in our mailbox and lives there.
 
 ## Setting it up
 
-You need: the `masjidone.co.uk` zone on Cloudflare, and `npx wrangler login`.
+### 1. Verify the sending domain in Resend
 
-> ### Read this first, or you will break your email
->
-> **DO NOT enable Email Routing on the `masjidone.co.uk` zone.** Cloudflare's own
-> documentation is blunt about it: *"Email Routing requires Cloudflare MX
-> records… Cannot use Email Routing with external mail servers."* Turning it on
-> replaces the root MX records, and the mailboxes and aliases bought from the
-> email host on 4 October 2026 — `info@`, `support@`, `yameen@` and the seven
-> forwarders — would stop receiving mail.
->
-> **You do not need it.** A *destination address* is held at the **account**
-> level, not the zone level. Adding and verifying one touches no DNS at all:
-> Cloudflare emails the address, the mail arrives through the existing host, and
-> clicking the link is the whole of it. That verified address is all the Workers
-> send binding requires, and sending to it is free on every plan.
->
-> Email **Sending** (step 2) is a different product from Email **Routing**, and
-> the docs say they are "managed separately". Its records live on the
-> `cf-bounce` subdomain — `cf-bounce` MX, SPF and DKIM — so it does not touch the
-> root MX either. **If any screen offers to change the root MX records, stop.**
+1. Create a Resend account. Free plan.
+2. **Domains → Add Domain →** `send.masjidone.co.uk`
+3. Resend shows three records. Add them **in the One.com DNS panel**, exactly as
+   given. They are all on the `send` subdomain — **if any screen offers to
+   change the root MX or the root SPF, stop.**
+4. Wait for Verified. Usually about fifteen minutes.
 
-1. **Verify the destination address.** Cloudflare dashboard → Compute → Email
-   Service → Email Routing → **Destination Addresses**. Add
-   `info@masjidone.co.uk` and click the link in the confirmation email, which
-   will arrive in that mailbox as normal. Nothing works until this is done, and
-   this step alone changes no DNS.
+### 2. Put the API key in as a secret
 
-   Note the page lives under "Email Routing" but adding a destination address
-   is not the same as enabling routing for the domain. Add the address. Do not
-   enable routing.
+```sh
+cd worker
+npm install
+npx wrangler login
+npx wrangler secret put RESEND_API_KEY     # paste when prompted
+```
 
-2. **Onboard the sending domain.** Compute → Email Service → **Email Sending**.
-   This is what makes `forms@masjidone.co.uk` a sender Cloudflare will accept;
-   without it every send fails with `E_SENDER_NOT_VERIFIED`. It adds records on
-   the `cf-bounce` subdomain only.
+`wrangler secret put` reads the value from the prompt and uploads it. It is
+never written to disk and never appears in the repository. Do not pass it as a
+command-line argument — that lands in your shell history.
 
-   `forms@` already exists as an alias forwarding to `info@`, which is separate
-   from this and worth keeping: it means bounces land somewhere instead of
-   vanishing.
+### 3. Check the config before you deploy
 
-3. ~~**Fill in `wrangler.toml`.**~~ **Done on 4 October 2026.** Both `SEND_TO`
-   and `destination_address` are `info@masjidone.co.uk`, and they must stay
-   identical — the binding is pinned to one verified destination, which is the
-   condition that keeps this free.
+Needs no credentials:
 
-4. **Check the config before you deploy.** This needs no credentials and
-   catches a broken binding before you are standing in the dashboard wondering
-   why:
+```sh
+npx wrangler deploy --dry-run
+```
 
-   ```sh
-   cd worker
-   npm install
-   npx wrangler deploy --dry-run
-   ```
+Three bindings: `RATE_LIMIT (5 requests/60s)`, `SEND_FROM`, `SEND_TO`. If you
+see an `EMAIL` binding, you are on an old `wrangler.toml`. Verified passing
+4 October 2026.
 
-   It should print four bindings: `EMAIL (info@masjidone.co.uk)`, `RATE_LIMIT
-   (5 requests/60s)`, `SEND_FROM` and `SEND_TO`. Verified passing on
-   4 October 2026.
+### 4. Deploy
 
-5. **Deploy.**
+```sh
+npx wrangler deploy
+```
 
-   ```sh
-   npx wrangler deploy
-   ```
+It prints the hostname. It will look like
+`https://masjidone-forms.<your-subdomain>.workers.dev`.
 
-6. **Point the site at it.** Set the repository variable
-   `NEXT_PUBLIC_FORM_ENDPOINT` to:
+### 5. Point the site at it
 
-   ```
-   https://forms.masjidone.co.uk/demo-request
-   ```
+Repository variable `NEXT_PUBLIC_FORM_ENDPOINT`, set to that hostname **plus the
+path**:
 
-   GitHub → the repository → Settings → Secrets and variables → Actions →
-   Variables. Then re-run the deploy workflow. The form switches from handing
-   its answers to the visitor's mail client to posting them here, and the
-   privacy notice's wording switches with it — both read the same variable, so
-   they cannot disagree.
+```
+https://masjidone-forms.<your-subdomain>.workers.dev/demo-request
+```
+
+GitHub → the repository → Settings → Secrets and variables → Actions →
+Variables. Then re-run the deploy workflow.
+
+The form switches from handing its answers to the visitor's mail client to
+posting them here, and the privacy notice's wording switches with it — both read
+the same variable, so they cannot disagree.
 
 ## Check it actually works before you rely on it
 
-Deploying is not evidence. Submit the real form on the real site and confirm the
-email arrives, then check that **Reply** in your mail client addresses the
-enquirer and not `forms@masjidone.co.uk`.
+Deploying is not evidence, and neither is the test run below.
 
-One thing to watch on that first send: the Worker does not pass a `to`, because
-Cloudflare uses the binding's `destination_address` when `to` is null or
-undefined. If a send ever fails with `E_FIELD_MISSING`, that behaviour has
-changed and the fix is to pass the address explicitly.
+Submit the real form on the real site. Confirm the email arrives at `info@`, and
+confirm that **Reply** in your mail client addresses the enquirer rather than
+`forms@send.masjidone.co.uk`.
 
 ```sh
-npx wrangler tail          # watch it live
+npx wrangler tail     # watch it live
 ```
 
-Emails sent from a Worker show as **dropped** in the Email Routing summary even
-when they were delivered. That is a known quirk of that panel, not a failure —
-use the Email Sending metrics instead.
+**What was tested locally on 4 October 2026**, against `wrangler dev`:
+
+| Case | Expected | Result |
+| --- | --- | --- |
+| `GET /demo-request` | 405 | ✅ |
+| `POST /nope` | 404 | ✅ |
+| Wrong `Origin` | 403 | ✅ |
+| Empty body | 422 | ✅ |
+| No email address | 422 | ✅ |
+| `_gotcha` honeypot filled | 200 `{ok:true}`, **no send attempted** | ✅ |
+| Six posts in a minute | 429 after the fifth | ✅ |
+| `Access-Control-Allow-Origin` | the site's origin | ✅ |
+| Enquiry text in the logs | **never** | ✅ none found |
+| A send that actually succeeds | — | **NOT TESTED — needs a real API key** |
+
+That last row is the one that matters and it is the one a local run cannot
+cover. Step 5 above is not optional.
 
 ## What it refuses
 
@@ -183,6 +151,11 @@ use the Email Sending metrics instead.
 | More than 5 posts a minute from one IP | 429 |
 | Honeypot filled | **200, and nothing sent** — a bot told it failed tries again |
 | No masjid, no name, or no usable email | 422 |
+| Resend returns any non-2xx | 502, and the visitor is told to email directly |
+
+That last row exists because `fetch` only rejects on a network failure. A 401
+from a rolled key arrives as a perfectly happy `Response`, so an unchecked call
+would tell every visitor their enquiry was sent while nothing was.
 
 There is no captcha, deliberately. reCAPTCHA is a Google tracker and would bring
 back the cookie banner this site exists without.
@@ -193,3 +166,6 @@ It does not store anything. If the send fails, the enquiry is lost and the
 visitor is told to email instead. That is the right trade for now — a store
 means a retention policy, a deletion route and a thing to secure — but it is
 worth revisiting if the form ever carries something you cannot afford to drop.
+
+It also never logs what was submitted. Only a status code reaches the Workers
+log, because a committee's details have no business being there.

@@ -366,49 +366,54 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   **`CONTACT_PHONE` is still empty**, which hides the telephone line rather than
   printing a placeholder. A good half of mosque committees will ring rather than
   write, so this is worth filling.
-- **The form Worker is PARKED, and the decision behind it was reversed on
-  4 October 2026.** The code in `worker/` is written, tested and dry-run clean.
-  It is not deployed and should not be, yet.
+- **The form Worker now sends through Resend, and is ready to deploy.** Changed
+  4 October 2026, replacing the "parked" entry that preceded it.
 
-  **Why it was parked.** Two facts were established the day the email went live,
-  neither of which was known when the Worker was written:
+  **Why it is no longer Cloudflare Email.** Two facts, both checked against
+  Cloudflare's own documentation rather than inferred:
+  Email Service states *"You must be using Cloudflare DNS to use Email
+  Service"*, and `masjidone.co.uk` is entirely on One.com — domain, DNS and
+  mail. Moving the DNS would cost **One.com's automatic DKIM**, which works
+  today by itself. On top of that, outbound Email Sending reads **"Not
+  available"** on the Workers Free plan, and Email Routing — the free
+  alternative — **replaces the root MX** and stops the mailboxes receiving.
+  A paid plan plus a DNS migration plus losing working DKIM, for a contact
+  form. The parking decision was right; the conclusion drawn from it, that
+  nothing could be done until the site had traffic, was not.
 
-  1. **It is not free.** Sending *to* a verified destination address is free on
-     any plan — that part was right. But Cloudflare also says *"you can only
-     send from your routing domains"*, so the **sender** forces a choice:
-     enable Email Routing on `masjidone.co.uk`, which **replaces the root MX
-     records**, or onboard to Email Sending, which the dashboard gates behind
-     **Workers Paid at $5/month**.
-  2. **`masjidone.co.uk` is entirely on One.com** — domain, DNS and mail. That
-     is what makes the first option destructive rather than merely awkward, and
-     it carries a cost nobody had priced: **One.com enables DKIM automatically
-     only while the domain uses their name servers.** Moving DNS to Cloudflare
-     would lose that, replacing a thing that works by itself with two to four
-     CNAME records obtained by raising a support ticket.
+  **What it does instead.** The Worker receives the POST and hands the message
+  to **Resend's REST API** — free tier, 3,000 a month. With no email binding it
+  stays on the Workers free tier, and the DNS does not move.
 
-  So the Worker's real price is $5 a month **plus** losing automatic DKIM
-  **plus** a DNS migration that risks the mail — to replace a fallback that
-  works, for a form that has never received a submission.
+  **Resend verifies `send.masjidone.co.uk`, not the root, and that is the point.**
+  Its SPF, DKIM and bounce records live on the subdomain, so they cannot collide
+  with the root SPF or disturb the MX the One.com mailboxes depend on. Verifying
+  the root would mean editing the root SPF, and two SPF records on one name is a
+  broken configuration, not a merged one. **If any screen offers to change the
+  root MX or the root SPF, that is the wrong screen.**
 
-  **What happens instead.** `NEXT_PUBLIC_FORM_ENDPOINT` stays unset, so the form
-  hands its answers to the visitor's own mail client, prefilled and addressed to
-  `info@`. That was genuinely broken while the address was a placeholder. It is
-  not broken now — only worse, by one click, and it loses whoever will not take
-  that click.
+  **`workers_dev = true`, and it has to be.** The old custom route on
+  `forms.masjidone.co.uk` needed the zone on Cloudflare DNS. It is not, so the
+  Worker answers on its free `workers.dev` hostname.
 
-  **When to revisit.** When the site has enough traffic that the lost clicks
-  outweigh the cost and the migration. Not before. Nothing is wasted in the
-  meantime: `wrangler.toml` already carries the real addresses and
-  `npx wrangler deploy --dry-run` passes, so deploying is one command on the day
-  it is worth doing. `worker/README.md` has the full reasoning and the steps.
+  **Still needed, and only a person can do them:** a Resend account with the
+  subdomain verified, `wrangler secret put RESEND_API_KEY`, one
+  `wrangler deploy`, and the repository variable `NEXT_PUBLIC_FORM_ENDPOINT` set
+  to the printed hostname plus `/demo-request`. `worker/README.md` has the
+  steps and the local test results.
 
-  **If it is ever revisited, two things must not be got wrong.** Email
-  **Routing** and Email **Sending** are different products that share a
-  dashboard section; Routing takes the root MX and Sending only touches the
-  `cf-bounce` subdomain. And the privacy notice switches itself —
-  `app/privacy/page.tsx` reads `FORM_ENDPOINT` and prints the mailto wording or
-  the Worker wording accordingly, so **do not replace that conditional with
-  whichever branch happens to be true today.**
+  **The API key is a credential.** It goes in `wrangler secret put` and nowhere
+  else — not in `wrangler.toml`, not in a commit, not in a chat message. This
+  repository is public and git history is permanent; a key committed once is
+  burned and must be rolled in Resend.
+
+  **Two things that must not be got wrong later.** The Worker checks
+  `response.ok` and not merely whether `fetch` threw — a 401 from a rolled key
+  arrives as a perfectly happy `Response`, and an unchecked call would tell every
+  visitor their enquiry was sent while nothing was. And the privacy notice
+  switches itself: `app/privacy/page.tsx` reads `FORM_ENDPOINT` and prints the
+  mailto wording or the Worker wording accordingly, so **do not replace that
+  conditional with whichever branch happens to be true today.**
 
 - **Email authentication is done, and needed nothing.** `masjidone.co.uk` uses
   One.com name servers, so DKIM is automatic: `ed1._domainkey` and

@@ -1,53 +1,46 @@
 # The demo-request endpoint. Deployed separately from the site, which is a
 # static export on GitHub Pages and has no server of its own.
 #
-# NOTHING SECRET BELONGS IN THIS FILE. The repository is public. The destination
-# address below is a mailbox meant to be written to, not a credential; anything
-# that is a credential goes in `wrangler secret put`, never here.
+# NOTHING SECRET BELONGS IN THIS FILE. The repository is public and git history
+# is permanent. The addresses below are mailboxes meant to be written to, not
+# credentials. The Resend API key is a credential and goes in
+# `wrangler secret put RESEND_API_KEY` — never here, not even briefly.
 name = "masjidone-forms"
 main = "src/index.js"
 compatibility_date = "2026-10-02"
-workers_dev = false
 
-# The address the form posts to. The site sets NEXT_PUBLIC_FORM_ENDPOINT to
-# exactly this plus /demo-request.
-[[routes]]
-pattern = "forms.masjidone.co.uk/*"
-zone_name = "masjidone.co.uk"
+# TRUE, AND IT HAS TO BE. This was a custom route on forms.masjidone.co.uk,
+# which needs the zone on Cloudflare DNS. It is not — masjidone.co.uk is on
+# One.com, and moving it would cost One.com's automatic DKIM. So the Worker
+# answers on its free workers.dev hostname instead:
+#
+#   https://masjidone-forms.<your-subdomain>.workers.dev/demo-request
+#
+# `wrangler deploy` prints the real hostname. That exact URL, with the path, is
+# what NEXT_PUBLIC_FORM_ENDPOINT must be set to.
+#
+# The hostname is visible to anyone reading the page source. That is fine: the
+# endpoint is meant to be posted to by strangers, it accepts nothing but this
+# one form, and it checks Origin, rate-limits per IP and holds no data.
+workers_dev = true
 
 [vars]
-# Must be on a domain onboarded to Cloudflare Email Service, or every send is
-# rejected with E_SENDER_NOT_VERIFIED. This is the From, not the reply address —
-# the enquirer's own address goes in Reply-To by the Worker.
-SEND_FROM = "forms@masjidone.co.uk"
+# The From address. Must be on the domain verified in Resend. It is a SUBDOMAIN
+# on purpose — Resend's SPF, DKIM and bounce records then live on
+# send.masjidone.co.uk and cannot collide with the root SPF record or disturb
+# the MX that the One.com mailboxes depend on.
+#
+# This is the From, not the reply address: the enquirer's own address goes in
+# reply_to, set by the Worker from the submitted form.
+SEND_FROM = "forms@send.masjidone.co.uk"
 
-# Where enquiries land. MUST BE THE SAME ADDRESS as destination_address below.
+# Where enquiries land. A real mailbox at One.com, and the same address as
+# CONTACT_EMAIL in lib/site.ts — so there is nothing here that was not already
+# printed on the website.
 #
-# Both exist because they do different jobs: this one is what the Worker asks
-# for, that one is what Cloudflare will permit. The documentation says the Worker
-# can omit `to` and the binding's address will be used — it cannot; the runtime
-# throws. Verified by running it.
-SEND_TO = "info@masjidone.co.uk"  # placeholder; see README step 1
-
-# Pinned to ONE destination, for two reasons that both matter:
-#   1. Sending to a verified destination address on your own account is free on
-#      every plan and does not count against the monthly quota. Sending anywhere
-#      else needs the Workers Paid plan and is metered.
-#   2. A bug in the Worker cannot mail a third party, because the address is not
-#      in the Worker's reach at all.
-# REPLACE the address below with the one you verify in Email Routing, then
-# deploy. It must be verified first or the binding will not send to it.
-#
-# USE A MASJIDONE ADDRESS, NOT A PERSONAL ONE. This file is in a public
-# repository and git history is permanent. It should be the same address as
-# CONTACT_EMAIL in lib/site.ts — the one already meant to be printed on the
-# website — so there is nothing here that was not going to be public anyway.
-#
-# This is the hard stop: whatever the Worker asks for, Cloudflare will only
-# deliver to this address. Keep it identical to SEND_TO above.
-[[send_email]]
-name = "EMAIL"
-destination_address = "info@masjidone.co.uk"
+# USE A MASJIDONE ADDRESS, NOT A PERSONAL ONE. Public repository, permanent
+# history.
+SEND_TO = "info@masjidone.co.uk"
 
 # 5 submissions per minute per IP. Generous for a person filling in one form,
 # useless to anybody trying to flood the inbox. Nothing to create first — the

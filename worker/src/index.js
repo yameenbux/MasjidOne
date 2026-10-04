@@ -9,14 +9,31 @@
  * we would have to name. The privacy notice says exactly that, and it is only
  * true for as long as this stays the endpoint.
  *
- * WHAT IT COSTS. Nothing, and that is a documented property rather than a
- * hopeful one: Cloudflare charges for outbound email to arbitrary recipients,
- * but sending to a VERIFIED DESTINATION ADDRESS on your own account is free on
- * every plan and does not touch the monthly quota. A contact form sends to one
- * address — ours. So the send_email binding below is pinned to that single
- * destination with `destination_address`, which both keeps it free and means a
- * mistake in this file cannot mail anybody else. Do not widen it to
- * `allowed_destination_addresses` without knowing you have changed the bill.
+ * WHAT IT COSTS, AND WHY IT IS NOT CLOUDFLARE EMAIL. This used to send through
+ * Cloudflare's own send_email binding. That is now unreachable, for a reason
+ * worth writing down so nobody tries it again: Cloudflare's docs say plainly
+ * "You must be using Cloudflare DNS to use Email Service", and masjidone.co.uk
+ * is entirely on One.com — domain, DNS and mail. Moving the DNS to Cloudflare
+ * would cost One.com's automatic DKIM, which works today by itself. On top of
+ * that, outbound Email Sending reads "Not available" on the Workers Free plan.
+ *
+ * So the Worker hands the message to Resend's REST API instead. Free tier,
+ * 3,000 a month and 100 a day, which a contact form will not come near. The
+ * Worker itself stays on the Workers free tier because it is now only HTTP —
+ * no email binding, no paid plan.
+ *
+ * THE SENDING DOMAIN IS A SUBDOMAIN, DELIBERATELY. Resend verifies
+ * send.masjidone.co.uk, not the root, and that is the whole safety property:
+ * its SPF, DKIM and bounce records live on the subdomain, so they cannot
+ * collide with the root SPF record or disturb the MX that One.com's mailboxes
+ * depend on. Verifying the root would mean editing the root SPF, and two SPF
+ * records on one name is a broken configuration, not a merged one.
+ *
+ * NOBODY ELSE KEEPS A COPY. This was the point of not using Formspree, and it
+ * survives the change: Resend is a transmitter, not a dashboard somebody else
+ * reads your enquiries out of. It is still a processor and the privacy notice
+ * still names it — that part was never avoidable — but the enquiry lands in
+ * our mailbox and lives there.
  *
  * THE ENQUIRER'S ADDRESS GOES IN Reply-To, NEVER IN From. From must stay on our
  * own verified domain or the send is rejected (E_SENDER_NOT_VERIFIED), and
@@ -188,28 +205,53 @@ export default {
       values.town ? `, ${values.town}` : ""
     }`.slice(0, 160);
 
+    /* AbortSignal, because a Worker has no implicit fetch timeout: without it
+       a hung API call holds the request until the Worker's own wall clock
+       kills it, and the visitor watches a spinner for the whole of it. Ten
+       seconds is far longer than this call has ever needed. */
+    let response;
     try {
-      await env.EMAIL.send({
-        from: { email: env.SEND_FROM, name: "MasjidOne website" },
-        /* PASSED EXPLICITLY, and it has to be. Cloudflare's send-bindings
-           documentation says that calling send() with `to` null or undefined
-           uses the binding's configured destination_address. It does not: the
-           runtime reads `.email` off whatever you pass and throws a TypeError
-           when that is undefined. Found by running it, not by reading it.
-
-           So SEND_TO carries the address and destination_address in
-           wrangler.toml must hold the SAME one — the var is what we ask for,
-           the binding is what Cloudflare will permit. Neither comes from the
-           request, so nothing a visitor types can redirect the mail. */
-        to: env.SEND_TO,
-        replyTo: { email: values.email, name: values.name },
-        subject,
-        text: [...lines, ...meta].join("\n"),
+      response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          /* A SECRET. Set with `wrangler secret put RESEND_API_KEY`, never in
+             wrangler.toml — this repository is public and git history is
+             permanent. If it is ever committed, roll it in Resend; deleting
+             the commit does not unpublish it. */
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        signal: AbortSignal.timeout(10_000),
+        body: JSON.stringify({
+          from: `MasjidOne website <${env.SEND_FROM}>`,
+          /* Neither address comes from the request, so nothing a visitor types
+             can redirect the mail. The enquirer's own address goes in reply_to
+             and nowhere else — putting it in `from` would be spoofing a domain
+             we do not control, which fails Resend's own checks and burns
+             sender reputation besides. Hitting Reply still reaches them. */
+          to: [env.SEND_TO],
+          reply_to: values.email,
+          subject,
+          text: [...lines, ...meta].join("\n"),
+        }),
       });
     } catch (error) {
-      /* The code and message, never the enquiry — Workers logs are not where a
-         committee's details should end up. */
-      console.error("send failed", error?.code, error?.message);
+      /* The code, never the enquiry — Workers logs are not where a committee's
+         details should end up. */
+      console.error("send threw", error?.name, error?.message);
+      return json(
+        { ok: false, error: "That did not send. Please email us directly." },
+        502,
+        origin,
+      );
+    }
+
+    /* fetch only rejects on a network failure. A 401 from a rolled key or a
+       422 from an unverified domain arrives as a perfectly happy Response, so
+       an unchecked call here would tell every visitor their enquiry was sent
+       while nothing was. */
+    if (!response.ok) {
+      console.error("send failed", response.status);
       return json(
         { ok: false, error: "That did not send. Please email us directly." },
         502,
