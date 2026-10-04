@@ -127,8 +127,16 @@ export function DemoChooser({
               /* Rendered, not photographed. role=img with the same label the
                  picture carried, so a screen reader hears one description
                  rather than reading out a whole timetable it cannot act on. */
-              <span className="pchoose__live" role="img" aria-label={o.alt}>
-                {o.preview}
+              /* Wrapped in a television. The madrasah half is a photograph of
+                 a laptop; without a frame the congregation half read as a
+                 panel pasted on the page rather than a thing on a wall — and
+                 a wall screen is exactly what it is. The frame is drawn in
+                 CSS rather than photographed so the timetable inside stays
+                 live. */
+              <span className="pchoose__tv">
+                <span className="pchoose__live" role="img" aria-label={o.alt}>
+                  {o.preview}
+                </span>
               </span>
             ) : o.img ? (
               /* eslint-disable-next-line @next/next/no-img-element */
