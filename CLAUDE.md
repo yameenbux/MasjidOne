@@ -356,10 +356,13 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   `CONTACT_READY` derives from `CONTACT_EMAIL`, so the contact line, the privacy
   policy's subject-access route and the terms' contact section all switched on
   together.
-  **`PRIVACY_EMAIL` aliases `CONTACT_EMAIL` and should be split before the first
-  invoice.** A subject access request carries a one-month statutory deadline and
-  should not queue behind demo enquiries. When a `privacy@` mailbox exists it is
-  a one-line change in `lib/site.ts`; nothing else needs touching.
+  **`PRIVACY_EMAIL` is `privacy@masjidone.co.uk`**, split out the same day. It
+  forwards to `info@` at the mail host, so nothing is read in two places, but
+  the legal pages name their own address — which means routing, filtering or
+  handing subject access requests to somebody else happens at the host and no
+  page changes. Seven aliases forward to `info@`: accounts, billing, contacts,
+  enquiries, forms, hello, privacy. **`forms@` is the one that is load-bearing**
+  — the Worker sends from it, and without the forward its bounces would vanish.
   **`CONTACT_PHONE` is still empty**, which hides the telephone line rather than
   printing a placeholder. A good half of mosque committees will ring rather than
   write, so this is worth filling.

@@ -45,15 +45,17 @@ export const CONTACT_EMAIL = "info@masjidone.co.uk";
 export const SUPPORT_EMAIL = "support@masjidone.co.uk";
 
 /**
- * Where a subject access request goes.
+ * Where a subject access request goes. Split from CONTACT_EMAIL on 4 October
+ * 2026, the day the alias was created.
  *
- * It aliases CONTACT_EMAIL today because there is no separate mailbox yet, and
- * it exists as its own constant so that the day there is one, this is a
- * one-line change rather than a hunt through the legal pages. Worth splitting
- * before the first invoice: a request under UK GDPR carries a one-month
- * statutory deadline and should not be sitting behind demo enquiries.
+ * It forwards to the general inbox today, so nothing is read in two places —
+ * but the legal pages name their own address, which means the day a request
+ * needs routing, filtering or handing to somebody else, that happens at the
+ * mail host and no page changes. A request under UK GDPR carries a one-month
+ * statutory deadline; it should be separable from demo enquiries by then,
+ * not after.
  */
-export const PRIVACY_EMAIL = CONTACT_EMAIL;
+export const PRIVACY_EMAIL = "privacy@masjidone.co.uk";
 
 /**
  * The phone number on the contact page. Mosque committees ring rather than
