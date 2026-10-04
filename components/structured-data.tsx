@@ -111,6 +111,13 @@ export function StructuredData() {
           availability: "https://schema.org/InStock",
           eligibleRegion: { "@type": "Country", name: "United Kingdom" },
         },
+        /* MasjidOne Safe (£25) is DELIBERATELY ABSENT, and leaving it out is
+           the honest choice rather than an oversight. Every offer here carries
+           availability: InStock, and Safe is not — it does not exist and
+           cannot be bought until the launch date in MARTYNS_LAW. Publishing it
+           would tell a crawler the range starts at 25 and that the thing is
+           available now, which is two claims we cannot support. Add it on the
+           day it ships, not before. */
         {
           "@type": "Offer",
           name: "Setup and migration",

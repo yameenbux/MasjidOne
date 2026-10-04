@@ -60,19 +60,46 @@ const MAX_BODY = 32 * 1024;
  * so the mailto: fallback and the posted version read identically — somebody
  * comparing the two should not have to work out whether they are the same form.
  */
-const FIELDS = [
-  ["masjid", "Masjid", 120],
-  ["town", "Town", 80],
-  ["name", "Contact", 120],
-  ["role", "Role", 80],
-  ["email", "Email", 160],
-  ["phone", "Phone", 40],
-  ["interest", "Interested in", 120],
-  ["pupils", "Pupils", 40],
-  ["timing", "Timing", 120],
-  ["message", "Notes", 4000],
-];
+/* One entry per form this endpoint serves. Adding a form means adding a route
+   here and nothing else — the validation, the honeypot, the rate limit, the
+   size ceiling and the send are shared, so a second form cannot quietly end up
+   with weaker defences than the first. */
+const FORMS = {
+  "/demo-request": {
+    subject: (v) => `Demo request — ${v.masjid}${v.town ? `, ${v.town}` : ""}`,
+    fields: [
+      ["masjid", "Masjid", 120],
+      ["town", "Town", 80],
+      ["name", "Contact", 120],
+      ["role", "Role", 80],
+      ["email", "Email", 160],
+      ["phone", "Phone", 40],
+      ["interest", "Interested in", 120],
+      ["pupils", "Pupils", 40],
+      ["timing", "Timing", 120],
+      ["message", "Notes", 4000],
+    ],
+  },
+  /* Martyn's Law register of interest. Shorter, and with NO free-text field at
+     all — not an oversight. The page tells a committee not to describe their
+     building, its exits or its weaknesses, and the surest way to honour that
+     is to give them nowhere to type it. A notes box here would collect exactly
+     the material that belongs in a protection plan, in an email inbox. */
+  "/martyns-law-interest": {
+    subject: (v) => `Martyn's Law interest — ${v.masjid}${v.town ? `, ${v.town}` : ""}`,
+    fields: [
+      ["masjid", "Masjid", 120],
+      ["town", "Town", 80],
+      ["name", "Contact", 120],
+      ["role", "Role", 80],
+      ["email", "Email", 160],
+      ["phone", "Phone", 40],
+      ["peak", "Peak attendance", 40],
+    ],
+  },
+};
 
+/* Deliberately loose.
 /* Deliberately loose. This is a form, not a registration system: the cost of
    rejecting a real committee's unusual address is a lost sale, and the cost of
    accepting a junk one is a line in an email we were going to read anyway. */
@@ -109,7 +136,8 @@ export default {
     if (request.method !== "POST") {
       return json({ ok: false, error: "Method not allowed" }, 405, origin);
     }
-    if (url.pathname !== "/demo-request") {
+    const form_spec = Object.hasOwn(FORMS, url.pathname) ? FORMS[url.pathname] : null;
+    if (!form_spec) {
       return json({ ok: false, error: "Not found" }, 404, origin);
     }
 
@@ -166,19 +194,24 @@ export default {
     }
 
     const values = {};
-    for (const [key, , cap] of FIELDS) {
+    for (const [key, , cap] of form_spec.fields) {
       values[key] = String(form.get(key) ?? "")
         .replace(/\s+/g, " ")
         .trim()
         .slice(0, cap);
     }
     /* The textarea is the one field where line breaks carry meaning, so it is
-       collapsed separately — runs of blank lines out, newlines kept. */
-    values.message = String(form.get("message") ?? "")
-      .replace(/\r\n/g, "\n")
-      .replace(/\n{3,}/g, "\n\n")
-      .trim()
-      .slice(0, 4000);
+       collapsed separately — runs of blank lines out, newlines kept.
+       Only for forms that declare it: the Martyn's Law form has no free-text
+       field on purpose, and re-reading one here would accept the very thing
+       that form refuses to ask for. */
+    if (form_spec.fields.some(([key]) => key === "message")) {
+      values.message = String(form.get("message") ?? "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim()
+        .slice(0, 4000);
+    }
 
     if (!values.masjid || !values.name || !looksLikeEmail(values.email)) {
       return json(
@@ -188,7 +221,7 @@ export default {
       );
     }
 
-    const lines = FIELDS.map(([key, label]) =>
+    const lines = form_spec.fields.map(([key, label]) =>
       values[key] ? `${label}: ${values[key]}` : null,
     ).filter(Boolean);
 
@@ -201,9 +234,7 @@ export default {
       `Country: ${request.headers.get("CF-IPCountry") ?? "unknown"}`,
     ];
 
-    const subject = `Demo request — ${values.masjid}${
-      values.town ? `, ${values.town}` : ""
-    }`.slice(0, 160);
+    const subject = form_spec.subject(values).slice(0, 160);
 
     /* AbortSignal, because a Worker has no implicit fetch timeout: without it
        a hung API call holds the request until the Worker's own wall clock

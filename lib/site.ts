@@ -91,6 +91,48 @@ export const CONTACT_READY = !CONTACT_EMAIL.endsWith("@masjidone.example");
  */
 export const FORM_ENDPOINT = process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "";
 
+/**
+ * Where the Martyn's Law interest form posts. Derived from FORM_ENDPOINT so
+ * there is one repository variable to set rather than two that can disagree —
+ * the same Worker answers both paths.
+ *
+ * Falsy until the Worker is deployed, exactly like FORM_ENDPOINT, and the form
+ * reads it the same way: empty means hand the answers to the visitor's own
+ * mail client instead.
+ */
+export const INTEREST_ENDPOINT = FORM_ENDPOINT
+  ? FORM_ENDPOINT.replace(/\/demo-request\/?$/, "") + "/martyns-law-interest"
+  : "";
+
+/**
+ * Martyn's Law — the Terrorism (Protection of Premises) Act 2025.
+ *
+ * THE FIGURES AND DATES LIVE HERE AND NOWHERE ELSE, for the same reason the
+ * pricing bands do: a number typed into prose is one the compiler cannot
+ * check, and this page carries both a price and a commencement date that will
+ * move. Grep for the £ sign after changing anything here.
+ *
+ * NOTHING IN THIS MODULE IS BUILT YET. The page says so in those words, the
+ * pricing line is dated rather than present tense, and the plan below is NOT
+ * in PRICING_BANDS — it must not reach the pricing cards or the structured
+ * data as though a masjid could buy it today.
+ */
+export const MARTYNS_LAW = {
+  /** Standalone plan, decided 4 October 2026. Monthly, like the others. */
+  price: 25,
+  /** When the tools are expected to be usable. Not when the law lands. */
+  launch: "February 2027",
+  /**
+   * The Act had Royal Assent on 3 April 2025 with an implementation period the
+   * Home Office has said will be AT LEAST 24 months. So this is an
+   * expectation, not a date in the Act, and the copy must keep the hedge —
+   * "expected in 2027", never "from April 2027".
+   */
+  expectedInForce: "2027",
+  /** Standard tier applies where at least this many people may be present. */
+  standardTierFrom: 200,
+} as const;
+
 /** The single destination for every "Request a demo" on the site. */
 export const DEMO_HREF = "/request-a-demo/";
 

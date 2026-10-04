@@ -34,6 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_ORIGIN}/`, lastModified, changeFrequency: "monthly", priority: 1 },
     /* The one conversion on the site, so it outranks the module pages. */
     { url: `${SITE_ORIGIN}/request-a-demo/`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    /* Listed separately rather than in MODULES, because it is not a module
+       page: it has its own form and nothing it describes is built yet. Ranked
+       with the demo page rather than below it — a committee searching
+       "Martyn's Law mosque" is the warmest search this site can catch, and
+       this is the page that answers it. */
+    { url: `${SITE_ORIGIN}/martyns-law/`, lastModified, changeFrequency: "monthly", priority: 0.9 },
     ...MODULES.map((slug) => ({
       url: `${SITE_ORIGIN}/${slug}/`,
       lastModified,

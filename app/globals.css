@@ -3604,3 +3604,78 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .pband__table tr.is-on{ background:var(--paper-2); }
 .pband__table tr.is-on td, .pband__table tr.is-on th{ color:var(--ink); font-weight:600; }
 .pband__setup th, .pband__setup td{ color:var(--ink-2); }
+
+/* ---------------------------------------------------------------------------
+   Martyn's Law page and the pricing banner that points at it.
+
+   Plain type, hairline rules, left aligned — the house style, not the pricing
+   block's centred cards. The banner in particular must NOT look like a third
+   plan: it sits under the band table at footnote weight, because what it
+   advertises cannot be bought yet.
+   --------------------------------------------------------------------------- */
+
+.mlist { margin: 0 0 1.4rem; padding: 0; list-style: none; }
+.mlist > li {
+  padding: .7rem 0 .7rem 1.1rem;
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+.mlist > li:last-child { border-bottom: 1px solid var(--rule); }
+.mlist > li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 1.25rem;
+  width: .4rem; height: 1px;
+  background: var(--brass);
+}
+
+.mlsteps { margin: 0 0 1.4rem; padding-left: 1.3rem; }
+.mlsteps > li { padding: .35rem 0; }
+
+/* The "none of this is built yet" paragraph. Marked, because it is the most
+   important sentence on the page and the one a skimmer must not miss. */
+.mlnote {
+  border-left: 3px solid var(--brass);
+  padding: .8rem 0 .8rem 1rem;
+  margin: 1.4rem 0;
+  background: var(--paper-2);
+}
+
+.mldisclaim {
+  margin-top: 2.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: .95rem;
+  color: var(--ink-2);
+}
+
+.plawban {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .4rem 1.2rem;
+  margin: 1.6rem auto 0;
+  max-width: 54rem;
+  padding: .9rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+.plawban__p { margin: 0; font-size: .95rem; color: var(--ink-2); }
+.plawban__p strong { color: var(--ink); }
+/* Brass plus a hairline underline, which is how this site signals a link in
+   running text (see .cta dd a). Without it the link read as plain body copy in
+   the first render and nobody would have clicked it. */
+.plawban__a {
+  font-size: .95rem;
+  white-space: nowrap;
+  color: var(--brass);
+  text-decoration: none;
+  box-shadow: inset 0 -1px 0 0 var(--brass);
+  transition: box-shadow .2s ease;
+}
+.plawban__a:hover { box-shadow: inset 0 -2px 0 0 var(--brass); }
+
+/* At 360px the two halves stack rather than squeezing the link onto one word. */
+@media (max-width: 30rem) {
+  .plawban { gap: .5rem; }
+  .plawban__a { white-space: normal; }
+}
