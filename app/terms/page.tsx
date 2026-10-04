@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
+import { SUPPORT_EMAIL } from "@/lib/site";
 import { BAND_RANGE, BASE_PATH, CONTACT_READY, PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -145,8 +146,16 @@ export default function TermsPage() {
 
       <h2>5. Contact</h2>
       <p>
+        {/* Two addresses, not one, because the two people writing to them want
+            different things on different clocks: a committee weighing you up,
+            and a masjid whose register will not submit this evening. */}
         {CONTACT_READY ? (
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          <>
+            Enquiries and anything about this site:{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.<br />
+            If your masjid already uses MasjidOne and something is wrong:{" "}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+          </>
         ) : (
           <a href={`${BASE_PATH}/request-a-demo/`}>our contact form</a>
         )}

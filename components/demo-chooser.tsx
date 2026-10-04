@@ -155,11 +155,12 @@ export function DemoChooser({
             ))}
           </p>
         ) : null}
-        {/* This pointed at a mailto: aimed at CONTACT_EMAIL, which is still
-            the placeholder address — so the one control on the demo meant for
-            a committee that is stuck opened an empty mail window addressed to
-            nowhere. It goes to a real screen now, carrying the masjid's name
-            so the ticket knows whose system it is about. */}
+        {/* This once pointed at a mailto: aimed at a placeholder address, so
+            the one control on the demo meant for a committee that is stuck
+            opened an empty mail window addressed to nowhere. It goes to a real
+            screen now, carrying the masjid's name so the ticket knows whose
+            system it is about — which an email could not do even once the
+            address was real. */}
         <p className="pick__help">
           Having issues?{" "}
           <a href={`ticket/?masjid=${encodeURIComponent(masjidName)}`}>

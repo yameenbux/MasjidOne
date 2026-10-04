@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
+import { LegalPage, PRIVACY_EMAIL } from "@/components/legal-page";
 import { BASE_PATH, CONTACT_READY, FORM_ENDPOINT } from "@/lib/site";
 import { openGraphFor } from "@/lib/site";
 
@@ -12,12 +12,19 @@ export const metadata: Metadata = {
 };
 
 /**
- * A working draft, not settled law. Two things must be true before this is
- * shown to a masjid that is being invoiced:
+ * A working draft, not settled law.
  *
- *  1. CONTACT_EMAIL is still a placeholder. A privacy notice without a working
- *     route for a subject access request is not a privacy notice.
- *  2. A solicitor has read it. This covers the website honestly, but the
+ * ONE THING WAS FIXED on 4 October 2026: CONTACT_EMAIL was a placeholder, and a
+ * privacy notice with no working route for a subject access request is not a
+ * privacy notice. Requests now reach PRIVACY_EMAIL, which aliases the general
+ * inbox until a separate mailbox exists — worth splitting before the first
+ * invoice, because the statutory deadline is one month and it should not sit
+ * behind demo enquiries.
+ *
+ * ONE THING IS STILL OUTSTANDING before this is shown to a masjid being
+ * invoiced:
+ *
+ *  1. A solicitor has read it. This covers the website honestly, but the
  *     platform processes children's attendance data, which is where the real
  *     obligations sit.
  *
@@ -153,7 +160,7 @@ export default function PrivacyPage() {
         Under UK GDPR you can ask for a copy of any personal data we hold about
         you, ask us to correct or delete it, or object to how we use it. Write to{" "}
         {CONTACT_READY ? (
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
         ) : (
           <a href={`${BASE_PATH}/request-a-demo/`}>our contact form</a>
         )} and we will

@@ -27,7 +27,7 @@ SEND_FROM = "forms@masjidone.co.uk"
 # for, that one is what Cloudflare will permit. The documentation says the Worker
 # can omit `to` and the binding's address will be used — it cannot; the runtime
 # throws. Verified by running it.
-SEND_TO = "REPLACE-ME@masjidone.co.uk"  # placeholder; see README step 1
+SEND_TO = "info@masjidone.co.uk"  # placeholder; see README step 1
 
 # Pinned to ONE destination, for two reasons that both matter:
 #   1. Sending to a verified destination address on your own account is free on
@@ -47,7 +47,7 @@ SEND_TO = "REPLACE-ME@masjidone.co.uk"  # placeholder; see README step 1
 # deliver to this address. Keep it identical to SEND_TO above.
 [[send_email]]
 name = "EMAIL"
-destination_address = "REPLACE-ME@masjidone.co.uk"
+destination_address = "info@masjidone.co.uk"
 
 # 5 submissions per minute per IP. Generous for a person filling in one form,
 # useless to anybody trying to flood the inbox. Nothing to create first — the

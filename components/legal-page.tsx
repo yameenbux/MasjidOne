@@ -11,7 +11,7 @@ import { SiteBehaviour } from "@/components/site-behaviour";
  * the one line to change — so the placeholder would have survived in whichever
  * file was not opened. The legal pages keep importing it from here.
  */
-export { CONTACT_EMAIL } from "@/lib/site";
+export { CONTACT_EMAIL, PRIVACY_EMAIL } from "@/lib/site";
 
 export function LegalPage({
   eyebrow,

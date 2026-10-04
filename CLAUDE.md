@@ -349,17 +349,28 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   re-encoded to 720p it should drop to roughly 4 MB; do not add an autoplay
   background video, which would download that weight before anyone has read
   a word.
-- **Fill in the real contact email and phone in `lib/site.ts`** — still the
-  placeholder `REPLACE-ME@masjidone.example`, and `CONTACT_PHONE` is empty.
-  This is the single highest-cost item on the site. Until it is set the demo
-  form can only hand its answers to the visitor's own mail client, aimed at an
-  address that does not exist, and the privacy and terms pages fall back to
-  linking the form rather than naming a subject-access address. Setting
-  `CONTACT_EMAIL` lights all of that up on its own — `CONTACT_READY` derives
-  from it and the conditionals are already in place.
+- **Email is live.** `info@masjidone.co.uk` and `support@masjidone.co.uk` were
+  created on 4 October 2026 and are wired in: `CONTACT_EMAIL` is `info@`,
+  `SUPPORT_EMAIL` is `support@`, and the terms page now splits enquiries from
+  customer support because the two people writing are on different clocks.
+  `CONTACT_READY` derives from `CONTACT_EMAIL`, so the contact line, the privacy
+  policy's subject-access route and the terms' contact section all switched on
+  together.
+  **`PRIVACY_EMAIL` aliases `CONTACT_EMAIL` and should be split before the first
+  invoice.** A subject access request carries a one-month statutory deadline and
+  should not queue behind demo enquiries. When a `privacy@` mailbox exists it is
+  a one-line change in `lib/site.ts`; nothing else needs touching.
+  **`CONTACT_PHONE` is still empty**, which hides the telephone line rather than
+  printing a placeholder. A good half of mosque committees will ring rather than
+  write, so this is worth filling.
 - **Where the form posts is decided: a Cloudflare Worker, in `worker/`.**
   Written and tested, not yet deployed. `worker/README.md` has the steps; it
-  needs a verified destination address, the sending domain onboarded, one
+  `wrangler.toml` now carries `info@masjidone.co.uk` as both `SEND_TO` and
+  `destination_address` — **that address must be verified in Cloudflare Email
+  Routing before the Worker will send**, which is also the condition that keeps
+  it free. `SEND_FROM` is `forms@masjidone.co.uk`, which needs to exist in Email
+  Routing as a sender but needs no mailbox; point it at `info@` as a forwarder
+  so bounces land somewhere. Still needed: the sending domain onboarded, one
   `wrangler deploy`, and the repository variable
   `NEXT_PUBLIC_FORM_ENDPOINT` set to
   `https://forms.masjidone.co.uk/demo-request`.

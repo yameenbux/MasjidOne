@@ -9,10 +9,13 @@ import { DEMO_MASJID_DEFAULT } from "@/lib/demo-data";
  * "Having issues? Log a ticket" — the screen that link now opens.
  *
  * WHY IT EXISTS. The footer of every portal screen offers to log a ticket, and
- * the offer pointed at a mailto: aimed at CONTACT_EMAIL, which is still the
- * placeholder address. So the one control on the demo meant for a committee
- * that is stuck opened an empty mail window addressed to nowhere. A support
- * promise that fails at the first click is worse than no support promise.
+ * the offer pointed at a mailto: aimed at CONTACT_EMAIL, which was then a
+ * placeholder — so the one control on the demo meant for a committee that is
+ * stuck opened an empty mail window addressed to nowhere. A support promise
+ * that fails at the first click is worse than no support promise.
+ *
+ * The address is real now (info@, and support@ for customers), and this stays a
+ * screen anyway. The reasons below are not about the address being broken.
  *
  * WHY IT IS A SCREEN AND NOT AN ADDRESS. The support console lists masajid with
  * an Enter button and, until now, no reason attached to any of them — it showed

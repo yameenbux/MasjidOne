@@ -21,10 +21,39 @@ export const SITE_ORIGIN = `${SITE_URL}${BASE_PATH}`;
 export { BASE_PATH };
 
 /**
- * The inbox a demo request lands in. STILL A PLACEHOLDER: until it is replaced,
- * the form below has nowhere to deliver and every route in is dead. One line.
+ * The inbox a demo request lands in, and the address printed wherever the site
+ * offers one. Live since 4 October 2026.
+ *
+ * `info@` rather than `hello@` or `enquiries@` because it is the convention a
+ * UK mosque committee already expects, and this is not a product that benefits
+ * from sounding like a startup.
+ *
+ * Setting this is what switches on the contact line, the privacy policy's
+ * subject-access route and the terms' contact section — all three read
+ * CONTACT_READY, which derives from it.
  */
-export const CONTACT_EMAIL = "REPLACE-ME@masjidone.example";
+export const CONTACT_EMAIL = "info@masjidone.co.uk";
+
+/**
+ * Where a masjid that is already a customer goes when something is wrong.
+ *
+ * Separate from CONTACT_EMAIL from the first day, which costs nothing now and
+ * saves changing every document later: when support becomes somebody else's
+ * job it becomes their mailbox, and no contract, leaflet or screen has to
+ * change to follow it.
+ */
+export const SUPPORT_EMAIL = "support@masjidone.co.uk";
+
+/**
+ * Where a subject access request goes.
+ *
+ * It aliases CONTACT_EMAIL today because there is no separate mailbox yet, and
+ * it exists as its own constant so that the day there is one, this is a
+ * one-line change rather than a hunt through the legal pages. Worth splitting
+ * before the first invoice: a request under UK GDPR carries a one-month
+ * statutory deadline and should not be sitting behind demo enquiries.
+ */
+export const PRIVACY_EMAIL = CONTACT_EMAIL;
 
 /**
  * The phone number on the contact page. Mosque committees ring rather than
