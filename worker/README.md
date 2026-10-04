@@ -1,3 +1,20 @@
+> # PARKED — do not deploy this yet
+>
+> **Reversed on 4 October 2026.** `masjidone.co.uk` is entirely on One.com —
+> domain, DNS and mail — and One.com enables DKIM automatically *only while the
+> domain uses their name servers*. Deploying this needs either Email Routing,
+> which replaces the root MX and breaks every mailbox, or Email Sending at
+> **$5/month**, which needs the DNS moved to Cloudflare and so costs the
+> automatic DKIM as well.
+>
+> That is $5 a month plus losing working DKIM plus a migration that risks the
+> mail, to replace a fallback that works, for a form that has never received a
+> submission. **Revisit when the site has traffic enough to justify it.**
+>
+> Nothing here is wasted: `wrangler.toml` carries the real addresses and
+> `npx wrangler deploy --dry-run` passes, so this is one command on the day it
+> is worth doing. Everything below stays accurate for that day.
+
 # The form endpoint
 
 The website is a static export on GitHub Pages and has no server. This is the

@@ -366,40 +366,59 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   **`CONTACT_PHONE` is still empty**, which hides the telephone line rather than
   printing a placeholder. A good half of mosque committees will ring rather than
   write, so this is worth filling.
-- **Where the form posts is decided: a Cloudflare Worker, in `worker/`.**
-  Written and tested, not yet deployed. `worker/README.md` has the steps; it
-  `wrangler.toml` now carries `info@masjidone.co.uk` as both `SEND_TO` and
-  `destination_address` — **that address must be verified in Cloudflare Email
-  Routing before the Worker will send**, which is also the condition that keeps
-  it free. `SEND_FROM` is `forms@masjidone.co.uk`, which needs to exist in Email
-  Routing as a sender but needs no mailbox; point it at `info@` as a forwarder
-  so bounces land somewhere. Still needed: the sending domain onboarded, one
-  `wrangler deploy`, and the repository variable
-  `NEXT_PUBLIC_FORM_ENDPOINT` set to
-  `https://forms.masjidone.co.uk/demo-request`.
-  Two things about it that are easy to get wrong later:
-  **IT IS NOT FREE — that claim was wrong and was corrected on 4 October 2026.**
-  Sending *to* a verified destination address is free on any plan, which is true
-  and is why the binding is pinned with `destination_address`. But Cloudflare
-  also says *"you can only send from your routing domains"*, so the **sender**
-  address forces a choice: enable Email Routing on `masjidone.co.uk` (free, and
-  it **replaces the root MX records**, breaking the mailboxes bought on
-  4 October), or onboard the domain to Email Sending, which the dashboard gates
-  behind **Workers Paid at $5/month** and which only touches the `cf-bounce`
-  subdomain. There is no free path that leaves the email working. See
-  `worker/README.md`.
-  Because Workers Paid includes 3,000 outbound emails a month, the old warning
-  that emailing the enquirer would "leave the free case" no longer applies — it
-  is a decision rather than a cost cliff.
-  **The privacy notice switches itself.** `app/privacy/page.tsx` reads
-  `FORM_ENDPOINT` and prints the mailto wording or the Worker wording
-  accordingly, so the copy cannot be left describing the old behaviour. Do not
-  replace that conditional with whichever branch happens to be true today.
-  Note two corrections to the earlier brief. **Cloudflare Pages Functions are
-  not available**, because the site is served by GitHub Pages. And a Worker
-  does *not* mean "no processor in the policy" — Cloudflare carries the
-  submission and is a processor, named in the notice. What it avoids is a form
-  company keeping its own copy of every enquiry.
+- **The form Worker is PARKED, and the decision behind it was reversed on
+  4 October 2026.** The code in `worker/` is written, tested and dry-run clean.
+  It is not deployed and should not be, yet.
+
+  **Why it was parked.** Two facts were established the day the email went live,
+  neither of which was known when the Worker was written:
+
+  1. **It is not free.** Sending *to* a verified destination address is free on
+     any plan — that part was right. But Cloudflare also says *"you can only
+     send from your routing domains"*, so the **sender** forces a choice:
+     enable Email Routing on `masjidone.co.uk`, which **replaces the root MX
+     records**, or onboard to Email Sending, which the dashboard gates behind
+     **Workers Paid at $5/month**.
+  2. **`masjidone.co.uk` is entirely on One.com** — domain, DNS and mail. That
+     is what makes the first option destructive rather than merely awkward, and
+     it carries a cost nobody had priced: **One.com enables DKIM automatically
+     only while the domain uses their name servers.** Moving DNS to Cloudflare
+     would lose that, replacing a thing that works by itself with two to four
+     CNAME records obtained by raising a support ticket.
+
+  So the Worker's real price is $5 a month **plus** losing automatic DKIM
+  **plus** a DNS migration that risks the mail — to replace a fallback that
+  works, for a form that has never received a submission.
+
+  **What happens instead.** `NEXT_PUBLIC_FORM_ENDPOINT` stays unset, so the form
+  hands its answers to the visitor's own mail client, prefilled and addressed to
+  `info@`. That was genuinely broken while the address was a placeholder. It is
+  not broken now — only worse, by one click, and it loses whoever will not take
+  that click.
+
+  **When to revisit.** When the site has enough traffic that the lost clicks
+  outweigh the cost and the migration. Not before. Nothing is wasted in the
+  meantime: `wrangler.toml` already carries the real addresses and
+  `npx wrangler deploy --dry-run` passes, so deploying is one command on the day
+  it is worth doing. `worker/README.md` has the full reasoning and the steps.
+
+  **If it is ever revisited, two things must not be got wrong.** Email
+  **Routing** and Email **Sending** are different products that share a
+  dashboard section; Routing takes the root MX and Sending only touches the
+  `cf-bounce` subdomain. And the privacy notice switches itself —
+  `app/privacy/page.tsx` reads `FORM_ENDPOINT` and prints the mailto wording or
+  the Worker wording accordingly, so **do not replace that conditional with
+  whichever branch happens to be true today.**
+
+- **Email authentication is done, and needed nothing.** `masjidone.co.uk` uses
+  One.com name servers, so DKIM is automatic: `ed1._domainkey` and
+  `rsa1._domainkey` are both enabled, verified in the control panel on
+  4 October 2026, alongside the MX record. SPF and DMARC are toggles in the same
+  Standard DNS settings list. There are no Cloudflare DNS records and no reason
+  to add any. The site's own records are four GitHub Pages A records plus a
+  `www` CNAME, with One.com's standard A toggles correctly off so they do not
+  compete.
+
 - **Drop the dead `masjid_theme(text)` function.** One statement —
   `DROP FUNCTION public.masjid_theme(text);` — in the Supabase SQL editor. It
   is already unreachable (EXECUTE revoked from every role, `masjids.theme` back
