@@ -91,8 +91,9 @@ export function DemoChooser({
         {/* SAID ONCE, HERE, because this is the screen that invites the wrong
             conclusion: a committee reads their own name at the top of a
             bottle-green page and reasonably assumes bottle green is what they
-            get. It is not — Taiyabah's portal is plum and gold in Fraunces,
-            nothing like this. The name is the only thing ?masjid= can swap;
+            get. It is not — a masjid's portal carries that masjid's own
+            colours and type, and looks nothing like this page. The name is
+            the only thing ?masjid= can swap;
             the palette belongs to MasjidOne and is not what a masjid receives.
 
             Worded as what it actually is. There is no theming switch: a

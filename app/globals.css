@@ -1066,6 +1066,12 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   color:var(--board-brass);
   font-size:var(--t-small); letter-spacing:.1em; text-transform:uppercase;
 }
+.powered__link{
+  display:inline-flex; align-items:center; gap:.5rem;
+  color:inherit; text-decoration:none;
+}
+.powered__link:hover{text-decoration:underline; text-underline-offset:3px}
+.powered__link:focus-visible{outline:2px solid currentColor; outline-offset:3px}
 .powered strong{font-weight:600; letter-spacing:.08em}
 .powered__mark{display:inline-flex; width:1.1rem; height:1.1rem; color:var(--board-brass)}
 .powered__mark svg{width:100%; height:100%}
@@ -1454,7 +1460,12 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
     align-items:stretch; justify-items:stretch;
   }
   .pick__head{grid-area:head}
-  .pick__foot{grid-area:foot; margin-top:0; padding:var(--s2)}
+  .pick__foot{
+    /* The halves bleed their device off the bottom edge, which put the three
+       footer lines hard against them. Gap and padding, not a smaller footer. */
+    grid-area:foot; margin-top:0; gap:var(--s2);
+    padding:var(--s3) var(--s2) var(--s3);
+  }
 
   .pchoose{
     /* Centred as a group, not space-between: on a tall viewport space-between
@@ -1463,7 +1474,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
     display:flex; flex-direction:column; align-items:flex-start;
     justify-content:center; gap:var(--s3);
     width:auto; max-width:none;
-    padding:var(--s4) var(--s3) 0;
+    padding:var(--s3) var(--s3) 0;
     border:0; overflow:hidden; text-align:left;
     transition:background-color .3s ease;
   }
@@ -1491,7 +1502,7 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
     margin-bottom:calc(var(--s4) * -1);
   }
   .pchoose__shot img{
-    height:min(30vh,14rem); object-position:center bottom;
+    height:min(25vh,11.5rem); object-position:center bottom;
     transition:transform .4s cubic-bezier(.2,1,.3,1);
   }
   .pchoose:hover .pchoose__shot img,
@@ -2323,7 +2334,9 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   transition:transform .4s cubic-bezier(.2,1,.3,1);
 }
 @media (min-width:64em){
-  .pchoose__live{height:min(30vh,14rem); margin-bottom:calc(var(--s4) * -1)}
+  /* Matched to .pchoose__shot img. The two halves sit side by side, so if
+     only one of them shrinks the pair stops reading as a pair. */
+  .pchoose__live{height:min(25vh,11.5rem); margin-bottom:calc(var(--s4) * -1)}
   .pchoose:hover .pchoose__live,
   .pchoose:focus-visible .pchoose__live{transform:scale(1.04)}
 }
@@ -3484,8 +3497,11 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    assumption, not a selling line, and it sits under the question rather than
    competing with the masjid's name above it. */
 .pick__brand{
-  margin:var(--s2) 0 0; max-width:34rem; color:var(--board-ink-2);
-  font-size:var(--t-small); line-height:1.6;
+  /* `auto` on the sides, not 0: the heading above is centred and this sat hard
+     left under it. Wider too — at 34rem the sentence broke over three lines and
+     read as a warning notice rather than an aside. */
+  margin:var(--s2) auto 0; max-width:52rem; color:var(--board-ink-2);
+  font-size:var(--t-small); line-height:1.55; text-align:center;
 }
 
 /* ---- A masjid's live page, framed, on the support console --------------- */

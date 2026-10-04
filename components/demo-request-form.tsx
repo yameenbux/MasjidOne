@@ -186,7 +186,7 @@ export function DemoRequestForm({ idPrefix = "dr" }: { idPrefix?: string }) {
             Masjid <abbr title="required">*</abbr>
           </label>
           <input id={id("masjid")} name="masjid" type="text" required
-            autoComplete="organization" placeholder="Taiyabah Masjid" />
+            autoComplete="organization" placeholder="Your masjid&apos;s name" />
         </p>
 
         <p className="cform__field">

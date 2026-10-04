@@ -216,16 +216,19 @@ export default function DemoPage() {
             /* A COLOUR PICKER WAS HERE BRIEFLY AND WAS WRONG. Offering a
                visitor three palettes to flick between says "one product, pick
                a skin", which is the templated thing this is not. A masjid's
-               site, app and portals are designed for that masjid — the way
-               Taiyabah's were — and what they have in common is MasjidOne
-               underneath, not a stylesheet with its variables swapped.
+               site, app and portals are designed for that masjid, and what
+               they have in common is MasjidOne underneath, not a stylesheet
+               with its variables swapped.
+
+               It does NOT name the masjid it was built for. Customers are not
+               used as illustrations without being asked, and naming one here
+               to make a design point is exactly that.
 
                So this is a sentence again, and it says the real thing. */
             <>
-              These are MasjidOne&apos;s colours. Your masjid&apos;s website,
-              app and portals are designed for your masjid — Taiyabah&apos;s
-              are plum and gold, and look nothing like this. MasjidOne is what
-              runs underneath them, not what they look like.
+              These are MasjidOne&apos;s colours, not yours. Every masjid&apos;s
+              website, app and portals are designed for that masjid. MasjidOne
+              is what runs underneath — not what it looks like.
             </>
           }
           doors={[
