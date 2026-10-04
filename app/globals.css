@@ -3542,3 +3542,44 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .lscr__note strong{color:var(--ink)}
 .lscr__cap a{color:var(--brass)}
+
+/* ===================================================================
+   PREVIEW — banded pricing selector and the full band table.
+   Uses existing tokens only, so no new entries are needed in :root,
+   the prefers-color-scheme block or [data-theme="dark"].
+   Deliberately NOT in the pricing block's centred card idiom: that is
+   the one adopted-as-supplied exception and it does not spread.
+   =================================================================== */
+.pband{ max-width:var(--wrap); margin:0 auto; padding:0 var(--s3); }
+.pband__q{ font-family:var(--f-serif,"Newsreader",Georgia,serif); font-size:var(--t-h3);
+           color:var(--ink); margin:0 0 var(--s2); }
+.pband__row{ display:flex; flex-wrap:wrap; gap:0; border-top:var(--hair) solid var(--rule);
+             border-bottom:var(--hair) solid var(--rule); }
+.pband__btn{ flex:1 1 auto; min-width:8.5rem; appearance:none; background:transparent;
+             border:0; border-right:var(--hair) solid var(--rule);
+             padding:var(--s2) var(--s2); font:inherit; font-size:var(--t-small);
+             color:var(--ink-2); cursor:pointer; text-align:left;
+             border-bottom:2px solid transparent; }
+.pband__btn:last-child{ border-right:0; }
+.pband__btn:hover{ color:var(--ink); background:var(--paper-2); }
+.pband__btn.is-on{ color:var(--ink); font-weight:600; border-bottom-color:var(--brass);
+                   background:var(--paper-2); }
+.pband__btn:focus-visible{ outline:2px solid var(--brass); outline-offset:-2px; }
+
+.pband__table{ max-width:var(--wrap); margin:var(--s4) auto 0; padding:0 var(--s3);
+               overflow-x:auto; }
+.pband__table table{ width:100%; min-width:30rem; border-collapse:collapse;
+                     font-variant-numeric:tabular-nums; }
+.pband__table caption{ text-align:left; font-size:var(--t-small); color:var(--ink-2);
+                       padding-bottom:var(--s2); }
+.pband__table th, .pband__table td{ text-align:left; padding:var(--s2) var(--s2) var(--s2) 0;
+                                    border-bottom:var(--hair) solid var(--rule);
+                                    font-size:var(--t-small); font-weight:400; }
+.pband__table thead th{ font-size:var(--t-label); letter-spacing:.12em;
+                        text-transform:uppercase; color:var(--brass); font-weight:600;
+                        border-bottom:var(--hair) solid var(--ink); }
+.pband__table tbody th{ color:var(--ink); font-weight:600; }
+.pband__table td span{ color:var(--ink-2); font-size:.8em; }
+.pband__table tr.is-on{ background:var(--paper-2); }
+.pband__table tr.is-on td, .pband__table tr.is-on th{ color:var(--ink); font-weight:600; }
+.pband__setup th, .pband__setup td{ color:var(--ink-2); }

@@ -83,6 +83,31 @@ export const PRICING = {
   currency: "GBP",
 } as const;
 
+/**
+ * PREVIEW ONLY — banded pricing, not yet adopted.
+ *
+ * A band is NOT per-pupil pricing. Per-pupil means the bill moves every time a
+ * child joins or leaves; a band means one number for the whole size range, and
+ * it only changes when the madrasah crosses a threshold at renewal. That
+ * distinction is the whole argument, because the current page sells flat
+ * pricing as a virtue ("no per-pupil maths") and a committee will test it.
+ *
+ * Levels set against the verified competitive set, 2 October 2026 — see
+ * founder/price-pressure-test-2026-10-02.md. The entry band goes DOWN, not up:
+ * a 60-pupil maktab currently pays £79 here against £15-£59 elsewhere.
+ */
+export const PRICING_BANDS = [
+  { id: "a", label: "Up to 100", short: "≤100",     madrasah: 49,  complete: 119 },
+  { id: "b", label: "101 to 250", short: "101–250", madrasah: 79,  complete: 169 },
+  { id: "c", label: "251 to 500", short: "251–500", madrasah: 119, complete: 219 },
+  { id: "d", label: "Over 500",  short: "500+",     madrasah: 159, complete: 269 },
+] as const;
+
+export type PricingBand = (typeof PRICING_BANDS)[number];
+
+/** The band a visitor sees first. The commonest UK madrasah size. */
+export const DEFAULT_BAND = "b";
+
 /** Twelve months at the same monthly rate. Not a cheaper rate — the same one. */
 export function yearlyTotal(monthlyPounds: number): number {
   return monthlyPounds * 12;

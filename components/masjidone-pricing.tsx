@@ -1,7 +1,11 @@
 "use client";
 
 import { Pricing } from "@/components/ui/pricing";
-import { DEMO_HREF, BASE_PATH, PRICING, yearlyTotal } from "@/lib/site";
+import { useState } from "react";
+import {
+  DEMO_HREF, BASE_PATH, PRICING, yearlyTotal,
+  PRICING_BANDS, DEFAULT_BAND,
+} from "@/lib/site";
 
 /**
  * MasjidOne's real published prices.
@@ -17,11 +21,11 @@ import { DEMO_HREF, BASE_PATH, PRICING, yearlyTotal } from "@/lib/site";
  * Every feature line maps to a module in #what and carries the same Live /
  * In development tag. If a module's status changes, change it in both places.
  */
-const masjidOnePlans = [
+const buildPlans = (madrasah: number, complete: number) => [
   {
     name: "MADRASAH",
-    price: String(PRICING.madrasah),
-    yearlyPrice: String(yearlyTotal(PRICING.madrasah)),
+    price: String(madrasah),
+    yearlyPrice: String(yearlyTotal(madrasah)),
     period: "month",
     yearlyPeriod: "year",
     // The portal is built and loaded at Taiyabah — the roll, the classes, the
@@ -44,7 +48,7 @@ const masjidOnePlans = [
       "Annual fee report and a family export for the office",
       "Hifz and sabaq progress — sabaq, sabqi and manzil, shared with the parent or kept private",
       "Parent access inside the congregation app — their own child only",
-      "Phone support, no per-pupil pricing, no paid add-ons",
+      "One price for your band — your bill does not move when a child joins",
     ],
     description:
       "Built, and in a Bolton masjid now — the roll, the classes and the staff are on it. Setup is charged at signing; the monthly starts at go-live.",
@@ -54,8 +58,8 @@ const masjidOnePlans = [
   },
   {
     name: "MASJID COMPLETE",
-    price: String(PRICING.complete),
-    yearlyPrice: String(yearlyTotal(PRICING.complete)),
+    price: String(complete),
+    yearlyPrice: String(yearlyTotal(complete)),
     period: "month",
     yearlyPeriod: "year",
     status: "live" as const,
@@ -95,13 +99,68 @@ const masjidOnePlans = [
 ];
 
 export function MasjidOnePricing() {
+  const [bandId, setBandId] = useState<string>(DEFAULT_BAND);
+  const band = PRICING_BANDS.find((b) => b.id === bandId) ?? PRICING_BANDS[1];
+
   return (
-    <Pricing
-      plans={masjidOnePlans}
-      title="Two plans. Published prices. No per-pupil maths."
-      description={
-        "The monthly price is the same however you pay.\nPaying twelve months up front waives the setup fee instead — so the list price stays honest for the masjid down the road."
-      }
-    />
+    <>
+      {/* The selector answers the only question a committee actually has:
+          what do WE pay. Left-aligned hairlines, not the pricing block's
+          centred card styling — CLAUDE.md says that exception stays put. */}
+      <div className="pband">
+        <p className="pband__q" id="pband-q">How many pupils are in your madrasah?</p>
+        <div className="pband__row" role="group" aria-labelledby="pband-q">
+          {PRICING_BANDS.map((b) => (
+            <button
+              key={b.id}
+              type="button"
+              className={`pband__btn${b.id === bandId ? " is-on" : ""}`}
+              aria-pressed={b.id === bandId}
+              onClick={() => setBandId(b.id)}
+            >
+              {b.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Pricing
+        plans={buildPlans(band.madrasah, band.complete)}
+        title="Two plans. One price for the size you are."
+        description={
+          "A band is not per-pupil pricing — your bill does not move when a child joins or leaves. It changes only if you cross a size band at renewal.\nThe monthly rate is the same however you pay. Twelve months up front waives the setup fee instead."
+        }
+      />
+
+      <div className="pband__table" role="region" aria-label="All price bands">
+        <table>
+          <caption>Every band, in full — so nothing depends on which button is pressed.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Pupils</th>
+              <th scope="col">Madrasah</th>
+              <th scope="col">Masjid Complete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PRICING_BANDS.map((b) => (
+              <tr key={b.id} className={b.id === bandId ? "is-on" : undefined}>
+                <th scope="row">{b.label}</th>
+                <td>£{b.madrasah}<span> a month</span></td>
+                <td>£{b.complete}<span> a month</span></td>
+              </tr>
+            ))}
+            <tr className="pband__setup">
+              <th scope="row">Setting up</th>
+              <td colSpan={2}>£{PRICING.setup} once — waived on twelve months prepaid</td>
+            </tr>
+            <tr className="pband__setup">
+              <th scope="row">Commission on giving</th>
+              <td colSpan={2}>0%, permanently</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
