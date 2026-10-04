@@ -38,32 +38,71 @@ case and are on the paid plan. That is a decision, not a tweak.
 
 You need: the `masjidone.co.uk` zone on Cloudflare, and `npx wrangler login`.
 
-1. **Verify the destination address.** Cloudflare dashboard → the zone → Email →
-   Email Routing → Destination addresses. Add the address you want enquiries to
-   land in and click the link in the confirmation email. Nothing works until
-   this is done.
+> ### Read this first, or you will break your email
+>
+> **DO NOT enable Email Routing on the `masjidone.co.uk` zone.** Cloudflare's own
+> documentation is blunt about it: *"Email Routing requires Cloudflare MX
+> records… Cannot use Email Routing with external mail servers."* Turning it on
+> replaces the root MX records, and the mailboxes and aliases bought from the
+> email host on 4 October 2026 — `info@`, `support@`, `yameen@` and the seven
+> forwarders — would stop receiving mail.
+>
+> **You do not need it.** A *destination address* is held at the **account**
+> level, not the zone level. Adding and verifying one touches no DNS at all:
+> Cloudflare emails the address, the mail arrives through the existing host, and
+> clicking the link is the whole of it. That verified address is all the Workers
+> send binding requires, and sending to it is free on every plan.
+>
+> Email **Sending** (step 2) is a different product from Email **Routing**, and
+> the docs say they are "managed separately". Its records live on the
+> `cf-bounce` subdomain — `cf-bounce` MX, SPF and DKIM — so it does not touch the
+> root MX either. **If any screen offers to change the root MX records, stop.**
 
-   Use a MasjidOne address, not a personal one. It should be the same address as
-   `CONTACT_EMAIL` in `lib/site.ts` — the one already meant to be printed on the
-   site — so there is nothing in this repository that was not going to be public.
+1. **Verify the destination address.** Cloudflare dashboard → Compute → Email
+   Service → Email Routing → **Destination Addresses**. Add
+   `info@masjidone.co.uk` and click the link in the confirmation email, which
+   will arrive in that mailbox as normal. Nothing works until this is done, and
+   this step alone changes no DNS.
 
-2. **Onboard the sending domain.** Email → Email Sending. This is what makes
-   `forms@masjidone.co.uk` a sender Cloudflare will accept. Without it every
-   send fails with `E_SENDER_NOT_VERIFIED`.
+   Note the page lives under "Email Routing" but adding a destination address
+   is not the same as enabling routing for the domain. Add the address. Do not
+   enable routing.
 
-3. **Fill in `wrangler.toml`** — replace `REPLACE-ME@masjidone.co.uk` with the
-   address from step 1. Leave `SEND_FROM` alone unless the sending domain
-   differs.
+2. **Onboard the sending domain.** Compute → Email Service → **Email Sending**.
+   This is what makes `forms@masjidone.co.uk` a sender Cloudflare will accept;
+   without it every send fails with `E_SENDER_NOT_VERIFIED`. It adds records on
+   the `cf-bounce` subdomain only.
 
-4. **Deploy.**
+   `forms@` already exists as an alias forwarding to `info@`, which is separate
+   from this and worth keeping: it means bounces land somewhere instead of
+   vanishing.
+
+3. ~~**Fill in `wrangler.toml`.**~~ **Done on 4 October 2026.** Both `SEND_TO`
+   and `destination_address` are `info@masjidone.co.uk`, and they must stay
+   identical — the binding is pinned to one verified destination, which is the
+   condition that keeps this free.
+
+4. **Check the config before you deploy.** This needs no credentials and
+   catches a broken binding before you are standing in the dashboard wondering
+   why:
 
    ```sh
    cd worker
    npm install
+   npx wrangler deploy --dry-run
+   ```
+
+   It should print four bindings: `EMAIL (info@masjidone.co.uk)`, `RATE_LIMIT
+   (5 requests/60s)`, `SEND_FROM` and `SEND_TO`. Verified passing on
+   4 October 2026.
+
+5. **Deploy.**
+
+   ```sh
    npx wrangler deploy
    ```
 
-5. **Point the site at it.** Set the repository variable
+6. **Point the site at it.** Set the repository variable
    `NEXT_PUBLIC_FORM_ENDPOINT` to:
 
    ```
