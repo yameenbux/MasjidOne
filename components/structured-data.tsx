@@ -1,4 +1,4 @@
-import { PRICING, SITE_ORIGIN } from "@/lib/site";
+import { PRICING, PRICING_BANDS, BAND_RANGE, SITE_ORIGIN } from "@/lib/site";
 
 /**
  * The machine-readable version of the page, for Google.
@@ -78,38 +78,36 @@ export function StructuredData() {
       ],
       offers: [
         {
-          "@type": "Offer",
+          /* AggregateOffer, not Offer, and that is the point: the price is a
+             range across four size bands, and stating one figure here while
+             the page shows four would be the kind of mismatch a crawler is
+             entitled to treat as a lie. lowPrice and highPrice are derived
+             from PRICING_BANDS so they cannot drift from the cards. */
+          "@type": "AggregateOffer",
           name: "Madrasah",
           description:
-            "The madrasah portal: unlimited pupils and teachers, daily registers, and fees per family.",
-          price: PRICING.madrasah,
+            "The madrasah portal and the parent portal: unlimited pupils and teachers, daily registers, and fees per family. Priced by the size of the madrasah.",
+          lowPrice: BAND_RANGE.madrasah.from,
+          highPrice: BAND_RANGE.madrasah.to,
+          offerCount: PRICING_BANDS.length,
           priceCurrency: PRICING.currency,
-          priceSpecification: {
-            "@type": "UnitPriceSpecification",
-            price: PRICING.madrasah,
-            priceCurrency: PRICING.currency,
-            unitCode: "MON",
-            billingDuration: 1,
-            billingIncrement: 1,
-          },
           availability: "https://schema.org/InStock",
           eligibleRegion: { "@type": "Country", name: "United Kingdom" },
         },
         {
-          "@type": "Offer",
+          /* AggregateOffer, not Offer, and that is the point: the price is a
+             range across four size bands, and stating one figure here while
+             the page shows four would be the kind of mismatch a crawler is
+             entitled to treat as a lie. lowPrice and highPrice are derived
+             from PRICING_BANDS so they cannot drift from the cards. */
+          "@type": "AggregateOffer",
           name: "Masjid Complete",
           description:
-            "Everything in Madrasah, plus the congregation app, the managed website, unlimited hall screens, and donations at 0% commission.",
-          price: PRICING.complete,
+            "Everything in Madrasah, plus the congregation app, the managed website, unlimited hall screens, and donations at 0% commission. Priced by the size of the madrasah.",
+          lowPrice: BAND_RANGE.complete.from,
+          highPrice: BAND_RANGE.complete.to,
+          offerCount: PRICING_BANDS.length,
           priceCurrency: PRICING.currency,
-          priceSpecification: {
-            "@type": "UnitPriceSpecification",
-            price: PRICING.complete,
-            priceCurrency: PRICING.currency,
-            unitCode: "MON",
-            billingDuration: 1,
-            billingIncrement: 1,
-          },
           availability: "https://schema.org/InStock",
           eligibleRegion: { "@type": "Country", name: "United Kingdom" },
         },

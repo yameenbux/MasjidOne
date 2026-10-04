@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage, CONTACT_EMAIL } from "@/components/legal-page";
-import { BASE_PATH, CONTACT_READY, openGraphFor } from "@/lib/site";
+import { BAND_RANGE, BASE_PATH, CONTACT_READY, PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms and conditions",
@@ -16,8 +16,9 @@ export const metadata: Metadata = {
  * a charity, covering children's data and payment processing, needs a solicitor
  * before anyone signs. That is said on the page rather than hidden here.
  *
- * Prices are repeated from CLAUDE.md and must not drift: Madrasah £79/mo,
- * Masjid Complete £179/mo, setup £499 once and waived on twelve months
+ * Prices are derived from lib/site.ts rather than typed, so they cannot
+ * drift: the bands carry the monthly figures, setup is £499 once and waived
+ * on twelve months
  * prepaid, 0% commission. Never discount the monthly.
  */
 export default function TermsPage() {
@@ -61,12 +62,23 @@ export default function TermsPage() {
 
       <h3>Price</h3>
       <p>
-        Published and the same for every masjid: <strong>Madrasah £79 a month</strong>,{" "}
-        <strong>Masjid Complete £179 a month</strong>, and a{" "}
-        <strong>£499 setup and migration fee charged once</strong>, waived where
-        twelve months are paid up front. Donations carry{" "}
+        Published, and the same for every masjid of the same size.{" "}
+        <strong>
+          Madrasah £{BAND_RANGE.madrasah.from} to £{BAND_RANGE.madrasah.to} a
+          month
+        </strong>{" "}
+        and{" "}
+        <strong>
+          Masjid Complete £{BAND_RANGE.complete.from} to £
+          {BAND_RANGE.complete.to} a month
+        </strong>
+        , set by the number of pupils on the madrasah roll — up to 100, 101 to
+        250, 251 to 500, or over 500 — with a{" "}
+        <strong>£{PRICING.setup} setup and migration fee charged once</strong>,
+        waived where twelve months are paid up front. Donations carry{" "}
         <strong>0% commission</strong>. There is no per-pupil charge and no paid
-        add-on. Prices exclude VAT; YSB Ventures Ltd is not currently VAT
+        add-on: the price follows your band rather than your headcount, and
+        changes only if you cross a band at renewal. Prices exclude VAT; YSB Ventures Ltd is not currently VAT
         registered and will say so on every invoice until it is.
       </p>
       <p>

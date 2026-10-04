@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING, openGraphFor } from "@/lib/site";
+import { BAND_RANGE, PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mosque prayer times and prayer hall screens",
@@ -131,7 +131,8 @@ export default function PrayerTimesScreensPage() {
       ]}
       plan={{
         name: "Masjid Complete",
-        pounds: PRICING.complete,
+        from: BAND_RANGE.complete.from,
+        to: BAND_RANGE.complete.to,
         note: <>Screens are configured as part of setup, before go-live.</>,
       }}
     />

@@ -191,17 +191,50 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
    several platforms do the congregation side. The true, defensible claim is
    narrower: *nobody joins the madrasah to the congregation.* Keep the copy
    on that line.
-3. **Pricing is fixed.** Madrasah £79/mo, Masjid Complete £179/mo, setup £499
-   once (waived on twelve months prepaid), 0% commission on donations. Do not
-   invent tiers, discounts or "from £" phrasing.
-   **Never discount the monthly — waive the setup fee instead.** The pricing
-   toggle shows the same rate two ways, and the invariant is arithmetic:
-   for a plan whose `period` is `month`, `yearlyPrice` must be exactly
-   `price × 12` (£79 → £948, £179 → £2,148). Anything less than 12× is a
-   discount on the monthly and is wrong. Only the setup card genuinely
-   falls, £499 → £0.
-   In the yearly view each card also prints its monthly rate underneath, so
-   a twelve-month total cannot be misread as a price rise. Keep that line.
+3. **Pricing is banded by madrasah size, and the bands are fixed.**
+   Changed 4 October 2026 from a single flat rate. The reason, because it will
+   be questioned: every credible competitor prices by student count, and a flat
+   rate across a market with a tenfold spread in institution size is wrong at
+   both ends at once — it overcharged the small maktab, which is the segment
+   with the most prospects, and undercharged the large madrasah. **The entry
+   price went down, not up.** An earlier reading had this backwards and was
+   built on comparing per-pupil cost to school management systems, which is the
+   wrong benchmark for a volunteer-run, donation-funded madrasah. See
+   `founder/price-pressure-test-2026-10-02.md`.
+
+   | Pupils | Madrasah | Masjid Complete |
+   | --- | --- | --- |
+   | up to 100 | £49 | £119 |
+   | 101–250 | £79 | £169 |
+   | 251–500 | £119 | £219 |
+   | over 500 | £159 | £269 |
+
+   Setup £499 once (waived on twelve months prepaid). 0% commission on
+   donations. Do not invent further tiers or discounts.
+   **The figures live in `PRICING_BANDS` in `lib/site.ts` and nowhere else.**
+   There is deliberately no `PRICING.madrasah` scalar: a single number is the
+   thing that is no longer true, and one left lying about would let a page print
+   it as though it were the price. Ranges come from `BAND_RANGE`, which is
+   derived, never typed. If you find a price written as a literal in prose,
+   that is a bug — the compiler cannot catch those, so grep for `£` after any
+   pricing change.
+   **A band is not per-pupil pricing, and the copy must keep that line.**
+   Per-pupil means the bill moves whenever a child joins; a band is one figure
+   for a size range that changes only at renewal, and only on crossing a
+   threshold. "No per-pupil charge" is still true and still worth saying.
+   What is no longer true, and was deleted on 4 October, is any promise that
+   growth is never a billing event. It is, at renewal. Do not reinstate it.
+   **Never discount the monthly — waive the setup fee instead.** The invariant
+   is arithmetic: for a plan whose `period` is `month`, `yearlyPrice` must be
+   exactly `price × 12` for that masjid's own band. Anything less is a discount
+   on the monthly and is wrong. Only the setup fee genuinely falls, £499 → £0.
+   In the yearly view each card also prints its monthly rate underneath, so a
+   twelve-month total cannot be misread as a price rise. Keep that line.
+   **Google reads the prices too.** `components/structured-data.tsx` publishes
+   `AggregateOffer` with `lowPrice`/`highPrice` derived from the bands. One
+   figure there while the page shows four is a mismatch a crawler is entitled
+   to treat as a lie. If the bands change, that follows automatically — do not
+   hardcode it.
    **The `pricing-strategy` skill does not override any of this.** It is an
    internal thinking aid and writes to `founder/`, which is gitignored
    because **this repository is public** — margins, break-even counts and a

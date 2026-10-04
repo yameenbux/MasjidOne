@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING, openGraphFor } from "@/lib/site";
+import { BAND_RANGE, PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "A congregation app for your masjid",
@@ -136,7 +136,8 @@ export default function MosqueAppPage() {
       ]}
       plan={{
         name: "Masjid Complete",
-        pounds: PRICING.complete,
+        from: BAND_RANGE.complete.from,
+        to: BAND_RANGE.complete.to,
         note: <>No per-download or per-user charge, whatever the size of the congregation.</>,
       }}
     />

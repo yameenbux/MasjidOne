@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING, openGraphFor } from "@/lib/site";
+import { BAND_RANGE, PRICING, PRICING_BANDS, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Madrasah software: registers, fees and families",
   description:
-    "Madrasah management software for UK mosques. Daily registers drafted, submitted and locked, fees charged per family with automatic reminders, and every teacher on their own login. £79 a month, unlimited pupils.",
+    "Madrasah management software for UK mosques. Daily registers drafted, submitted and locked, fees charged per family with automatic reminders, and every teacher on their own login. From £49 a month by madrasah size, unlimited pupils.",
   alternates: { canonical: "/madrasah-software/" },
   openGraph: openGraphFor("/madrasah-software/"),
 };
@@ -133,16 +133,20 @@ export default function MadrasahSoftwarePage() {
           h: "Unlimited pupils and teachers",
           p: (
             <>
-              No per-pupil pricing and no paid add-ons, so a madrasah that grows
-              from eighty children to five hundred pays the same £
-              {PRICING.madrasah} a month. Growth should not be a billing event.
+              No per-pupil pricing and no paid add-ons. The price follows the
+              band your madrasah sits in, not a headcount — so the bill does not
+              move when a child joins in the middle of a term, and it changes
+              only if you cross a band at renewal. A maktab of eighty pays £
+              {PRICING_BANDS[0].madrasah} a month; it takes five hundred pupils
+              before that becomes £{BAND_RANGE.madrasah.to}.
             </>
           ),
         },
       ]}
       plan={{
         name: "Madrasah",
-        pounds: PRICING.madrasah,
+        from: BAND_RANGE.madrasah.from,
+        to: BAND_RANGE.madrasah.to,
         note: (
           <>
             Migrating from paper is usually simpler than migrating from an

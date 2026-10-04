@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ModulePage } from "@/components/module-page";
-import { PRICING, openGraphFor } from "@/lib/site";
+import { BAND_RANGE, PRICING, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mosque donations and Gift Aid at 0% commission",
@@ -113,7 +113,8 @@ export default function MosqueDonationsPage() {
       ]}
       plan={{
         name: "Masjid Complete",
-        pounds: PRICING.complete,
+        from: BAND_RANGE.complete.from,
+        to: BAND_RANGE.complete.to,
         note: (
           <>
             A masjid taking £4,000 a month on a 5% platform pays £200 a month in

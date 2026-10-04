@@ -67,24 +67,29 @@ export const DEMO_HREF = "/request-a-demo/";
 export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("MasjidOne demo request")}`;
 
 /**
- * The published prices. One source, because three places quote them — the
- * pricing cards, the structured data Google reads, and the comparison copy —
- * and a figure that drifts between them is a figure a committee can catch.
+ * The figures that do not vary by band.
  *
- * CLAUDE.md states the invariant: MasjidOne never discounts the monthly, it
- * waives the setup fee. So the twelve-month figure is derived here rather than
- * typed, and cannot quietly become a discount. £79 -> £948, £179 -> £2,148.
- * The setup fee is the only figure that actually falls, £499 -> £0.
+ * The invariant still holds and is the reason the yearly total is derived
+ * rather than typed: MasjidOne never discounts the monthly, it waives the setup
+ * fee. Twelve months is twelve times the monthly rate for the masjid's own
+ * band, whatever that band is. The setup fee is the only figure that falls,
+ * £499 -> £0.
  */
 export const PRICING = {
-  madrasah: 79,
-  complete: 179,
   setup: 499,
   currency: "GBP",
 } as const;
 
+
+
 /**
- * PREVIEW ONLY — banded pricing, not yet adopted.
+ * The published prices, banded by the size of the madrasah.
+ *
+ * ADOPTED 4 October 2026, replacing a single flat rate. Reason, in one line:
+ * every credible competitor prices by student count and a flat rate on a market
+ * with a tenfold spread in institution size is wrong at both ends at once — it
+ * overcharged the small maktab, which is the segment with the most prospects,
+ * and undercharged the large madrasah. The entry price went DOWN.
  *
  * A band is NOT per-pupil pricing. Per-pupil means the bill moves every time a
  * child joins or leaves; a band means one number for the whole size range, and
@@ -94,7 +99,7 @@ export const PRICING = {
  *
  * Levels set against the verified competitive set, 2 October 2026 — see
  * founder/price-pressure-test-2026-10-02.md. The entry band goes DOWN, not up:
- * a 60-pupil maktab currently pays £79 here against £15-£59 elsewhere.
+ * a 60-pupil maktab paid £79 here against £15-£59 elsewhere.
  */
 export const PRICING_BANDS = [
   { id: "a", label: "Up to 100", short: "≤100",     madrasah: 49,  complete: 119 },
@@ -107,6 +112,26 @@ export type PricingBand = (typeof PRICING_BANDS)[number];
 
 /** The band a visitor sees first. The commonest UK madrasah size. */
 export const DEFAULT_BAND = "b";
+
+/**
+ * The span of a plan across every band, for the places that quote a range
+ * rather than one figure — the module pages and the structured data Google
+ * reads. Derived, never typed, so it cannot drift from PRICING_BANDS.
+ *
+ * There is deliberately no `PRICING.madrasah` scalar any more. A single number
+ * is exactly the thing that is no longer true, and leaving one in place would
+ * let a page quietly print it as though it were the price.
+ */
+export const BAND_RANGE = {
+  madrasah: {
+    from: Math.min(...PRICING_BANDS.map((b) => b.madrasah)),
+    to: Math.max(...PRICING_BANDS.map((b) => b.madrasah)),
+  },
+  complete: {
+    from: Math.min(...PRICING_BANDS.map((b) => b.complete)),
+    to: Math.max(...PRICING_BANDS.map((b) => b.complete)),
+  },
+} as const;
 
 /** Twelve months at the same monthly rate. Not a cheaper rate — the same one. */
 export function yearlyTotal(monthlyPounds: number): number {
