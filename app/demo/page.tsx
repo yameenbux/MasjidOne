@@ -5,7 +5,6 @@ import { MasjidAccessLogin } from "@/components/ui/masjid-access-login";
 import { DemoChooser, type ChooserOption } from "@/components/demo-chooser";
 import { DemoAdmin } from "@/components/demo-admin";
 import { DemoScreens } from "@/components/demo-screens";
-import { HallScreen } from "@/components/demo-hall-screen";
 import { DemoOffice } from "@/components/demo-office";
 import { DEMO_MASJID_DEFAULT, DEMO_CREDENTIALS } from "@/lib/demo-data";
 
@@ -100,7 +99,7 @@ function portalOptions(masjid: string): [ChooserOption, ChooserOption] {
       title: "Congregation Portal",
       blurb: "Prayer times, screens, notices and giving.",
       alt: HALL_ALT,
-      preview: <HallScreen masjidName={masjid} compact />,
+      img: "hall-screen.webp",
     },
   ];
 }
@@ -112,7 +111,7 @@ function congregationOptions(masjid: string): [ChooserOption, ChooserOption] {
       title: "Timetable & screens",
       blurb: "The times, and what the screens say.",
       alt: HALL_ALT,
-      preview: <HallScreen masjidName={masjid} compact />,
+      img: "hall-screen.webp",
     },
     {
       key: "office",

@@ -2326,34 +2326,8 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
    set of font sizes to keep in step.
    =================================================================== */
 
-/* ---- The congregation preview's television ----------------------------- */
-.pchoose__tv{
-  position:relative; display:block; width:100%;
-  /* --ink, NOT --board. The hall screen inside is board green, so a board
-     bezel disappeared into its own picture and read as no frame at all. Ink
-     is the darkest thing in the palette and separates from it. */
-  background:var(--ink); border-radius:.28rem;
-  /* A deeper chin than the other three sides, which is what makes a rectangle
-     read as a television rather than a picture frame. */
-  padding:.5rem .5rem .75rem;
-}
-/* Neck and base, below the bezel rather than inside its padding — which is
-   where the first attempt drew them, invisibly. Two pseudo-elements rather
-   than one with a box-shadow doing two jobs: predictable, and each is a shape
-   you can actually see in the inspector. Decorative, so neither is announced. */
-.pchoose__tv::after{   /* the neck */
-  content:""; position:absolute; top:100%; left:50%;
-  width:13%; height:.42rem; transform:translateX(-50%);
-  background:var(--ink);
-}
-.pchoose__tv::before{  /* the base it stands on */
-  content:""; position:absolute; top:calc(100% + .42rem); left:50%;
-  width:32%; height:.26rem; transform:translateX(-50%);
-  background:var(--ink); border-radius:.14rem;
-}
-
 .pchoose__live{
-  display:block; width:100%; border-radius:.1rem;
+  display:block; width:100%;
   height:clamp(4rem,13vh,6.5rem);
   overflow:hidden;
   container-type:size;
@@ -2361,21 +2335,15 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 @media (min-width:64em){
   /* ONE FIXED HEIGHT FOR BOTH HALVES. The two sit side by side and each
-     centres its own column, so while the picture and the television were
-     different heights the two titles sat at different heights too — which is
-     the first thing the eye catches on this screen. The shot box is pinned,
-     and whatever is inside fits into it. */
+     centres its own column, so while the two devices were different heights
+     the two titles sat at different heights too — which is the first thing
+     the eye catches on a screen whose whole job is to offer a choice of two.
+     The shot box is pinned and whatever goes in fits into it. */
   .pchoose__shot,
-  .pchoose__tv{height:min(25vh,11.5rem)}
-  .pchoose__tv{
-    /* The bezel eats into the box, so the screen inside gets what is left. */
-    display:flex; flex-direction:column;
-    margin-bottom:calc(var(--s4) * -1);
-    transition:transform .4s cubic-bezier(.2,1,.3,1);
-  }
-  .pchoose__live{height:auto; flex:1; min-height:0}
-  .pchoose:hover .pchoose__tv,
-  .pchoose:focus-visible .pchoose__tv{transform:scale(1.04)}
+  .pchoose__live{height:min(25vh,11.5rem)}
+  .pchoose__live{margin-bottom:calc(var(--s4) * -1)}
+  .pchoose:hover .pchoose__live,
+  .pchoose:focus-visible .pchoose__live{transform:scale(1.04)}
 }
 
 .hallscr--compact{
