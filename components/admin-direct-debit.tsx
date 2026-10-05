@@ -48,6 +48,10 @@ type State = {
   plan_code: string | null;
   band: string | null;
   where_it_stands: string;
+  /* The long form, with the agreement clause. Deliberately NOT rendered here —
+     see the not-billable branch below. Kept on the type because it is part of
+     the function's answer and the next screen that needs it should find it. */
+  not_billed_sentence: string | null;
   why?: string;
 };
 
@@ -137,7 +141,12 @@ export function DirectDebit({ sb, slug }: { sb: SupabaseClient; slug: string }) 
 
   /* Not billed is said first and nothing else is offered. The founding masjid
      is contractually never invoiced, and a Direct Debit is an invoice that
-     collects itself. */
+     collects itself.
+
+     SAID ONCE. The billing panel this sits inside already prints the agreement
+     clause in full, immediately above — so this says why a DIRECT DEBIT in
+     particular is refused and leaves the clause to the panel that owns it.
+     Before 144 both printed the same paragraph, three lines apart. */
   if (!state.billable) {
     return (
       <div className="ops__dd">
