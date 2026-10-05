@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { DirectDebit } from "@/components/admin-direct-debit";
 import {
   bandLabel,
   invoiceLines,
@@ -237,6 +238,10 @@ export function BillingPanel({
             {" · "}{money(sum.paid_to_date_p)} paid to date
             {sum.last_paid_on ? <> · last paid {sum.last_paid_on}</> : null}
           </p>
+
+          {/* Mounted only once billing details exist: a mandate needs an
+              email to send to, and this panel is what asks for one. */}
+          {b ? <DirectDebit sb={sb} slug={slug} /> : null}
 
           <p className="ops__acts">
             <button

@@ -17,5 +17,9 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // supabase/ is Deno, not Next. Its imports are URLs and its globals are
+  // Deno's, so Next's typecheck cannot resolve either and fails the build on
+  // the Stripe esm.sh import. It has its own tests —
+  // node --experimental-strip-types supabase/functions/masjidone-billing/shape.test.ts
+  "exclude": ["node_modules", "supabase"]
 }

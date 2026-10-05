@@ -3738,6 +3738,21 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .ops__acts .btn:disabled { opacity: .45; cursor: not-allowed; }
 .ops__new { margin-top: 1rem; }
 
+/* Direct Debit. Set in from the billing details it sits under, with a hairline
+   on the left like .ops__planBody, because it is a part of billing rather than
+   a section of its own — the vernacular is the prayer-board rule, not a card. */
+.ops__dd {
+  margin: 1rem 0 .4rem; padding: .2rem 0 .2rem 1rem;
+  border-left: 2px solid var(--rule);
+}
+.ops__dd .ops__subh { margin-top: 0; }
+/* The state tags wrap on a narrow screen rather than pushing the page
+   sideways. Must work at 360px. */
+.ops__ddstate { margin: .2rem 0 .5rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+/* A Checkout URL is long and has no spaces, so it has to be told it may break
+   mid-word or it scrolls the whole admin screen horizontally. */
+.ops__ddlink { margin: .8rem 0 0; font-size: .9rem; overflow-wrap: anywhere; }
+
 .ops__plan { margin-top: .6rem; }
 .ops__planBody { padding: .8rem 0 .2rem 1rem; border-left: 2px solid var(--rule); margin-top: .5rem; }
 .ops__hint { font-size: .85rem; color: var(--ink-2); margin: .2rem 0 .8rem; }
