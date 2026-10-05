@@ -200,11 +200,16 @@ plus the `hall_availability` and `notices_live` **views**.
 Read the payment ones again. `mark_deposit_paid`, `mark_nikah_fee_paid`,
 `record_donation_paid`, `record_public_donation` — and
 `record_unmatched_payment`, which is the safety net that is supposed to catch
-the others failing. The masjid's Stripe webhook was moved onto the
-masjid-aware overloads, but **the congregation app is a separate repository
-and its call sites have not been checked**. If any of them still calls a
-no-argument version, adding a second masjid row stops donations being recorded —
-silently, because that is what happened the last time this went wrong.
+the others failing. **Audited on 5 October 2026**, across all four repositories. The
+money path is clean: the Stripe webhook passes `p_masjid` to every one of
+them, from a single shared args object. The website is clean — four call
+sites, all naming a masjid. Neither screen repository touches Supabase at all.
+
+**Three sites in the congregation app break**, and all three are one-liners:
+it reads the `notices_live` and `hall_availability` VIEWS directly over REST,
+and its Worker calls `publish_notice` without naming a masjid. None of them
+touches money, which is the good news; all three have to be fixed before a
+second masjid row exists, which is the work.
 
 So the second masjid is not a billing task. It is a prerequisite with its own
 audit, and it has to be done before any masjid is onboarded anyway. Until then,
