@@ -90,6 +90,9 @@ export function AdminConsole() {
      with it: the list is one call and should not wait on a brand lookup per
      masjid before anything appears. */
   const [brands, setBrands] = React.useState<Record<string, Brand>>({});
+  /* Why a logo is missing, if it is. Separate from `error` so a brand problem
+     never raises a banner over the whole console. */
+  const [brandError, setBrandError] = React.useState<Record<string, string>>({});
   const [who, setWho] = React.useState<string>("");
   const [entering, setEntering] = React.useState<string | null>(null);
   const [entered, setEntered] = React.useState<{ slug: string; name: string; support: boolean } | null>(null);
@@ -132,15 +135,29 @@ export function AdminConsole() {
     setMasjids(rows);
     setStage("list");
 
-    /* Logos, in parallel, and failures are swallowed on purpose: a masjid with
-       no logo loaded is not a problem to report, it is just a darker monitor. */
+    /* Logos, in parallel. These used to swallow the failure "on purpose: a
+       masjid with no logo loaded is not a problem to report, it is just a
+       darker monitor." That was wrong, and it cost an afternoon. When the mark
+       stopped appearing there was nothing anywhere saying why — not a console
+       line, not a state — and the image, the bucket, the object and the RPC all
+       had to be checked by hand to find out which of them was innocent.
+
+       A quiet failure is still worth recording. It is kept out of `error`, so
+       it never shows a committee-facing banner for a missing logo, and read
+       back in brandError for the one line beneath the card. */
+    const errs: Record<string, string> = {};
     const got = await Promise.all(
       rows.map(async (m) => {
         const r = await sb.rpc("masjid_brand", { p_masjid: m.slug });
+        if (r.error) {
+          errs[m.slug] = r.error.message;
+          console.warn(`masjid_brand(${m.slug}) failed:`, r.error);
+        }
         return [m.slug, (r.data ?? {}) as Brand] as const;
       }),
     );
     setBrands(Object.fromEntries(got));
+    setBrandError(errs);
   }
 
   /* The second factor. A platform admin without one cannot pass
@@ -377,12 +394,39 @@ export function AdminConsole() {
               {(masjids ?? []).map((m) => (
                 <li className="lsup__card2" key={m.slug}>
                   <div className="lsup__cardTop">
-                    <h3 className="lsup__cardName">{m.name}</h3>
+                    {/* THE MARK LIVES HERE, not only behind the monitor.
+                        LiveScreen paints the logo UNDER the frame as a resting
+                        state, which works when the host does not answer — the
+                        frame is never mounted — and fails in the case nobody
+                        can detect: the host answers, the frame mounts, and
+                        then renders blank or refuses to be framed. The logo is
+                        then invisible in exactly the situation it exists for,
+                        and the card shows an anonymous grey rectangle.
+                        Nothing cross-origin distinguishes those cases, so this
+                        stops depending on it: the masjid's mark is beside its
+                        name, where no iframe can reach it. */}
+                    <span className="lsup__cardId">
+                      {brands[m.slug]?.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          className="lsup__mark"
+                          src={brandAsset(brands[m.slug].logo.path)}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                      <h3 className="lsup__cardName">{m.name}</h3>
+                    </span>
                     {m.current ? <span className="lsup__now">You are here</span> : null}
                   </div>
                   <p className="lsup__cardTown">
                     {m.town} · <code>{m.slug}</code>
                   </p>
+                  {brandError[m.slug] ? (
+                    <p className="lsup__brandErr">
+                      Their mark could not be read: {brandError[m.slug]}
+                    </p>
+                  ) : null}
                   {MASJID_SCREENS[m.slug] ? (
                     <LiveScreen
                       src={MASJID_SCREENS[m.slug]}

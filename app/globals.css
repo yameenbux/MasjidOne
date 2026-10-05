@@ -3856,3 +3856,28 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .ops__adminhead {
   display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; margin: 0 0 .3rem;
 }
+
+/* The masjid's own mark, beside its name on the support console card. It is
+   NOT the one inside the monitor: that one sits under the iframe and vanishes
+   the moment a frame mounts, which is precisely when you want it. This one is
+   always visible because nothing is ever drawn over it. */
+/* .lsup__cardTop is space-between, which is right for TWO children — name on
+   the left, "You are here" on the right. A mark added as a third child broke
+   that: on a narrow card the row wrapped and the mark, the name and the badge
+   each took a line of their own. So the mark and the name are one child again,
+   and the header keeps the two-child shape it was built for. Found in a
+   screenshot; the coordinates had all three at the same x, which is what
+   wrapping looks like from a bounding box. */
+.lsup__cardId {
+  display: flex; align-items: center; gap: .5rem; min-width: 0;
+}
+.lsup__mark {
+  width: 2rem; height: 2rem; object-fit: contain; flex: 0 0 auto;
+  align-self: center;
+  /* A masjid's mark is usually dark ink on transparency, so it needs a light
+     plate to survive the board-green card in dark mode. */
+  background: var(--paper-2); border-radius: 2px; padding: 2px;
+}
+.lsup__brandErr {
+  margin: .2rem 0 .4rem; font-size: .85rem; color: var(--ink-2);
+}
