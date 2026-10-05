@@ -265,8 +265,23 @@ export function AdminConsole() {
           <h1 className="lsup__co">MasjidOne</h1>
           <p className="lsup__sub">Support console</p>
 
+          {/* THE KEYS ARE A SECURITY FIX, NOT TIDINESS.
+              Both stages render a <form> at the same position, and at child
+              index 1 both render a <label>. React reconciles by position and
+              type, so it REUSED that <input> rather than replacing it: name
+              went password -> code, type went "password" -> text, and the
+              value — uncontrolled, so React never touches it — stayed. The
+              password the user had just typed was then sitting in the
+              authenticator-code box in PLAIN TEXT.
+
+              Reproduced in a browser before fixing: after switching stage the
+              input read {name:"code", type:"text", value:"MySecretPassw0rd!"}.
+
+              Distinct keys make the two forms different elements, so the first
+              subtree unmounts and takes the password with it. Do not remove
+              them, and do not assume a stage change discards what was typed. */}
           {stage === "password" ? (
-            <form onSubmit={signIn} className="lsup__form">
+            <form key="sign-in" onSubmit={signIn} className="lsup__form">
               <label className="lsup__f">
                 <span className="lsup__lab">Email</span>
                 <input name="email" type="email" className="lsup__in" autoComplete="username" required />
@@ -287,7 +302,7 @@ export function AdminConsole() {
               </button>
             </form>
           ) : (
-            <form onSubmit={verify} className="lsup__form">
+            <form key="second-factor" onSubmit={verify} className="lsup__form">
               <p className="lsup__note">
                 {who ? <strong>{who}</strong> : null} The platform will not treat
                 this account as an administrator on a password alone.
