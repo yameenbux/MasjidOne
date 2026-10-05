@@ -78,7 +78,7 @@ function client(): SupabaseClient {
   });
 }
 
-type Stage = "password" | "mfa" | "list";
+type Stage = "password" | "mfa" | "enrol" | "list";
 
 export function AdminConsole() {
   const sb = React.useMemo(client, []);
@@ -100,6 +100,10 @@ export function AdminConsole() {
   const [factsError, setFactsError] = React.useState<string | null>(null);
   const [factorId, setFactorId] = React.useState<string | null>(null);
   const [challengeId, setChallengeId] = React.useState<string | null>(null);
+  /* Enrolment, for an account that has no second factor yet. The QR arrives
+     from Supabase as an SVG data URI, so nothing is fetched from anybody. */
+  const [enrolQr, setEnrolQr] = React.useState<string | null>(null);
+  const [enrolSecret, setEnrolSecret] = React.useState<string | null>(null);
 
   /* An existing session should not make you sign in again. getSession() reads
      storage; the aal check decides whether you still owe a second factor. */
@@ -170,10 +174,14 @@ export function AdminConsole() {
     }
     const totp = data?.totp?.[0];
     if (!totp) {
-      setError(
-        "This account has no second factor enrolled, and the platform will not " +
-          "treat it as an administrator without one. Enrol one in the masjid portal first.",
-      );
+      /* No second factor yet. This used to be a dead end — an error saying the
+         platform would not treat the account as an administrator, and no way
+         to do anything about it. That made a brand-new MasjidOne account
+         unusable: is_platform_admin() requires aal2, and the only enrolment
+         page in the estate is on a MASJID's own website. Setting up the
+         supplier's identity should never mean visiting a customer's domain,
+         so the console enrols its own. */
+      await startEnrolment();
       return;
     }
     const ch = await sb.auth.mfa.challenge({ factorId: totp.id });
@@ -210,6 +218,45 @@ export function AdminConsole() {
     }
     setWho(data.user?.email ?? "");
     await beginChallenge();
+  }
+
+  /* Enrol a second factor. Supabase hands back the QR already rendered as an
+     SVG data URI and the secret in text, so somebody whose camera will not
+     cooperate can still type it in. */
+  async function startEnrolment() {
+    const { data, error: err } = await sb.auth.mfa.enroll({
+      factorType: "totp",
+      friendlyName: `MasjidOne console ${new Date().toISOString().slice(0, 10)}`,
+    });
+    if (err) { setError(readable(err.message)); return; }
+    setFactorId(data.id);
+    setEnrolQr(data.totp.qr_code);
+    setEnrolSecret(data.totp.secret);
+    setStage("enrol");
+  }
+
+  async function verifyEnrolment(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!factorId) return;
+    const code = String(new FormData(e.currentTarget).get("code") ?? "").trim();
+    setBusy(true);
+    setError(null);
+    /* A FRESH CHALLENGE EACH TIME. A failed verify burns the previous one, and
+       reusing it produces a second failure that reads as a wrong code when the
+       code was fine — the same note the masjid's own enrolment page carries. */
+    const ch = await sb.auth.mfa.challenge({ factorId });
+    if (ch.error) { setBusy(false); setError(readable(ch.error.message)); return; }
+    const { error: err } = await sb.auth.mfa.verify({
+      factorId, challengeId: ch.data.id, code,
+    });
+    setBusy(false);
+    if (err) {
+      setError("That code was not accepted. Codes last 30 seconds — try the next one.");
+      return;
+    }
+    setEnrolQr(null);
+    setEnrolSecret(null);
+    await loadMasjids();
   }
 
   async function verify(e: React.FormEvent<HTMLFormElement>) {
@@ -257,7 +304,7 @@ export function AdminConsole() {
   }
 
   /* ---- sign in ---------------------------------------------------------- */
-  if (stage === "password" || stage === "mfa") {
+  if (stage === "password" || stage === "mfa" || stage === "enrol") {
     return (
       <div className="lsup lsup--in">
         <div className="lsup__card">
@@ -299,6 +346,48 @@ export function AdminConsole() {
               {error ? <p className="lsup__err" role="alert">{error}</p> : null}
               <button type="submit" className="lsup__go" disabled={busy}>
                 {busy ? "Checking…" : "Sign in"}
+              </button>
+            </form>
+          ) : stage === "enrol" ? (
+            /* Its own key, like the other two — see the note above. A branch
+               that reuses an input is how the password ended up in the code
+               box, and this one would reuse it too. */
+            <form key="enrol" onSubmit={verifyEnrolment} className="lsup__form">
+              <p className="lsup__note">
+                <strong>Set up two-step for this account.</strong> MasjidOne
+                will not treat it as an administrator until you have, because{" "}
+                <code>is_platform_admin()</code> requires it — a row granting
+                access without this grants nothing at all.
+              </p>
+              {enrolQr ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="lsup__qr"
+                  src={enrolQr}
+                  alt="Scan this with your authenticator app"
+                />
+              ) : null}
+              {enrolSecret ? (
+                <p className="lsup__secret">
+                  <span className="lsup__lab">Or type this in</span>
+                  <code>{enrolSecret}</code>
+                </p>
+              ) : null}
+              <label className="lsup__f">
+                <span className="lsup__lab">Then the six digits it shows</span>
+                <input
+                  name="code"
+                  className="lsup__in lsup__code"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  required
+                  autoFocus
+                />
+              </label>
+              {error ? <p className="lsup__err" role="alert">{error}</p> : null}
+              <button type="submit" className="lsup__go" disabled={busy}>
+                {busy ? "Checking…" : "Finish setting up"}
               </button>
             </form>
           ) : (

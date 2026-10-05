@@ -87,6 +87,13 @@
    ============================================================ */
 :root{
   --paper:#F3F1EA; --paper-2:#EAE7DD;
+  /* THE ONE SURFACE THAT MUST NOT FOLLOW THE THEME. A QR code has to be dark
+     on light to scan, so a plate that goes dark in dark mode produces a code
+     no camera can read. It is declared in all three theme blocks with the same
+     value rather than hardcoded at the rule, so it is still a token and still
+     greppable — the rule about hex literals is about findability, and a value
+     that is deliberately constant is not an exception to it. */
+  --qr-plate:#FFFFFF;
   --board:#0C2A21; --board-ink:#EDE9DD;
   --board-rule:#2C4C40; --board-ink-2:#93A69B; --board-brass:#C0A46A;
   /* Darkened twice, both times to clear AA for normal text. #8E6D33 measured
@@ -114,6 +121,7 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --paper:#081513; --paper-2:#0D1E19;
+    --qr-plate:#FFFFFF;          /* unchanged on purpose — see :root */
     --board:#0E241C; --board-ink:#E7E3D7;
     --board-rule:#2A4A3C; --board-ink-2:#8DA096; --board-brass:#C9A567;
     --brass:#C9A567; --brass-2:#8C7240;
@@ -128,6 +136,7 @@
 }
 :root[data-theme="dark"],.dark{
   --paper:#081513; --paper-2:#0D1E19;
+  --qr-plate:#FFFFFF;            /* unchanged on purpose — see :root */
   --board:#0E241C; --board-ink:#E7E3D7;
   --board-rule:#2A4A3C; --board-ink-2:#8DA096; --board-brass:#C9A567;
   --brass:#C9A567; --brass-2:#8C7240;
@@ -3880,4 +3889,23 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 }
 .lsup__brandErr {
   margin: .2rem 0 .4rem; font-size: .85rem; color: var(--ink-2);
+}
+
+/* Two-step enrolment on the support console. The QR comes from Supabase as an
+   SVG data URI, so it is never fetched from anybody else — the same property
+   the masjid's own enrolment page relies on. White plate because a QR must be
+   dark-on-light to scan, in either theme. */
+.lsup__qr {
+  display: block; width: 11rem; height: 11rem; margin: .8rem auto;
+  background: var(--qr-plate); padding: .5rem; border-radius: 2px;
+}
+.lsup__secret {
+  margin: 0 0 .8rem; text-align: center; font-size: .85rem;
+}
+/* .lsup__lab is inline elsewhere, which ran "OR TYPE THIS IN" straight into
+   the secret with no gap. */
+.lsup__secret .lsup__lab { display: block; }
+.lsup__secret code {
+  display: inline-block; margin-top: .2rem; letter-spacing: .08em;
+  word-break: break-all;
 }
