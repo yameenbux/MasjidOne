@@ -16,6 +16,7 @@ import {
 import { LiveScreen, LiveScreenNote } from "@/components/ui/live-screen";
 import { attention, type Facts, type Item } from "@/lib/attention";
 import { AdminOperations } from "@/components/admin-operations";
+import { AdminAccess } from "@/components/admin-access";
 
 /**
  * The LIVE MasjidOne support console. Not the demonstration — this one signs
@@ -443,6 +444,13 @@ export function AdminConsole() {
             {masjids !== null && masjids.length > 0 ? (
               <AdminOperations sb={sb} masjids={masjids} onChanged={() => void loadMasjids()} />
             ) : null}
+
+            {/* Who runs MasjidOne. Below the masajid on purpose: this is the
+                company's own access, and it is the thing that decides whether
+                going into any of the above is recorded as support access. Not
+                gated on there being masajid — you can be locked out of your
+                own company with none. */}
+            <AdminAccess sb={sb} />
 
             {masjids !== null && masjids.length === 0 ? (
               <p className="lsup__p">

@@ -3832,3 +3832,27 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   accent-color: var(--brass);
 }
 .cform__check .cform__hint { margin-left: 1.55rem; }
+
+/* ---------------------------------------------------------------------------
+   WHO RUNS MASJIDONE. Same hairline vernacular as the operations panel above.
+   --------------------------------------------------------------------------- */
+.ops__admins { list-style: none; margin: .8rem 0 0; padding: 0; }
+.ops__admins > li { padding: .8rem 0; border-top: 1px dotted var(--rule); }
+/* Numbered because the order is the whole point — doing these the other way
+   round is how somebody locks themselves out of their own company.
+   list-style is set EXPLICITLY because Tailwind's preflight sets `ol, ul {
+   list-style: none }`, so an <ol> renders as four unnumbered paragraphs and
+   the comment above would have been describing something that was not on the
+   screen. Checked in a browser, not assumed from the markup. */
+.ops__steps { margin: .5rem 0 0; padding-left: 1.4rem; font-size: .9rem;
+  list-style: decimal; }
+.ops__steps > li { padding: .2rem 0; }
+.ops__steps > li::marker { color: var(--brass); }
+
+/* Its own header rather than reusing .ops__invhead: there, margin-left:auto on
+   the <strong> pushes an invoice TOTAL to the right edge, which is right for
+   money and wrong for a person's email address — it floated it 271px away from
+   its own name badges. */
+.ops__adminhead {
+  display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; margin: 0 0 .3rem;
+}
