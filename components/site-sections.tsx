@@ -112,38 +112,52 @@ export function Hero() {
   );
 }
 
-/* The walkthrough sits directly under the hero because it is the only moving
+/* The film sits directly under the hero because it is the only moving
    evidence on the page and the strongest thing the site has: a committee
    member who watches it has seen the product. It costs nothing to put it
-   here — preload is "none", so a visitor downloads the 53 kB poster and not
-   the 10 MB film until they press play. What must never happen is autoplay:
+   here — preload is "none", so a visitor downloads the poster and not the
+   9.6 MB film until they press play. What must never happen is autoplay:
    that would fetch the whole thing before anyone has read a word, and
-   browsers would mute the half doing the work anyway. */
+   browsers would mute the half doing the work anyway.
+
+   REPLACED 5 October 2026, AND THE COPY CHANGED WITH IT. The previous file
+   was a 58-second screen capture recorded at the founding masjid. This one is
+   a 92-second film of MasjidOne's own interface — the browser chrome in it
+   reads admin.masjidone.co.uk, not a masjid's domain. That is a different
+   kind of evidence, so every claim that it was "recorded at a mosque in
+   Bolton" has gone, along with the running time. Do not reinstate them
+   against this file.
+
+   The register in the film is headed PUPIL (EXAMPLE DATA), the families are
+   Family A to E, and the film carries its own line saying no real child's
+   record appears in it. Checked frame by frame before it was committed: 184
+   frames at 2 fps, clustered to 36 distinct screens, every one inspected. */
 export function Walkthrough() {
   return (
 <section className="sect wrap film-sect" id="walkthrough">
   <p className="eyebrow eyebrow--brass rv">See it working</p>
-  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>The madrasah portal, in a Bolton masjid, this term.</h2>
+  <h2 className="rv measure" style={{ "--i": "1" } as React.CSSProperties}>Your committee updates it once. The whole masjid sees it.</h2>
   <figure className="film rv" style={{ "--i": "2" } as React.CSSProperties}>
     <video
       className="film__video"
       controls
       preload="none"
       playsInline
-      poster={`${BASE}/media/madrasah-portal-poster.jpg`}
+      poster={`${BASE}/media/how-masjidone-works-poster.jpg`}
       width={1600}
       height={900}
-      aria-label="A fifty-eight second walkthrough of the MasjidOne madrasah portal, recorded at a mosque in Bolton: the daily register, madrasah fees, and one record of the family."
+      aria-label="A ninety-two second film of the MasjidOne interface: the committee publishing the timetable once, a teacher marking the register, fees by family, the hall screens, and a parent finding their own child in the app."
     >
-      <source src={`${BASE}/media/madrasah-portal.mp4`} type="video/mp4" />
-      Your browser cannot play this video. It is a fifty-eight second
-      walkthrough of the madrasah portal — the register, the fees and one
-      record of the family.
+      <source src={`${BASE}/media/how-masjidone-works.mp4`} type="video/mp4" />
+      Your browser cannot play this video. It is a ninety-two second film of
+      the MasjidOne interface — the timetable, the register, the fees, the
+      hall screens, and the parent's view of their own child.
     </video>
     <figcaption>
-      The register, the fees and one record of the family, recorded at a mosque
-      in Bolton. Fifty-eight seconds. Pupil names in the recording are
-      test data.
+      The committee publishes the timetable once, the teacher marks the
+      register, and the parent sees their own child the same evening.
+      Ninety-two seconds. This is a film of the interface, not a recording
+      made in a masjid — every pupil and family in it is invented.
     </figcaption>
   </figure>
 </section>
