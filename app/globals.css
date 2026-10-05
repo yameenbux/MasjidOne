@@ -3720,7 +3720,10 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
 .ops__items > li > span:first-child { color: var(--brass); }
 .ops__why { grid-column: 2; color: var(--ink-2); }
 
-.ops__acts { margin: .8rem 0 0; }
+/* Buttons in a row need air between them. Without the gap two adjacent
+   buttons read as one two-tone bar, which is how "Edit billing details" and
+   "Cancel" first rendered — found in a screenshot, not in the markup. */
+.ops__acts { margin: .8rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem; }
 /* A disabled "Take live" is the point, not an oversight — it has to look
    unavailable rather than broken. */
 .ops__acts .btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -3736,3 +3739,96 @@ html:not(.js) .mod-card{transform:none !important;opacity:1 !important}
   padding: .4rem 0; border-top: 1px dotted var(--rule);
 }
 .ops__featName { text-transform: capitalize; }
+
+/* ---------------------------------------------------------------------------
+   BILLING, inside a masjid's row in the support console.
+   Same vernacular as the rest of the console: hairlines, no cards, left
+   aligned. Amounts use tabular-nums so a column of money lines up — the same
+   rule the prayer timetable and the pricing cards follow.
+   --------------------------------------------------------------------------- */
+.ops__bill { margin-top: .6rem; }
+.ops__bill > .ops__disc { display: block; }
+
+/* Everything in here is money or a figure, so the numerals are tabular
+   throughout rather than per-cell. */
+.ops__bill .is-num,
+.ops__lines td,
+.ops__lines th { font-variant-numeric: tabular-nums; }
+
+.ops__kv {
+  display: grid; grid-template-columns: auto 1fr; gap: .25rem .8rem;
+  margin: .6rem 0; font-size: .9rem;
+}
+.ops__kv dt { color: var(--ink-2); }
+.ops__kv dd { margin: 0; }
+
+.ops__raise { padding: .8rem 0 .2rem 1rem; border-left: 2px solid var(--brass); margin-top: .6rem; }
+
+/* The table of lines can be wider than a phone. It scrolls inside itself —
+   the page body never scrolls sideways. */
+.ops__lines {
+  display: block; overflow-x: auto; width: 100%;
+  border-collapse: collapse; font-size: .9rem; margin: .6rem 0;
+}
+.ops__lines th, .ops__lines td {
+  text-align: left; padding: .4rem .8rem .4rem 0; border-bottom: 1px dotted var(--rule);
+  white-space: nowrap;
+}
+.ops__lines td:first-child, .ops__lines th:first-child { white-space: normal; min-width: 14rem; }
+.ops__lines .is-num { text-align: right; }
+.ops__lines tfoot th, .ops__lines tfoot td {
+  border-bottom: 0; border-top: 1px solid var(--rule); font-weight: 600;
+}
+
+.ops__invs { list-style: none; margin: .8rem 0 0; padding: 0; }
+.ops__invs > li { padding: .7rem 0; border-top: 1px dotted var(--rule); }
+/* An overdue invoice is marked with a rule, not a colour alone — the same
+   reason the rest of this site never carries meaning in hue by itself. */
+.ops__invs > li.is-overdue { border-left: 3px solid var(--brass); padding-left: .8rem; }
+
+.ops__invhead {
+  display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; margin: 0 0 .2rem;
+}
+.ops__invhead strong { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.ops__linelist {
+  list-style: none; margin: .3rem 0 0; padding: 0;
+  font-size: .85rem; color: var(--ink-2);
+}
+.ops__linelist > li { padding: .15rem 0; }
+
+/* The console's forms sit inside a list row, so they want less air than the
+   contact form they borrow their classes from. */
+.cform--tight { margin: .8rem 0 .2rem; }
+.cform--tight .cform__grid { gap: .6rem 1rem; }
+.cform--tight .cform__field { margin: 0; }
+
+/* A CHECKBOX IS NOT A FIELD LABEL. .cform__field label is set in small
+   letterspaced capitals, which is right above a text input and wrong wrapped
+   around a tickbox: it shouted the question and stacked a 3rem native control
+   above it. This puts the control and its words on one line, in ordinary
+   sentence case, and holds the box to text size. */
+.cform__check label {
+  display: flex; align-items: flex-start; gap: .55rem;
+  text-transform: none; letter-spacing: 0;
+  font-size: .95rem; color: var(--ink); line-height: 1.4;
+  /* Padded to a 44px row. The tickbox itself is 16px, so without this the
+     whole target collapsed to 21px — which is the accessibility rule the
+     override below borrows against, and it has to be paid back somewhere. */
+  padding: .7rem 0; min-height: 2.75rem; box-sizing: border-box; cursor: pointer;
+}
+/* min-height and padding are reset, not just height. .cform__field input sets
+   min-height:2.75rem as a 44px tap target, which is right for a text box and
+   absurd for a tickbox: it made the control 44px tall, so the tick floated
+   below its own words. Setting `height` alone did nothing, because min-height
+   wins. Found by reading the computed box in a browser rather than the rule.
+
+   THE 44px TARGET IS PAID BACK ON THE LABEL, which wraps the input and is
+   padded to min-height 2.75rem above. The whole line is the tap target, which
+   is better behaviour anyway: you can hit the words, not just the box. */
+.cform__check input[type="checkbox"] {
+  width: 1rem; height: 1rem; min-height: 0; padding: 0;
+  margin: .2rem 0 0; flex: 0 0 auto;
+  accent-color: var(--brass);
+}
+.cform__check .cform__hint { margin-left: 1.55rem; }

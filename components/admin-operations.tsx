@@ -3,6 +3,7 @@
 import * as React from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { MasjidRow } from "@/lib/platform";
+import { BillingPanel } from "@/components/admin-billing";
 
 /**
  * The operations half of the support console: what each masjid is on, what is
@@ -10,10 +11,14 @@ import type { MasjidRow } from "@/lib/platform";
  * created.
  *
  * WHY IT IS A SEPARATE FILE. AdminConsole is the thing that already works and
- * signs into a live platform. This talks to functions that DO NOT EXIST IN
- * PRODUCTION YET — migrations 001 and 002 in founder/platform-migrations are
- * written and tested but not applied. Keeping them apart means a half-applied
- * migration degrades one panel rather than breaking the console.
+ * signs into a live platform. This talks to the plan, onboarding and billing
+ * functions, which arrived later — db/134, db/135 and db/136 in the platform
+ * repository, applied on 5 October 2026. Keeping them apart means a
+ * half-applied migration degrades one panel rather than breaking the console.
+ *
+ * The fail-soft below is therefore no longer hypothetical cover for unapplied
+ * work: it is what keeps this panel honest if a future migration is reverted,
+ * or if it is ever pointed at a platform that is behind this build.
  *
  * SO IT MUST FAIL SOFT, AND DOES. PostgREST answers PGRST202 for a function it
  * cannot find. Every call here treats that as "not migrated yet" and says so
@@ -131,10 +136,11 @@ export function AdminOperations({
       <section className="ops" aria-label="Running the platform">
         <h2 className="lsup__h">Running the platform</h2>
         <p className="ops__note">
-          <strong>Not switched on yet.</strong> Migrations 001 and 002 are
-          written and tested but have not been applied to the platform, so
-          there is nothing here to show. Until they are, a second masjid has to
-          be created by hand.
+          <strong>Not switched on yet.</strong> The platform this console is
+          signed into does not have db/134 and db/135 applied, so there is
+          nothing here to show and a second masjid would have to be created by
+          hand. They were applied to the live platform on 5 October 2026 — so
+          if you are seeing this, you are pointed somewhere else.
         </p>
       </section>
     );
@@ -211,6 +217,17 @@ export function AdminOperations({
                   onFeature={(feature, enabled, reason) =>
                     act(m.slug, "set_masjid_feature", {
                       p_masjid: m.slug, p_feature: feature, p_enabled: enabled, p_reason: reason })}
+                />
+              ) : null}
+
+              {/* Billing sits below the plan on purpose: what they are on
+                  decides what they are charged, so it reads in that order. */}
+              {c ? (
+                <BillingPanel
+                  sb={sb}
+                  slug={m.slug}
+                  plan={c.plan}
+                  band={ents[m.slug]?.band ?? null}
                 />
               ) : null}
 
