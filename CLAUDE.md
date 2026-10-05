@@ -338,17 +338,31 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
 ## Open items
 
 - Replace the three SVG previews with live screenshots (test student data
-  only, never a real child's record). Partly done: `#previews` now leads with
-  a 58-second walkthrough of the madrasah portal recorded at the founding masjid
-  (`public/media/madrasah-portal.mp4`, confirmed free of real pupil data on
-  28 September 2026). The stills under it are still interface previews, and
-  the section's opening paragraph draws that distinction — if the stills are
-  ever replaced by real captures, that paragraph has to change with them.
-  The video is 10 MB and loads only on play (`preload="none"` behind a
-  rendered poster, `public/media/madrasah-portal-poster.jpg`). If it is ever
-  re-encoded to 720p it should drop to roughly 4 MB; do not add an autoplay
-  background video, which would download that weight before anyone has read
-  a word.
+  only, never a real child's record). **Still entirely open — and it went
+  backwards on 5 October 2026.** The 58-second screen capture recorded at the
+  founding masjid was replaced that day, at the founder's instruction, by a
+  92-second film of MasjidOne's own interface
+  (`public/media/how-masjidone-works.mp4`, 9.6 MB, 1920×1080, faststart).
+  So the page now carries **no real-world capture at all**: the film is a
+  designed piece, the browser chrome inside it reads `admin.masjidone.co.uk`,
+  and the stills beneath it were always interface previews.
+  Every claim that the film was "recorded at a mosque in Bolton", and the
+  running time, were removed from `Walkthrough()` in the same commit. Do not
+  reinstate them against this file — see the comment above that function.
+  It loads only on play (`preload="none"` behind a rendered poster,
+  `public/media/how-masjidone-works-poster.jpg`); do not add an autoplay
+  background video, which would download 9.6 MB before anyone has read a word.
+  **Verification standard, because this is the one asset that could leak a
+  child's record.** Before it was committed the film was checked frame by
+  frame: 184 frames sampled at 2 fps across the full 92 seconds, clustered to
+  36 visually distinct screens, every one inspected. All data in it is
+  placeholder — `PUPIL (EXAMPLE DATA)`, Pupil One to Pupil Five, Family A to
+  Family E, Trustee A/B — and the film carries its own on-screen line, "Pupil
+  names are placeholders. No real child's record appears in this material."
+  Its **audio track was not verified** and cannot be from here; anyone
+  re-cutting this file must confirm no narration names a real child or masjid.
+  Apply the same standard to any replacement: sampling the first few seconds
+  is not a check.
 - **Email is live.** `info@masjidone.co.uk` and `support@masjidone.co.uk` were
   created on 4 October 2026 and are wired in: `CONTACT_EMAIL` is `info@`,
   `SUPPORT_EMAIL` is `support@`, and the terms page now splits enquiries from
