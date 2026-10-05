@@ -125,6 +125,24 @@ invoice.marked_uncollectible
 charge.dispute.created
 ```
 
+**Event destination scope: "Your account"**, not Connected accounts — you are
+not a Connect platform.
+
+**API version: `2026-08-26.dahlia`.** A new account's endpoint offers that and
+its preview and nothing older, so there is no option to pin to the shape this
+was first written against. That matters more than it sounds:
+`2025-03-31.basil` removed `payment_intent`, `charge` and `paid` from the
+Invoice object and replaced the integer `tax` with a `total_taxes` **array**.
+
+db/143 reads both shapes, so dahlia is fine. Without it, two things would have
+happened — one loud and one silent:
+
+- every invoice import would have **crashed**, casting `[]` to an integer;
+- and once that was fixed, every paid invoice would have recorded its **own id**
+  as the thing that paid it, so no dispute would ever have matched its invoice.
+  Which is exactly the failure db/142 exists to prevent, reintroduced by a
+  dropdown.
+
 Copy the signing secret (`whsec_…`).
 
 ### 6. Deploy
