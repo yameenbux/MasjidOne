@@ -212,8 +212,10 @@ export function MartynsLawInterestForm({ idPrefix = "ml" }: { idPrefix?: string 
         worried about here. That belongs in your plan, not in a web form.
       </p>
 
-      <button className="btn btn--solid cform__send" type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Sending…" : "Register your interest"}
+      <button className="btn btn--solid" type="submit" disabled={status === "sending"}>
+        <span className="btn__t">
+          {status === "sending" ? "Sending…" : "Register your interest"}
+        </span>
       </button>
 
       {status === "error" ? (

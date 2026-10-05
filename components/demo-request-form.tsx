@@ -278,8 +278,14 @@ export function DemoRequestForm({ idPrefix = "dr" }: { idPrefix?: string }) {
       ) : null}
 
       <div className="cform__actions">
+        {/* The label MUST be wrapped in .btn__t. The .btn fill is a ::before
+            circle that scales up on hover; without the span the label has no
+            stacking context, so the fill paints over it and the button reads
+            blank at the exact moment somebody is about to press it. */}
         <button className="btn" type="submit" disabled={status === "sending"}>
-          {status === "sending" ? "Sending…" : "Request a demo"}
+          <span className="btn__t">
+            {status === "sending" ? "Sending…" : "Request a demo"}
+          </span>
         </button>
         <p className="cform__legal">
           We use what you send here to arrange and prepare for a demonstration,

@@ -32,6 +32,15 @@ import type { MasjidRow } from "@/lib/platform";
  */
 
 type ChecklistItem = { item: string; done: boolean; why: string };
+type Entitlements = {
+  masjid: string;
+  plan: string | null;
+  plan_name: string | null;
+  band: string | null;
+  since: string | null;
+  features: Record<string, boolean>;
+};
+
 type Checklist = {
   masjid: string;
   is_live: boolean;
@@ -65,6 +74,7 @@ export function AdminOperations({
   onChanged: () => void;
 }) {
   const [checks, setChecks] = React.useState<Record<string, Checklist>>({});
+  const [ents, setEnts] = React.useState<Record<string, Entitlements>>({});
   const [migrated, setMigrated] = React.useState<boolean | null>(null);
   const [open, setOpen] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState<string | null>(null);
@@ -89,6 +99,19 @@ export function AdminOperations({
     }
     if (seen) setMigrated(true);
     setChecks(next);
+
+    /* Entitlements are read by uuid, which the console's MasjidRow does not
+       carry — so this asks for the caller's own and lets the function resolve
+       it. For masajid we only support, it comes back on the checklist instead.
+       Deliberately not fatal: a console that cannot show a plan is still worth
+       having for the readiness list. */
+    const e: Record<string, Entitlements> = {};
+    for (const m of masjids) {
+      const { data } = await sb.rpc("masjid_entitlements", { p_masjid: null });
+      const row = data as Entitlements | null;
+      if (row?.masjid === m.slug) e[m.slug] = row;
+    }
+    setEnts(e);
   }, [sb, masjids]);
 
   React.useEffect(() => { void load(); }, [load]);
@@ -176,6 +199,21 @@ export function AdminOperations({
                 )
               ) : null}
 
+              {c ? (
+                <PlanEditor
+                  slug={m.slug}
+                  plan={c.plan}
+                  band={ents[m.slug]?.band ?? null}
+                  features={ents[m.slug]?.features ?? null}
+                  busy={busy === m.slug}
+                  onPlan={(plan, band) =>
+                    act(m.slug, "set_masjid_plan", { p_masjid: m.slug, p_plan: plan, p_band: band })}
+                  onFeature={(feature, enabled, reason) =>
+                    act(m.slug, "set_masjid_feature", {
+                      p_masjid: m.slug, p_feature: feature, p_enabled: enabled, p_reason: reason })}
+                />
+              ) : null}
+
               <p className="ops__acts">
                 {c && !c.is_live ? (
                   <button
@@ -191,7 +229,7 @@ export function AdminOperations({
                           : undefined
                     }
                   >
-                    Take live
+                    <span className="btn__t">Take live</span>
                   </button>
                 ) : c ? (
                   <button
@@ -207,7 +245,7 @@ export function AdminOperations({
                       }
                     }}
                   >
-                    Take offline
+                    <span className="btn__t">Take offline</span>
                   </button>
                 ) : null}
               </p>
@@ -226,6 +264,106 @@ export function AdminOperations({
       </button>
       {showNew ? <NewMasjid sb={sb} onDone={() => { setShowNew(false); void load(); onChanged(); }} /> : null}
     </section>
+  );
+}
+
+/* Plan, band and the per-masjid feature overrides. Collapsed by default: this
+   is the part of the console that changes what a customer is paying for, and
+   it should take a deliberate click to open rather than sitting one mis-click
+   away from a committee's bill. */
+function PlanEditor({
+  slug, plan, band, features, busy, onPlan, onFeature,
+}: {
+  slug: string;
+  plan: string | null;
+  band: string | null;
+  features: Record<string, boolean> | null;
+  busy: boolean;
+  onPlan: (plan: string, band: string | null) => void;
+  onFeature: (feature: string, enabled: boolean, reason: string) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const [draftPlan, setDraftPlan] = React.useState(plan ?? "complete");
+  const [draftBand, setDraftBand] = React.useState(band ?? "");
+
+  React.useEffect(() => { setDraftPlan(plan ?? "complete"); }, [plan]);
+  React.useEffect(() => { setDraftBand(band ?? ""); }, [band]);
+
+  const changed = draftPlan !== (plan ?? "") || draftBand !== (band ?? "");
+
+  return (
+    <div className="ops__plan">
+      <button
+        type="button" className="ops__disc" aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        Plan and features
+      </button>
+      {open ? (
+        <div className="ops__planBody">
+          <div className="cform__grid">
+            <p className="cform__field">
+              <label htmlFor={`plan-${slug}`}>Plan</label>
+              <select id={`plan-${slug}`} value={draftPlan}
+                      onChange={(e) => setDraftPlan(e.target.value)}>
+                <option value="complete">Masjid Complete</option>
+                <option value="madrasah">Madrasah</option>
+              </select>
+            </p>
+            <p className="cform__field">
+              <label htmlFor={`band-${slug}`}>Size band</label>
+              <select id={`band-${slug}`} value={draftBand}
+                      onChange={(e) => setDraftBand(e.target.value)}>
+                <option value="">Not set</option>
+                <option value="a">Up to 100</option>
+                <option value="b">101 to 250</option>
+                <option value="c">251 to 500</option>
+                <option value="d">Over 500</option>
+              </select>
+            </p>
+          </div>
+          <p className="ops__hint">
+            The band, not the price. What a band costs lives on the website, in
+            one place.
+          </p>
+          <button
+            type="button" className="btn btn--solid"
+            disabled={busy || !changed}
+            onClick={() => onPlan(draftPlan, draftBand || null)}
+          >
+            <span className="btn__t">
+              {busy ? "Saving…" : changed ? "Save plan" : "No change"}
+            </span>
+          </button>
+
+          {features && Object.keys(features).length > 0 ? (
+            <>
+              <h4 className="ops__subh">Features</h4>
+              <ul className="ops__feat">
+                {Object.entries(features).sort(([a], [b]) => a.localeCompare(b)).map(([f, on]) => (
+                  <li key={f}>
+                    <span className="ops__featName">{f.replace(/_/g, " ")}</span>
+                    <button
+                      type="button" className="ops__disc" disabled={busy}
+                      onClick={() => {
+                        /* The reason is required by the database, so it is asked
+                           for here rather than discovered as an error. */
+                        const why = window.prompt(
+                          `Why is "${f.replace(/_/g, " ")}" being turned ${on ? "off" : "on"} for this masjid? This is written to their audit trail.`,
+                        );
+                        if (why && why.trim()) onFeature(f, !on, why.trim());
+                      }}
+                    >
+                      {on ? "On — turn off" : "Off — turn on"}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -312,7 +450,7 @@ function NewMasjid({ sb, onDone }: { sb: SupabaseClient; onDone: () => void }) {
       </div>
       {error ? <p className="lsup__err" role="alert">{error}</p> : null}
       <button className="btn btn--solid" type="submit" disabled={busy}>
-        {busy ? "Creating…" : "Create masjid"}
+        <span className="btn__t">{busy ? "Creating…" : "Create masjid"}</span>
       </button>
     </form>
   );
