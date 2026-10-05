@@ -15,6 +15,7 @@ import {
 } from "@/lib/platform";
 import { LiveScreen, LiveScreenNote } from "@/components/ui/live-screen";
 import { attention, type Facts, type Item } from "@/lib/attention";
+import { AdminOperations } from "@/components/admin-operations";
 
 /**
  * The LIVE MasjidOne support console. Not the demonstration — this one signs
@@ -433,6 +434,15 @@ export function AdminConsole() {
             </ul>
 
             {masjids !== null && masjids.length > 0 ? <LiveScreenNote /> : null}
+
+            {/* Operations: plans, setup readiness and onboarding. Its own
+                component because it calls functions that are written but not
+                yet applied to the platform — see founder/platform-migrations.
+                It reports that state rather than erroring, so a half-applied
+                migration degrades this panel and leaves the console alone. */}
+            {masjids !== null && masjids.length > 0 ? (
+              <AdminOperations sb={sb} masjids={masjids} onChanged={() => void loadMasjids()} />
+            ) : null}
 
             {masjids !== null && masjids.length === 0 ? (
               <p className="lsup__p">
