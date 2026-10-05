@@ -49,6 +49,15 @@ jobs:
           # deploy would have gone green, and the form would have quietly kept
           # using the mailto fallback.
           NEXT_PUBLIC_FORM_ENDPOINT: ${{ vars.NEXT_PUBLIC_FORM_ENDPOINT }}
+          # Where the Direct Debit panel in the support console asks Stripe for
+          # a mandate link. Unset, that panel says so in a sentence rather than
+          # offering a button that cannot work.
+          #   https://<project>.supabase.co/functions/v1/masjidone-billing
+          # Listed here for the same reason as the line above, and found by
+          # reading that comment: without it, setting the repository variable
+          # would change nothing, the deploy would go green, and the panel
+          # would keep reporting itself undeployed with no way to tell why.
+          NEXT_PUBLIC_BILLING_ENDPOINT: ${{ vars.NEXT_PUBLIC_BILLING_ENDPOINT }}
           # Only needed for a Search Console URL-prefix property. A Domain
           # property is verified by DNS at the registrar and needs nothing here.
           GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
