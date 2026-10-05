@@ -1,0 +1,57 @@
+name: Deploy Edge Functions
+
+# WHY THIS EXISTS RATHER THAN `supabase functions deploy` FROM A LAPTOP.
+#
+# Two reasons, and the second is the important one.
+#
+# The small one: nobody has to have the repository cloned, Node installed and
+# the Supabase CLI on their PATH in order to ship a change to the billing
+# function. That was the immediate blocker.
+#
+# The real one: WHAT IS DEPLOYED IS WHAT IS IN THE REPOSITORY. A deploy done by
+# hand — or worse, by pasting file contents into a dashboard or a tool call —
+# can differ from the committed source by a character, and nothing would say
+# so. This repository has already been bitten by exactly that: the masjid's
+# stripe-webhook ran for weeks in a version git had never seen, and the
+# difference was only found because somebody went looking. A deploy that starts
+# with `actions/checkout` cannot drift.
+#
+# It runs on a push that touches supabase/functions/**, and on demand from the
+# Actions tab.
+#
+# The secrets the function needs — MASJIDONE_STRIPE_RESTRICTED_KEY and
+# MASJIDONE_STRIPE_WEBHOOK_SECRET — are NOT set here. They live in Supabase's
+# own secret store, set once in the dashboard under Edge Functions → Secrets.
+# Putting a Stripe key in a GitHub secret would mean two places to roll it from
+# and one more place it can leak; this repository is public.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # --no-verify-jwt is REQUIRED and is not a loosening of security. Stripe
+      # does not send a Supabase JWT, so with verification on, every webhook
+      # delivery is rejected before the function runs. The function does its own
+      # checking: /webhook verifies Stripe's HMAC signature, and /start builds a
+      # client as the caller and asks the database a question only a two-step
+      # platform admin may ask.
+      - name: Deploy masjidone-billing
+        run: |
+          supabase functions deploy masjidone-billing \
+            --project-ref "$PROJECT_REF" \
+            --no-verify-jwt
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: phenbhmobxwyvdeshvqw

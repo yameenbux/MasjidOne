@@ -3,7 +3,7 @@
 // No Stripe account, no network, no database. That is the point.
 import assert from "node:assert/strict";
 import { checkoutLines, form, isPermanent, monthlyPence, pence } from "./shape.ts";
-import { PRICING, PRICING_BANDS } from "../../../lib/pricing-bands.ts";
+import { PRICING, PRICING_BANDS } from "./pricing-bands.ts";
 
 let passed = 0;
 function ok(label: string, fn: () => void) {

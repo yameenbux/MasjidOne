@@ -21,5 +21,13 @@
   // Deno's, so Next's typecheck cannot resolve either and fails the build on
   // the Stripe esm.sh import. It has its own tests —
   // node --experimental-strip-types supabase/functions/masjidone-billing/shape.test.ts
-  "exclude": ["node_modules", "supabase"]
+  // Only the Deno files are excluded, not all of supabase/. pricing-bands.ts
+  // there is plain data with no imports and no Deno globals, and Next must be
+  // able to typecheck it — it is where the prices actually live.
+  "exclude": [
+    "node_modules",
+    "supabase/functions/**/index.ts",
+    "supabase/functions/**/shape.ts",
+    "supabase/functions/**/shape.test.ts"
+  ]
 }

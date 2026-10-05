@@ -32,9 +32,10 @@
 //  THE AMOUNT IS NEVER TAKEN FROM THE REQUEST. The console sends a slug and
 //  nothing else. This function asks the database which plan and band the
 //  masjid is on, and works the figure out from PRICING_BANDS — the same file
-//  the pricing page renders from, imported directly rather than copied, which
-//  is the whole reason it was moved to lib/pricing-bands.ts. A browser cannot
-//  ask to be charged £1.
+//  the pricing page renders from, imported directly rather than copied. It
+//  sits beside this one, in pricing-bands.ts, because a deployed bundle cannot
+//  import from outside itself; the site reaches it through lib/pricing-bands.ts.
+//  A browser cannot ask to be charged £1.
 //
 //  THE KEY THIS HOLDS, AND HOW SMALL IT MUST BE. Unlike the donations webhook,
 //  this one needs a Stripe API key, because creating a customer and a Checkout

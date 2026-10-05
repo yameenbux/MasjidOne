@@ -22,7 +22,7 @@
 //     that gets quietly broken by somebody being helpful.
 // ===========================================================================
 
-import { PRICING, PRICING_BANDS } from "../../../lib/pricing-bands.ts";
+import { PRICING, PRICING_BANDS } from "./pricing-bands.ts";
 
 export type Cycle = "monthly" | "yearly";
 
