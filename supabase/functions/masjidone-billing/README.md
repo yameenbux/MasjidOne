@@ -156,6 +156,45 @@ details, and that is worth doing before a real committee ever sees it. Use the
 sandbox's **test** keys at step 6 (`sk_test_`/`rk_test_` and the sandbox's own
 `whsec_`) and point `NEXT_PUBLIC_BILLING_ENDPOINT` at the same function.
 
+### Do NOT create a test masjid in the live database
+
+This is the trap, and it is a bad one. Testing billing needs a masjid with
+`billable = true`, and the founding masjid is contractually not one — so the
+obvious move is to add a second. **Do not.**
+
+`sole_masjid()` raises as soon as more than one masjid exists. That is
+deliberate: it fails closed rather than guessing. But eleven functions still
+call it, and they are the no-argument compatibility shims that older callers
+still use. Checked against the live database on 5 October 2026:
+
+```
+courses_public()              prayer_year(integer)
+madrasah_calendar(date,date)  publish_notice(jsonb)
+masjid_brand()                record_donation_paid(...)
+mark_deposit_paid(...)        record_public_donation(...)
+mark_nikah_fee_paid(...)      record_unmatched_payment(text,jsonb)
+masjid_or_sole(text)
+```
+
+plus the `hall_availability` and `notices_live` **views**.
+
+Read the payment ones again. `mark_deposit_paid`, `mark_nikah_fee_paid`,
+`record_donation_paid`, `record_public_donation` — and
+`record_unmatched_payment`, which is the safety net that is supposed to catch
+the others failing. The masjid's Stripe webhook was moved onto the
+masjid-aware overloads, but **the congregation app is a separate repository
+and its call sites have not been checked**. If any of them still calls a
+no-argument version, adding a second masjid row stops donations being recorded —
+silently, because that is what happened the last time this went wrong.
+
+So the second masjid is not a billing task. It is a prerequisite with its own
+audit, and it has to be done before any masjid is onboarded anyway. Until then,
+test on **a Supabase branch** — a separate copy of the database where a second
+masjid harms nothing — or rely on the 65 ledger assertions, which already cover
+the write path end to end against a local fixture.
+
+### On a branch, or a throwaway copy
+
 Then, in the support console, on a **test masjid** — never the founding one:
 
 1. Set a plan, a band and a billing email.
