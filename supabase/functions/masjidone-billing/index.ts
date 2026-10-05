@@ -61,10 +61,11 @@
 //      MASJIDONE_STRIPE_RESTRICTED_KEY    rk_live_… two permissions, as above
 //      SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY (from the platform)
 //
-//  In Stripe, subscribe this endpoint to exactly these nine events:
+//  In Stripe, subscribe this endpoint to exactly these ten events:
 //      checkout.session.completed
 //      customer.subscription.created / .updated / .deleted
 //      invoice.finalized / .paid / .payment_failed / .voided / .marked_uncollectible
+//      charge.dispute.created
 //  Anything else is answered 200 and ignored, so a stray subscription costs
 //  nothing but noise.
 // ===========================================================================
@@ -263,7 +264,9 @@ async function start(req: Request): Promise<Response> {
 //  say it arrived.
 // ---------------------------------------------------------------------------
 
-/** The Stripe customer on any of the nine events we subscribe to. */
+/** The Stripe customer, where the event carries one. A dispute does not: it
+    names a charge and a PaymentIntent, so it is recorded against no masjid and
+    matched to its invoice by reference instead. */
 function customerOf(type: string, o: Record<string, unknown>): string | null {
   const direct = o.customer;
   if (typeof direct === "string" && direct) return direct;
@@ -326,6 +329,22 @@ async function handle(type: string, o: Record<string, unknown>): Promise<unknown
       });
       if (m.error) throw new Error(m.error.message);
     }
+    return data;
+  }
+
+  if (type === "charge.dispute.created") {
+    /* BACS CAN TAKE THE MONEY BACK AFTER IT ARRIVED, with no time limit, and
+       the decision cannot be contested. Stripe does not necessarily move the
+       invoice off paid when this happens, so without this the console would
+       show a masjid as having paid an invoice whose money has been reclaimed —
+       and nobody would chase it. Matched on the PaymentIntent, which is what
+       invoice_from_stripe writes into paid_reference. */
+    const ref = String(o.payment_intent ?? o.charge ?? "");
+    if (!ref) {
+      throw new Error("This dispute has to name the payment it reverses, and it named none.");
+    }
+    const { data, error } = await sb.rpc("invoice_disputed", { p_reference: ref, payload: o });
+    if (error) throw new Error(error.message);
     return data;
   }
 

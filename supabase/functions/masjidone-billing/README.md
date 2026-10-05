@@ -110,7 +110,7 @@ verify a webhook — that is a local HMAC.
 ### 5. The webhook endpoint
 
 Developers → Webhooks → **Add endpoint**, pointed at the deployed function's
-`/webhook` path, subscribed to **exactly these nine events**:
+`/webhook` path, subscribed to **exactly these ten events**:
 
 ```
 checkout.session.completed
@@ -122,6 +122,7 @@ invoice.paid
 invoice.payment_failed
 invoice.voided
 invoice.marked_uncollectible
+charge.dispute.created
 ```
 
 Copy the signing secret (`whsec_…`).
@@ -243,14 +244,19 @@ test accounts compress four business days into three minutes.
 - **Bacs disputes are final.** A payer can dispute at any time, with no time
   limit; you cannot submit evidence and there is no appeal. Stripe takes the
   amount and the fee back out of your balance.
-- **A dispute is NOT yet reflected in the ledger.** This is the real gap.
-  Stripe can tell us a payment failed *after* it succeeded, as
-  `charge.dispute.created` — and that event is not in the nine above, so an
-  invoice could sit in the console reading `paid` while the money has gone
-  back. `invoice_from_stripe` already handles an invoice moving back off paid
-  when Stripe says so, so the work is to subscribe to the dispute event and
-  route it there. Worth doing before the first real collection, not before the
-  first sandbox test.
+- **A dispute IS reflected in the ledger** — db/142, added 5 October 2026.
+  `charge.dispute.created` matches the invoice by its PaymentIntent and puts it
+  back to `sent` with `disputed_at` and the reason recorded, so it reads
+  differently from one that was never paid: ring the treasurer about a reversal
+  rather than send a reminder. It does **not** go to `void` — the masjid still
+  owes that period. There is deliberately no handler for
+  `charge.dispute.closed`, because a Bacs dispute cannot be won.
+- **Nothing yet watches `billing_events` for rows that failed permanently.**
+  An unmatchable dispute, or an invoice for an unknown customer, is recorded
+  with `detail->>'not_processed'` and closed — correct, but only useful if
+  somebody reads it. The natural home is a `health_check` assertion: no
+  `not_processed` rows in the last seven days. Worth adding before the first
+  real collection.
 
 ## Tests
 

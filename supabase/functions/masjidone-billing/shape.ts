@@ -151,6 +151,13 @@ const PERMANENT = [
   "no unit amount",
   "has no word for",
   "there is no masjid called",
+  /* 142. A dispute that matches no invoice will not match one tomorrow
+     either, and the money has already gone — so it is closed WITH the reason
+     written against the event, rather than retried for three days and then
+     left silently unhandled. Somebody has to read it either way; this way the
+     row says what happened. */
+  "matches nothing",
+  "has to name the payment",
 ];
 
 export function isPermanent(message: string): boolean {
