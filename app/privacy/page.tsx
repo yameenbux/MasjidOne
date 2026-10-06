@@ -105,20 +105,21 @@ export default function PrivacyPage() {
       {FORM_ENDPOINT ? (
         <>
           <p>
-            The form submits to an endpoint we run ourselves on our own
-            Cloudflare account, at <code>forms.masjidone.co.uk</code>. There is
-            no form company in the middle: nobody sells us a form service, keeps
-            a copy of your enquiry, or has a dashboard with your details in it.
-            What you send is turned into an email to us and is not stored at the
-            endpoint.
+            The form submits to an endpoint we run ourselves, on our own
+            Cloudflare account. There is no form company in the middle: nobody
+            sells us a form service, and your enquiry is not somebody else{"’"}s
+            product. What you send is turned into an email to us.
           </p>
           <p>
-            Cloudflare carries it, and that makes them a processor acting on our
-            instructions, so we name them: Cloudflare, Inc., under their data
-            processing addendum and standard contractual clauses. They handle
-            the submission in transit and send the resulting email; they do not
-            keep it afterwards. Like any network provider they hold short-lived
-            logs, including IP addresses, which is also true of our host.
+            Two companies carry it, both acting on our instructions, so we name
+            them. Cloudflare, Inc. receives the submission and runs the code
+            that handles it, under their data processing addendum and standard
+            contractual clauses; it is not stored there. Resend sends the
+            resulting email, from servers in Ireland, and holds a copy for
+            thirty days {"—"} their retention period on every plan {"—"} after which
+            the only copy is the one in our own mailbox. Like any network
+            provider both keep short-lived logs, including IP addresses, which
+            is also true of our host.
           </p>
         </>
       ) : (

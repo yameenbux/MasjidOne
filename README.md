@@ -207,7 +207,7 @@ branch, so **Settings → Pages → Source** must be **GitHub Actions**.
 | `NEXT_PUBLIC_BASE_PATH` | Only with **no** `public/CNAME`, served from `<user>.github.io/MasjidOne` | `/MasjidOne` |
 | `NEXT_PUBLIC_SITE_URL` | Only with **no** `public/CNAME` | the full origin |
 | `NEXT_PUBLIC_COMMIT_DATE` | Set by the workflow | the last commit date, for `sitemap.xml` |
-| `NEXT_PUBLIC_FORM_ENDPOINT` | To make the demo request form post rather than open a mail client | `https://forms.masjidone.co.uk/demo-request` |
+| `NEXT_PUBLIC_FORM_ENDPOINT` | To make the demo request form post rather than open a mail client | `https://masjidone-forms.<your-subdomain>.workers.dev/demo-request` |
 | `GOOGLE_SITE_VERIFICATION` | Only for a Search Console **URL-prefix** property | the token |
 
 A Search Console *Domain* property is verified by DNS at the registrar and

@@ -46,9 +46,13 @@ subdomain and cannot collide with the root SPF record or disturb the MX that the
 One.com mailboxes depend on. Verifying the root would mean editing the root SPF,
 and two SPF records on one name is a broken configuration, not a merged one.
 
-Resend transmits; it is not a dashboard somebody else reads your enquiries out
-of. It is still a processor and the privacy notice still names it — that part
-was never avoidable — but the enquiry lands in our mailbox and lives there.
+Resend is a processor and the privacy notice names it. **It also keeps the
+message for thirty days** — that is its retention period on every plan,
+including the free one, and it is in Resend's own documentation. So "Resend
+only transmits" is wrong and must not be written: for thirty days the enquiry
+sits in a dashboard we do not own, and after that the only copy is the one in
+our mailbox. The notice says exactly that, because a committee that asks is
+owed the real answer.
 
 ## Setting it up
 
