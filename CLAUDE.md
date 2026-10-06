@@ -82,6 +82,35 @@ Do not introduce new colours, fonts or spacing scales. Use what's defined.
 > functions, the same database, the same rules about who may open a child's
 > record. Not a stylesheet.
 >
+> **CONFIRMED AS THE MODEL, 6 October 2026, by the founder, when the opposite
+> was put to him.** The argument against was commercial: a designed website,
+> app and set of screens per masjid is a fortnight of work that a £119–£269
+> monthly plan recovers slowly, and it caps how many masajid one person can
+> onboard. The answer was that a mosque should feel like its own, not like
+> every other mosque that bought the same template — which is the thing being
+> sold, and the thing a template cannot be made to do afterwards. So this is
+> settled, and it is not to be reopened as a cost-saving idea: anyone reading
+> this later and thinking "we could template it" is re-proposing the model that
+> was examined and rejected with its price known.
+>
+> **What it does NOT mean.** Only the surfaces are designed — the website, the
+> app's skin, the screens. The system underneath is identical for every masjid
+> and must stay identical: same functions, same tables, same tenancy rules.
+> "Designed per masjid" is never a reason to fork behaviour, add a per-masjid
+> code path, or let one masjid's logic drift from another's. It is a reason to
+> draw them differently, nothing more.
+>
+> **Deliberately not settled on the same day: what it costs.** The setup fee is
+> £499 and the plans are banded by madrasah size, and neither figure was
+> revisited when this was confirmed — the founder's decision was to leave prices
+> alone for now, not that the arithmetic had been answered. Two things are
+> therefore open rather than resolved, and should be worked before anyone is
+> quoted for bespoke onboarding: whether £499 covers a fortnight of design, and
+> whether "waived on twelve months prepaid" still makes sense if that figure
+> rises — waiving a large setup fee for prepayment is the discount on the
+> monthly that content rule 3 forbids, wearing a different hat. Do not change a
+> price to fix this without the founder saying so.
+>
 > This was got wrong once, on 2 October 2026. `masjids.theme` was populated
 > with the founding masjid's palette, `masjid_theme(slug)` was added to read it, and the
 > demo gained a palette picker so a visitor could flick between three skins.
