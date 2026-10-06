@@ -63,7 +63,7 @@ export const PRIVACY_EMAIL = "privacy@masjidone.co.uk";
  * channel they will use. Empty string hides the line entirely rather than
  * printing a placeholder a committee might actually dial.
  */
-export const CONTACT_PHONE = "";
+export const CONTACT_PHONE = "+44 7466 487591";
 
 /** `+441234 567890` -> `+441234567890`, which is what a tel: href needs. */
 export const CONTACT_PHONE_HREF = CONTACT_PHONE.replace(/[^+\d]/g, "");
