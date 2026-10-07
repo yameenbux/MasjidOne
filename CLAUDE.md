@@ -406,9 +406,14 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   page changes. Seven aliases forward to `info@`: accounts, billing, contacts,
   enquiries, forms, hello, privacy. **`forms@` is the one that is load-bearing**
   — the Worker sends from it, and without the forward its bounces would vanish.
-  **`CONTACT_PHONE` is still empty**, which hides the telephone line rather than
-  printing a placeholder. A good half of mosque committees will ring rather than
-  write, so this is worth filling.
+  **`CONTACT_PHONE` was filled on 6 October 2026** and the telephone line now
+  renders; the line that stood here saying it was empty was stale within a day.
+  It is a mobile, and it is the founder's, so it rings wherever he is — a good
+  half of mosque committees will ring rather than write, which was the reason
+  for filling it. `CONTACT_PHONE_HREF` is derived by stripping everything but
+  digits and the leading `+`, so the stored value keeps its readable spacing
+  and the `tel:` link is still dialable. Emptying it again hides the line
+  rather than printing a placeholder, which remains the correct fallback.
 - **The form Worker now sends through Resend, and is ready to deploy.** Changed
   4 October 2026, replacing the "parked" entry that preceded it.
 
