@@ -220,11 +220,26 @@ export function BillingPanel({
               </dd>
               <dt>Setup fee</dt>
               <dd>
-                {b.setup_fee_state === "waived"
-                  ? "Waived"
-                  : b.setup_fee_state === "paid"
-                    ? "Paid"
-                    : "Still due"}
+                {/* A masjid that is never invoiced cannot owe a setup fee, so
+                    this reads `billable` before it reads the stored state.
+                    Without that it printed "Still due" three lines under
+                    "This masjid is not billed", which is the panel
+                    contradicting itself about money.
+
+                    THE STORED STATE IS DELIBERATELY LEFT ALONE. It stays
+                    "due" because that is the right default for whatever
+                    agreement comes next: a masjid made billable later is
+                    being charged under terms somebody has just negotiated,
+                    and a setup fee quietly pre-waived under an agreement that
+                    no longer applies would be the harder mistake to spot.
+                    What was wrong was the reading, not the record. */}
+                {!b.billable
+                  ? "Not charged — this masjid is not billed"
+                  : b.setup_fee_state === "waived"
+                    ? "Waived"
+                    : b.setup_fee_state === "paid"
+                      ? "Paid"
+                      : "Still due"}
               </dd>
               {b.po_reference ? (<><dt>Their reference</dt><dd>{b.po_reference}</dd></>) : null}
             </dl>

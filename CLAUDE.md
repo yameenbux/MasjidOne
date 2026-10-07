@@ -406,9 +406,14 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   page changes. Seven aliases forward to `info@`: accounts, billing, contacts,
   enquiries, forms, hello, privacy. **`forms@` is the one that is load-bearing**
   — the Worker sends from it, and without the forward its bounces would vanish.
-  **`CONTACT_PHONE` is still empty**, which hides the telephone line rather than
-  printing a placeholder. A good half of mosque committees will ring rather than
-  write, so this is worth filling.
+  **`CONTACT_PHONE` was filled on 6 October 2026** and the telephone line now
+  renders; the line that stood here saying it was empty was stale within a day.
+  It is a mobile, and it is the founder's, so it rings wherever he is — a good
+  half of mosque committees will ring rather than write, which was the reason
+  for filling it. `CONTACT_PHONE_HREF` is derived by stripping everything but
+  digits and the leading `+`, so the stored value keeps its readable spacing
+  and the `tel:` link is still dialable. Emptying it again hides the line
+  rather than printing a placeholder, which remains the correct fallback.
 - **The form Worker now sends through Resend, and is ready to deploy.** Changed
   4 October 2026, replacing the "parked" entry that preceded it.
 
@@ -473,6 +478,47 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   to `{}`, comment marked DEAD), but it is a signpost toward a model this
   product does not have. The drop could not be issued through the MCP tooling,
   which timed out on it repeatedly while every other statement went through.
+- **Direct Debit is wired end to end but has never been exercised, and it
+  cannot be until there is a paying masjid.** Written 7 October 2026, because
+  the next person will otherwise spend an afternoon rediscovering why.
+
+  **What is done.** Bacs is enabled on the live Stripe account. Failed-payment
+  retries end in *mark the subscription as unpaid* — **not** *pause*, which on
+  an account that never sets `billing_mode: flexible` silently becomes a
+  cancellation. A restricted key scoped to Customers: Write and Checkout
+  Sessions: Write, and a webhook endpoint at
+  `https://phenbhmobxwyvdeshvqw.supabase.co/functions/v1/masjidone-billing/webhook`
+  carrying all ten events on the Snapshot payload. Both Supabase secrets
+  (`MASJIDONE_STRIPE_RESTRICTED_KEY`, `MASJIDONE_STRIPE_WEBHOOK_SECRET`) are
+  set to live values.
+
+  **Why it cannot be tested.** `/start` is reached only from the Direct Debit
+  panel in `/admin/`, and that panel returns "Not available" without rendering
+  a button whenever `masjid_billing.billable` is false. The founding masjid is
+  false by contract — clause 4.2, no invoice is raised — and it is the only
+  masjid in the database. Making it billable to run a test would override a
+  clause the database row itself tells you not to touch. Do not do it.
+
+  **So the key is unproven and the webhook secret is unproven.** That is
+  accepted rather than overlooked, on this reasoning: a wrong webhook secret
+  announces itself as 400s in Stripe's delivery log while Stripe retries for
+  days, so nothing is lost; and a wrong restricted key surfaces as a visible
+  error in the panel, because `makeLink()` checks `res.ok` and the returned
+  `url` rather than merely whether `fetch` threw. Neither failure is silent.
+  On the first real mandate, check both sides — the function's logs and the
+  `billing_events` row — rather than taking a status code at face value.
+
+  **Still needed, and only a person can do it:** set the repository variable
+  `NEXT_PUBLIC_BILLING_ENDPOINT` to
+  `https://phenbhmobxwyvdeshvqw.supabase.co/functions/v1/masjidone-billing`,
+  no trailing slash. Without it the button is disabled and the panel prints
+  "The billing function is not deployed" — which is correct, and a poor thing
+  to discover in front of a committee. `deploy.yml` already passes it through.
+
+  **The keys are credentials.** They live in the Supabase dashboard and in
+  Stripe, and nowhere else. This repository is public and git history is
+  permanent.
+
 - Do not add a captcha. reCAPTCHA is a Google tracker and would trigger the
   cookie banner this site deliberately avoids. The form has a honeypot.
 - Set `NEXT_PUBLIC_BASE_PATH` as a repository variable, or add a `CNAME` to
