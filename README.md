@@ -183,10 +183,13 @@ npm run build   # static export to out/
 `output: 'export'` writes plain HTML, CSS and JS to `out/`, so there is
 nothing to run at request time and nothing to keep patched.
 
-> [!WARNING]
-> **`CONTACT_EMAIL` in `lib/site.ts` is still `REPLACE-ME@masjidone.example`.**
-> It is one line, and until it is set every "Request a demo" on the site — and
-> the subject access route in the privacy policy — goes nowhere.
+> [!NOTE]
+> **Contact details are live.** `CONTACT_EMAIL` is `info@masjidone.co.uk`,
+> `SUPPORT_EMAIL` is `support@masjidone.co.uk` and `PRIVACY_EMAIL` is
+> `privacy@masjidone.co.uk` — the legal pages name their own address so that
+> routing a subject access request elsewhere happens at the mail host and no
+> page changes. `CONTACT_PHONE` is set, so the telephone line renders; emptying
+> it hides the line rather than printing a placeholder.
 
 ### Deploying
 
@@ -208,6 +211,7 @@ branch, so **Settings → Pages → Source** must be **GitHub Actions**.
 | `NEXT_PUBLIC_SITE_URL` | Only with **no** `public/CNAME` | the full origin |
 | `NEXT_PUBLIC_COMMIT_DATE` | Set by the workflow | the last commit date, for `sitemap.xml` |
 | `NEXT_PUBLIC_FORM_ENDPOINT` | To make the demo request form post rather than open a mail client | `https://masjidone-forms.<your-subdomain>.workers.dev/demo-request` |
+| `NEXT_PUBLIC_BILLING_ENDPOINT` | To enable Direct Debit in the support console | the deployed `masjidone-billing` function URL, no trailing slash |
 | `GOOGLE_SITE_VERIFICATION` | Only for a Search Console **URL-prefix** property | the token |
 
 A Search Console *Domain* property is verified by DNS at the registrar and
@@ -215,28 +219,45 @@ needs none of this.
 
 ### Where the demo request form posts
 
-`worker/` holds a Cloudflare Worker that takes a demo request and turns it into
-an email. **Written and tested, not yet deployed** — `worker/README.md` has the
-steps. Until `NEXT_PUBLIC_FORM_ENDPOINT` is set the form hands its answers to
-the visitor's own mail client instead.
+`worker/` holds a Cloudflare Worker that takes a demo request and hands it to
+**Resend's REST API**, which sends the email. **Written and tested, not yet
+deployed** — `worker/README.md` has the steps. Until `NEXT_PUBLIC_FORM_ENDPOINT`
+is set the form hands its answers to the visitor's own mail client instead.
 
 The alternative was a form company like Formspree: twenty minutes of work, and
 a business that then holds every enquiry a committee ever sends, in their
 dashboard, under their retention policy.
 
 > [!NOTE]
-> **A Worker does not mean "no processor in the privacy policy".** Cloudflare
-> carries the submission and is a processor under the GDPR, so the notice names
-> them. What it avoids is anybody keeping their own copy. The notice reads
-> `FORM_ENDPOINT` and prints the mailto wording or the Cloudflare wording to
-> match, so it cannot be left describing behaviour the site no longer has.
+> **It used to use Cloudflare Email, and cannot.** Cloudflare's own
+> documentation requires the zone to be on Cloudflare DNS for Email Service,
+> and `masjidone.co.uk` is entirely on One.com — which also supplies automatic
+> DKIM that a migration would cost. Outbound Email Sending also reads "Not
+> available" on the Workers free plan, and Email Routing replaces the root MX,
+> which would stop the mailboxes receiving. Hence Resend, and hence
+> `workers_dev = true`: the custom route needed a zone Cloudflare does not hold.
 
-It is free, conditionally, and the condition is worth knowing: Cloudflare
-meters outbound email to arbitrary recipients, but sending to a **verified
-destination address on your own account** is free on every plan. A contact form
-sends to one address, so the binding is pinned to it with
-`destination_address` — which keeps it free *and* means a bug cannot mail a
-third party. Widening it to also email the enquirer leaves the free case.
+**Resend verifies `send.masjidone.co.uk`, not the root, and that is the point.**
+Its SPF, DKIM and bounce records live on the subdomain, where they cannot
+collide with the root SPF or disturb the MX the mailboxes depend on. If a screen
+offers to change the root MX or the root SPF, it is the wrong screen.
+
+> [!IMPORTANT]
+> **Two processors, not one, and one of them keeps a copy.** Cloudflare carries
+> the submission and Resend sends it; both are processors and the privacy notice
+> names both. Resend also **retains the message for thirty days** on every plan,
+> including the free one. "Resend only transmits" is wrong and must not be
+> written. `app/privacy/page.tsx` reads `FORM_ENDPOINT` and prints the mailto
+> wording or the Worker wording to match — do not replace that conditional with
+> whichever branch happens to be true today.
+
+The Worker checks `response.ok`, not merely whether `fetch` threw. A 401 from a
+rolled key arrives as a perfectly happy `Response`, and an unchecked call would
+tell every visitor their enquiry was sent while nothing was.
+
+**The API key is a credential.** It goes in `wrangler secret put RESEND_API_KEY`
+and nowhere else — not in `worker/wrangler.toml`, not in a commit. This repository is
+public and git history is permanent.
 
 Defences, since there is deliberately no captcha: a honeypot answered `200` so
 a bot does not retry, five posts a minute per IP, a 32 KB ceiling, per-field
@@ -351,7 +372,7 @@ look at the other.**
 
 | What you want to change | File |
 | --- | --- |
-| The three prices | `lib/site.ts` — one source; the yearly total is `price * 12`, derived, so it cannot drift into a discount |
+| The prices | `lib/site.ts` — `PRICING_BANDS` is the only source; `BAND_RANGE` and the yearly total (`price * 12`) are derived, so neither can drift into a discount |
 | Plan features and copy | `components/masjidone-pricing.tsx` |
 | The pricing block itself | `components/ui/pricing.tsx` |
 | Every other home page section | `components/site-sections.tsx` |
@@ -395,17 +416,16 @@ one that reported it.
 > routinely needs to change is theirs to change, which is also why role-based
 > access matters: the person who should change it can, and nobody else can.
 
-> [!WARNING]
-> **The support address is still not set.** `CONTACT_EMAIL` in `lib/site.ts` is
-> `REPLACE-ME@masjidone.example`, so the route in this diagram does not exist
-> yet. Every "request a demo" button and the subject access route in the
-> privacy policy depend on it, and so does the Worker's destination address —
-> one line closes all three.
+> [!NOTE]
+> **The support route is live.** Enquiries reach `info@masjidone.co.uk` and
+> customer support reaches `support@masjidone.co.uk` — deliberately two
+> addresses, because the person answering a sales question and the person
+> answering a broken register are on different clocks.
 >
-> The *"Having issues? Log a ticket"* link no longer depends on it: it pointed
-> at a `mailto:` aimed at that placeholder, which meant the one control on the
-> demo meant for a committee that is stuck opened an empty mail window
-> addressed to nowhere. It opens `/demo/ticket/` instead.
+> The *"Having issues? Log a ticket"* link does not use either: it opens
+> `/demo/ticket/`. It previously pointed at a `mailto:` aimed at a placeholder,
+> which meant the one control on the demo intended for a committee that is
+> stuck opened an empty mail window addressed to nowhere.
 
 There is no overseas support desk and no outsourced queue. A masjid talks to
 the **MasjidOne support team** — the people who wrote the system and can fix it.
@@ -414,15 +434,26 @@ the **MasjidOne support team** — the people who wrote the system and can fix i
 
 ## What it costs
 
-| | |
-| --- | --- |
-| **Madrasah** | £79 / month |
-| **Masjid Complete** | £179 / month |
-| Setup | £499 once — waived on twelve months prepaid |
-| Donations | 0% commission |
+**Pricing is banded by the size of the madrasah** — four bands by pupil count,
+across two plans (**Madrasah**, and **Masjid Complete** which adds the website,
+the app, the screens and donations). Setup is **£499 once**, waived on twelve
+months prepaid, and donations carry **0% commission**.
 
-Yearly billing is the same rate shown twelve times over, not a discount.
-Only the setup fee falls.
+> [!IMPORTANT]
+> **The per-band figures are deliberately not repeated here.** They live in
+> `PRICING_BANDS` in `lib/site.ts` and nowhere else; `BAND_RANGE` derives the
+> ranges from them, and `components/structured-data.tsx` derives what Google
+> reads from the same source.
+>
+> This README printed `£79` and `£179` until 8 October 2026 — the flat rates
+> abandoned on 4 October, one of which was never a price in the new table at
+> all. A figure copied into prose cannot be type-checked and will rot. If you
+> are tempted to paste the numbers back in for convenience, that is the bug
+> this note exists to prevent.
+
+Yearly billing is the same rate shown twelve times over, not a discount. Only
+the setup fee falls. A band is **not** per-pupil pricing: the figure changes
+only at renewal, and only on crossing a threshold.
 
 ---
 
