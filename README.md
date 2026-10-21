@@ -116,10 +116,25 @@ product, one record of one family reachable from both sides, happens
 *inside* a masjid rather than between them. Separation buys nothing there
 and costs a great deal to run.
 
-**This is finished rather than planned.** Every function that reads a masjid
-now has a way to be told which one, and the last two learned on 2 October 2026.
-It was tested by inserting a second masjid and running the whole public surface
-against both, inside a transaction that always rolls back.
+**This is finished for the functions rather than planned.** Every function that
+reads a masjid now has a way to be told which one, and the last two learned on
+2 October 2026. It was tested by inserting a second masjid and running the whole
+public surface against both, inside a transaction that always rolls back.
+
+> [!CAUTION]
+> **Two views did not learn, and they will take the public site down on the day
+> a second masjid is inserted.** `notices_live` and `hall_availability` are
+> `SECURITY DEFINER` views that still filter on `masjid_id = sole_masjid()`.
+> They therefore **fail closed rather than leaking**, which is the right way
+> round — but "fail closed" here means the public notices board and hall
+> availability start raising for the *first* masjid too, not just the second.
+>
+> The parameterised function forms already exist: `notices_live(p_masjid text)`
+> and `hall_availability(p_masjid text)` are both there and both anonymously
+> callable. Converting the callers is a change in the platform repository and in
+> whichever masjid portal reads them, and it has to happen in the same commit —
+> change the view alone and a masjid's notices board goes blank. **Not urgent
+> today. Blocking the moment a second masjid is signed.**
 
 > [!IMPORTANT]
 > **`sole_masjid()` raises once a second masjid exists, and must keep raising.**
@@ -135,6 +150,37 @@ page passes a slug because nobody is signed in. A staff screen resolves
 `current_masjid()`, because the right answer is whichever masjid that person is
 standing in — which, for MasjidOne support, is not the one their build was
 compiled for.
+
+### Changing that database, and the one thing that will waste your afternoon
+
+The schema lives in the platform repository, not this one. Two notes belong here
+anyway, because this is where somebody goes looking.
+
+> [!IMPORTANT]
+> **`DROP` and `DELETE` hang through the Supabase MCP tooling. They are not
+> broken.** Both wait on an interactive confirmation for destructive statements
+> that the tooling cannot deliver outside a dashboard, so they sit until the
+> call times out and the whole transaction rolls back — leaving no trace, which
+> is what makes it look like a database fault. `ALTER`, `UPDATE`, `INSERT`,
+> `REVOKE` and `CREATE FUNCTION` all go through normally. **Run anything
+> destructive in the Supabase SQL editor.**
+>
+> This is the explanation for the `masjid_theme(text)` entry that has sat in
+> `CLAUDE.md` since 2 October saying the drop "timed out repeatedly while every
+> other statement went through". Nothing was wrong with the database.
+>
+> A corollary worth keeping: to change a policy, prefer **`ALTER POLICY`** over
+> `DROP` plus `CREATE`. It avoids the timeout, and it is better practice anyway
+> — there is no window in which the policy does not exist.
+
+Three pieces of hardening were applied in October 2026 and are recorded here so
+nobody reads them as accidental:
+
+| Change | Why |
+| :--- | :--- |
+| `bmcc` uploads capped at 10 an hour, bucket-wide | Anonymous upload is **deliberate** — `charity_collections.bmcc_certificate_path` stores the path, so the file must exist before the record and the submitter is not signed in. The defect was that this was the only anonymous write with no rate limit, while all eight anonymous intake tables carry a rate-limit trigger — five on `rate_limit_by_contact` at 3–5 a day per phone or email, three on their own function. Storage carries no identity for an anonymous uploader, so a bucket-wide ceiling is the only thing available at the policy layer |
+| `brand` bucket capped at 5 MB, images only | It is a **public** bucket and had no size or type limit. SVG is excluded on purpose: it is a script-bearing document, and a public URL serving one is an executable file |
+| `admin_audit` INSERT now requires `verified_admin()` | It previously accepted any signed-in session, so a teacher or parent could append rows. Append-only is still achieved the same way — by having **no** UPDATE or DELETE policy — and every `SECURITY DEFINER` function that writes audit rows is unaffected, because they run as `postgres`, which owns the table and `relforcerowsecurity` is false |
 
 ---
 
@@ -216,6 +262,99 @@ branch, so **Settings → Pages → Source** must be **GitHub Actions**.
 
 A Search Console *Domain* property is verified by DNS at the registrar and
 needs none of this.
+
+### Browser hardening, and what Pages cannot send
+
+The Content Security Policy is a `<meta>` tag, built by
+`lib/security-policy.ts` from the same constants the running code uses — so
+adding a masjid to `MASJID_SCREENS` extends `frame-src` on the next build, and
+setting `NEXT_PUBLIC_FORM_ENDPOINT` adds that origin to `connect-src` and
+`form-action` without anybody remembering to. Same reasoning as
+`next.config.mjs` reading `public/CNAME`: a value written in two places is a
+value that will eventually disagree with itself.
+
+It is a meta tag because **GitHub Pages cannot set response headers.** That is
+measured, not assumed: `curl -I https://masjidone.co.uk/` comes back with the
+ordinary content and caching headers and **not one security header** among them
+— no HSTS, no `X-Frame-Options`, no `X-Content-Type-Options`. So three controls
+are not merely missing, they are **unavailable on this host**:
+
+| Control | Status here |
+| :--- | :--- |
+| `Strict-Transport-Security` | No meta equivalent exists. Absent |
+| `X-Frame-Options` | No meta equivalent exists. Absent |
+| `frame-ancestors` | Legal in a CSP but **ignored in meta form**. Absent |
+
+> [!IMPORTANT]
+> **This policy does not stop cross-site scripting, and must not be described as
+> if it does.** `script-src` carries `'unsafe-inline'` because Next emits inline
+> bootstrap and hydration scripts, and the alternatives both need something a
+> static export has not got: a nonce needs a server to mint one per request, and
+> hashes change on every build. What it genuinely refuses is narrower and still
+> worth having — script from an origin that is not ours, `<base href>`
+> hijacking, a form posted somewhere unnominated, `<object>` content, and
+> connections to an origin not on the list.
+>
+> **Clickjacking is therefore open**, and closing it means serving `/admin/`
+> from somewhere that can send real headers. It is an open item, not a solved
+> one.
+
+> [!CAUTION]
+> **`form-action` lists `mailto:` and the Worker origin on purpose.** Both forms
+> carry a real `action` and `method="POST"` so they work with JavaScript
+> disabled — see the top of `components/demo-request-form.tsx`. A tidy-looking
+> `form-action 'self'` breaks that fallback, and breaks it **invisibly**: the
+> failure appears only with JavaScript off, which is exactly the visitor the
+> fallback exists for.
+
+**A CSP is verified in a browser or not at all.** Too strict a policy throws
+nothing at build time; it silently refuses a stylesheet or a `fetch` at runtime,
+which is how a CSP ends up worse than none. The check that matters is loading
+every route with the console open — including a sign-in attempt, because
+`/admin/` makes no network call until you try one, so `connect-src` is otherwise
+never exercised.
+
+Two more things in the same pass, both small:
+
+- **`jsonLd()` in `lib/utils.ts` replaces `JSON.stringify` for the
+  `application/ld+json` blocks.** `JSON.stringify` escapes quotes and
+  backslashes and leaves `<` and `/` alone, so a value containing `</script>`
+  closes the element and everything after it parses as markup. Nothing
+  injectable reaches those blocks today — which is the reason to fix it now,
+  because structured data is exactly the thing that gets wired to a masjid's
+  own name later.
+- **The framed masjid screen in the support console is sandboxed.** Being
+  cross-origin it never could read the console's DOM or storage; what it could
+  do was navigate the whole console elsewhere. `allow-scripts` with
+  `allow-same-origin` is safe here precisely because the frame is always a
+  masjid's *separate* domain — that pairing is only a foot-gun when a page
+  frames its own origin and the frame can reach up and drop its own sandbox.
+
+### The billing function answers a preflight
+
+`supabase/functions/masjidone-billing` has two routes and they are treated
+differently on purpose.
+
+`/start` is called from a browser — `components/admin-direct-debit.tsx` posts
+cross-origin from `masjidone.co.uk` with `Authorization` and
+`Content-Type: application/json`. Both of those make the request non-simple, so
+the browser sends a preflight `OPTIONS` and refuses to send the real `POST`
+unless it is answered. The function previously returned `405` to every non-`POST`
+and no `Access-Control-Allow-Origin` at all, so **the button could not have
+worked from a browser** — and it would have failed first in front of a
+committee, because `/start` is reachable only from the Direct Debit panel.
+Origins are named, never `*`; a wildcard is not even legal on a request that
+carries `Authorization`.
+
+`/webhook` deliberately gets none of it. Stripe is not a browser, sends no
+`Origin`, and is not subject to the same-origin policy. Advertising the function
+to web pages on the route that accepts signed events would widen it for nothing.
+
+> [!NOTE]
+> **CORS is not the authorisation.** `/start` is protected by `readAsCaller()`,
+> which builds a client as the caller and asks the database a question only a
+> two-step platform admin may ask — so the check and the data it needs are the
+> same call, and there is no way to get the data without passing the check.
 
 ### Where the demo request form posts
 
@@ -347,6 +486,20 @@ JavaScript in their browser gets nothing:
 | `is_platform_admin()` | Requires `is_aal2()` — a completed second factor, so the console has a real authenticator step |
 | `set_current_masjid()` | Refuses a masjid you neither belong to nor administer, and writes `masjidone_support_access` into **their** audit trail when it is the latter |
 
+> [!CAUTION]
+> **"`anon` holds no `EXECUTE`" is worth checking rather than assuming, because
+> Postgres grants `EXECUTE` to `PUBLIC` by default and `anon` inherits it.**
+> `masjid_attention()` — which returns a masjid's whole operational picture,
+> pupil, staff, concern and payment counts — was anonymously callable for
+> exactly that reason. It always refused on its first statement, so nothing
+> leaked, but it had no business being on the anonymous surface.
+>
+> The trap is that **`REVOKE EXECUTE ... FROM anon` is a silent no-op** when the
+> grant is to `PUBLIC`: it reports success and changes nothing. It has to be
+> `FROM PUBLIC`, and then any role that needs it wants an explicit grant.
+> `has_function_privilege('anon', …)` is the only answer worth believing — read
+> `proacl` and a bare `=X/postgres` entry is the `PUBLIC` grant.
+
 > [!IMPORTANT]
 > **Entering a masjid you hold a role at is not support access and is not
 > logged.** The audit row is written only when you are platform staff *and not*
@@ -384,7 +537,10 @@ look at the other.**
 | The live support console | `components/admin-console.tsx` |
 | Which platform it talks to | `lib/platform.ts` — and where each masjid's portal lives |
 | The demo request form's endpoint | `worker/` — see `worker/README.md` |
+| Direct Debit and the Stripe webhook | `supabase/functions/masjidone-billing/` |
 | What Google reads | `components/structured-data.tsx` |
+| The Content Security Policy | `lib/security-policy.ts` — derived from the constants above it, never typed twice |
+| Escaping for the JSON-LD blocks | `lib/utils.ts` — `jsonLd()`, because `JSON.stringify` does not escape `</script>` |
 | Canonical URL, contact address | `lib/site.ts` |
 | Colour, type and spacing | `app/globals.css` |
 | The full design system | `DESIGN.md` |
