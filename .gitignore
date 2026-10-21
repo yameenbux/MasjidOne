@@ -14,3 +14,22 @@ founder/
 # The form Worker's own dependencies.
 worker/node_modules/
 worker/.wrangler/
+
+# Agent skills installed with `npx skills add` (HyperFrames, 11 October 2026).
+# Vendored third-party skill trees that run with full agent permissions. This
+# repository is PUBLIC and they are not ours to redistribute; reinstall them
+# rather than committing them.
+.agents/
+.claude/skills/
+
+# HyperFrames video projects: keep the composition and its finished assets,
+# drop what regenerates. `capture/` is rebuilt by re-running the capture against
+# a local `npm run build`, and node_modules by `npm install`. Together they are
+# 13 MB of a 15 MB tree.
+videos/**/node_modules/
+videos/**/capture/
+skills-lock.json
+
+# Rendered MP4s. Regenerable from the composition with `npm run render`, and a
+# 12.5 MB binary per render would sit in a public repo's history forever.
+videos/**/renders/*.mp4

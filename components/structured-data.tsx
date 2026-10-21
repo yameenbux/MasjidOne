@@ -1,4 +1,5 @@
 import { PRICING, PRICING_BANDS, BAND_RANGE, SITE_ORIGIN } from "@/lib/site";
+import { jsonLd } from "@/lib/utils";
 
 /**
  * The machine-readable version of the page, for Google.
@@ -135,10 +136,12 @@ export function StructuredData() {
   return (
     <script
       type="application/ld+json"
-      // The content is built from our own constants above — no user input
-      // reaches it — and JSON.stringify escapes the strings.
+      // Built from our own constants above, so nothing injectable reaches it
+      // today. jsonLd() rather than JSON.stringify all the same: stringify does
+      // NOT escape `</script>`, and this block is an obvious candidate for
+      // being fed real content later. See lib/utils.ts.
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }),
+        __html: jsonLd({ "@context": "https://schema.org", "@graph": graph }),
       }}
     />
   );

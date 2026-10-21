@@ -173,8 +173,18 @@ export function MasjidOneHero() {
       {/* The device spread below runs long, so the walkthrough that follows it
           is a good screen away. This puts it one tap from the hero without
           dropping a video into the middle of a pinned, scroll-driven centre. */}
+      {/* NO PROVENANCE AND NO RUNNING TIME, DELIBERATELY. This link read
+          "at a Bolton masjid · 58 seconds" until 11 October 2026 — both
+          claims about the film that was replaced on 5 October. The film is
+          now a 92-second piece of MasjidOne's own interface, so "at a Bolton
+          masjid" was false and "58 seconds" was the wrong length. The fix on
+          5 October reached Walkthrough() in site-sections.tsx and missed this
+          anchor, which left the page contradicting itself: this line claimed
+          a masjid recording while the caption under the video said it was
+          not one. See the comment above Walkthrough(); do not reinstate
+          either claim here. */}
       <p className="stack__watch">
-        <a href="#walkthrough">Watch the madrasah portal at a Bolton masjid · 58 seconds</a>
+        <a href="#walkthrough">Watch the madrasah portal</a>
       </p>
       <p className="stack__note">
         Interface previews · example data, no masjid named

@@ -79,6 +79,25 @@ export function LiveScreen({
             title={label}
             loading="lazy"
             referrerPolicy="no-referrer"
+            /*
+             * SANDBOXED BECAUSE THIS IS SOMEBODY ELSE'S WEBSITE, framed inside
+             * the live support console — a page on which a MasjidOne platform
+             * session is signed in. Being cross-origin, the frame already
+             * cannot read this page's DOM or its storage; what it could do
+             * until now is navigate the whole console somewhere else, which is
+             * a credible phishing route if a masjid's own site is ever
+             * compromised. Omitting allow-top-navigation closes that.
+             *
+             * allow-scripts WITH allow-same-origin is safe HERE and is not the
+             * usual foot-gun. That pairing is dangerous only when a page frames
+             * its OWN origin, because the frame can then reach up and drop its
+             * own sandbox. These screens are always a masjid's separate domain
+             * — that separateness is the whole reason their design survives the
+             * link, per the design rules — so "same-origin" here means the
+             * masjid's origin, not ours. Both are needed because the page being
+             * framed is a live prayer timetable that renders with script.
+             */
+            sandbox="allow-scripts allow-same-origin"
           />
         ) : null}
       </div>

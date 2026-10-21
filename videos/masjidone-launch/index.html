@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/vendor/gsap.min.js"></script>
+<style>
+/* Fonts are LOCAL on purpose. The render browser cannot reach Google Fonts
+   through this environment's proxy, and a webfont that fails to load does not
+   throw — it silently falls back to Georgia and Arial and the render goes out
+   in the wrong typefaces. Serving them from assets/ makes the render
+   deterministic. */
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:300 600;font-display:block;
+  src:url('assets/fonts/cY9AfjOCX1hbuyalUrK4397yjA.woff2') format('woff2');}
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:300 600;font-display:block;
+  src:url('assets/fonts/cY9AfjOCX1hbuyalUrK439DyjJBG.woff2') format('woff2');}
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:300 600;font-display:block;
+  src:url('assets/fonts/cY9AfjOCX1hbuyalUrK439HyjJBG.woff2') format('woff2');}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400 700;font-stretch:75% 110%;font-display:block;
+  src:url('assets/fonts/k3kQo8UDI-1M0wlSfdnoLg.woff2') format('woff2');}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400 700;font-stretch:75% 110%;font-display:block;
+  src:url('assets/fonts/k3kQo8UDI-1M0wlSfdfoLnnA.woff2') format('woff2');}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400 700;font-stretch:75% 110%;font-display:block;
+  src:url('assets/fonts/k3kQo8UDI-1M0wlSfdboLnnA.woff2') format('woff2');}
+
+/* The MasjidOne palette, lifted verbatim from the site's own tokens via
+   capture/extracted/tokens.json. No new colours are invented here. */
+:root{
+  --board:#0C2A21; --board-ink:#EDE9DD; --board-rule:#2C4C40;
+  --board-brass:#C0A46A; --paper:#F3F1EA; --paper-2:#EAE7DD;
+  --ink:#12201A; --ink-2:#4E5F57; --brass:#7D5F2D;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--board)}
+#root{width:100%;height:100%;position:relative;font-family:'Archivo',sans-serif;
+      background:var(--board);overflow:hidden}
+.clip{position:absolute;inset:0;width:1080px;height:1920px}
+
+/* --- shared ------------------------------------------------------------ */
+.mark{color:var(--board-brass)}
+.eyebrow{font-size:26px;letter-spacing:.26em;text-transform:uppercase;
+         color:var(--board-brass);font-weight:600}
+.serif{font-family:'Newsreader',Georgia,serif;font-weight:400;letter-spacing:-.015em}
+
+/* --- 1. logo reveal ---------------------------------------------------- */
+#s1{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:54px}
+#s1 svg{width:420px;height:auto}
+#s1 .word{font-family:'Newsreader',serif;font-size:116px;color:var(--board-ink);line-height:1}
+#s1 .word i{font-style:normal;color:var(--board-brass)}
+#s1 .rule{width:0;height:2px;background:var(--board-rule)}
+
+/* --- 2. kinetic headline ----------------------------------------------- */
+#s2{display:flex;align-items:center;justify-content:center;padding:0 90px}
+#s2 .line{font-family:'Newsreader',serif;font-size:122px;line-height:1.06;
+          color:var(--board-ink);text-align:left;letter-spacing:-.02em}
+#s2 .w{display:inline-block;will-change:transform,opacity}
+#s2 .accent{color:var(--board-brass);font-style:italic}
+
+/* --- 3. feature scenes -------------------------------------------------- */
+.feat{background:var(--board);display:block}
+.feat .cap{position:absolute;left:84px;right:84px;top:150px}
+.feat .step{font-size:26px;letter-spacing:.26em;text-transform:uppercase;
+            color:var(--board-brass);font-weight:600;margin-bottom:22px}
+.feat .ttl{font-family:'Newsreader',serif;font-size:82px;line-height:1.1;
+           color:var(--board-ink);letter-spacing:-.015em}
+.feat .shot{position:absolute;left:96px;top:470px;width:888px;height:1200px;
+            overflow:hidden;border:1px solid var(--board-rule);
+            box-shadow:0 40px 120px rgba(0,0,0,.45);background:var(--paper)}
+.feat .shot img{width:100%;display:block;transform-origin:50% 0%}
+.feat .fade{position:absolute;left:0;right:0;bottom:0;height:200px;
+            background:linear-gradient(to bottom,rgba(12,42,33,0),var(--board))}
+
+/* --- 4. call to action -------------------------------------------------- */
+#s4{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px}
+#s4 svg{width:300px;height:auto;color:var(--board-brass)}
+#s4 .claim{font-family:'Newsreader',serif;font-size:76px;line-height:1.14;
+           color:var(--board-ink);text-align:center;max-width:860px;letter-spacing:-.015em}
+#s4 .url{font-size:52px;letter-spacing:.06em;color:var(--board-brass);font-weight:600;margin-top:18px}
+#s4 .sub{font-size:30px;color:#93A69B;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="30"
+     data-width="1080" data-height="1920">
+
+  <!-- 1 ============================================= 0 → 3s -->
+  <section id="s1" class="clip" data-start="0" data-duration="3.4" data-track-index="0">
+    <svg viewBox="0 0 120 72" fill="none" stroke="currentColor" stroke-width="3"
+         stroke-linecap="square" class="mark" role="img"
+         aria-label="The MasjidOne mark: a dome between two minarets">
+      <path id="m1" d="M13.5 31a5 5 0 0 1 10 0"/><path id="m2" d="M14 31V57M23 31V57"/>
+      <circle id="m3" cx="18.5" cy="25" r="2" fill="currentColor" stroke="none"/>
+      <path id="m4" d="M18.5 27V31"/>
+      <path id="m5" d="M36 44a24 24 0 0 1 48 0"/><path id="m6" d="M35 44v13M85 44v13"/>
+      <circle id="m7" cx="60" cy="14" r="3" fill="currentColor" stroke="none"/>
+      <path id="m8" d="M60 17v3"/>
+      <path id="m9" d="M96.5 31a5 5 0 0 1 10 0"/><path id="m10" d="M97 31V57M106 31V57"/>
+      <circle id="m11" cx="101.5" cy="25" r="2" fill="currentColor" stroke="none"/>
+      <path id="m12" d="M101.5 27V31"/>
+      <path id="mbase" d="M8 58h104" stroke-width="4"/>
+    </svg>
+    <div class="rule" id="s1rule"></div>
+    <div class="word" id="s1word">Masjid<i>One</i></div>
+  </section>
+
+  <!-- 2 ============================================= 3 → 8s -->
+  <section id="s2" class="clip" data-start="3.2" data-duration="5" data-track-index="1">
+    <h1 class="line" id="s2line"></h1>
+  </section>
+
+  <!-- 3a ============================================ 8 → 13s -->
+  <section id="f1" class="clip feat" data-start="8" data-duration="5" data-track-index="2">
+    <div class="shot" data-layout-allow-overflow><img id="f1img" src="assets/ui/01-timetable.png" alt="The timetable and screens view"></div>
+    <div class="fade"></div>
+    <div class="cap">
+      <div class="step">One</div>
+      <div class="ttl" id="f1t">The committee publishes<br>the timetable once.</div>
+    </div>
+  </section>
+
+  <!-- 3b ============================================ 13 → 18s -->
+  <section id="f2" class="clip feat" data-start="13" data-duration="5" data-track-index="3">
+    <div class="shot" data-layout-allow-overflow><img id="f2img" src="assets/ui/02-register.png" alt="A teacher's register for the evening"></div>
+    <div class="fade"></div>
+    <div class="cap">
+      <div class="step">Two</div>
+      <div class="ttl" id="f2t">The teacher marks<br>tonight's register.</div>
+    </div>
+  </section>
+
+  <!-- 3c ============================================ 18 → 23s -->
+  <section id="f3" class="clip feat" data-start="18" data-duration="5" data-track-index="4">
+    <div class="shot" data-layout-allow-overflow><img id="f3img" src="assets/ui/03-parent.png" alt="A parent's view of their own child"></div>
+    <div class="fade"></div>
+    <div class="cap">
+      <div class="step">Three</div>
+      <div class="ttl" id="f3t">The parent sees<br>their own child.</div>
+    </div>
+  </section>
+
+  <!-- 4 ============================================= 23 → 30s -->
+  <section id="s4" class="clip" data-start="22.8" data-duration="7.2" data-track-index="5">
+    <svg viewBox="0 0 120 72" fill="none" stroke="currentColor" stroke-width="3"
+         stroke-linecap="square" role="img" aria-label="The MasjidOne mark">
+      <path d="M13.5 31a5 5 0 0 1 10 0"/><path d="M14 31V57M23 31V57"/>
+      <circle cx="18.5" cy="25" r="2" fill="currentColor" stroke="none"/><path d="M18.5 27V31"/>
+      <path d="M36 44a24 24 0 0 1 48 0"/><path d="M35 44v13M85 44v13"/>
+      <circle cx="60" cy="14" r="3" fill="currentColor" stroke="none"/><path d="M60 17v3"/>
+      <path d="M96.5 31a5 5 0 0 1 10 0"/><path d="M97 31V57M106 31V57"/>
+      <circle cx="101.5" cy="25" r="2" fill="currentColor" stroke="none"/><path d="M101.5 27V31"/>
+      <path d="M8 58h104" stroke-width="4"/>
+    </svg>
+    <div class="claim" id="s4claim">Nobody else joins the madrasah<br>to the congregation.</div>
+    <div class="url" id="s4url">masjidone.co.uk</div>
+    <div class="sub" id="s4sub">Request a demo</div>
+  </section>
+</div>
+
+<script>
+/* One paused root timeline, seek-safe, deterministic. No Date.now, no random. */
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({ paused: true });
+
+/* ---- 2. build the headline one word at a time -------------------------- */
+/* The site's own h1. "on one system" carries the brass italic it has on the
+   page, so the video and the site agree. */
+const WORDS = ["The","madrasah","and","the","congregation,"];
+const ACCENT = ["on","one","system"];
+const line = document.getElementById("s2line");
+WORDS.forEach((w,i) => {
+  const s = document.createElement("span");
+  s.className = "w"; s.textContent = w;
+  line.appendChild(s); line.appendChild(document.createTextNode(" "));
+});
+line.appendChild(document.createElement("br"));
+ACCENT.forEach(w => {
+  const s = document.createElement("span");
+  s.className = "w accent"; s.textContent = w;
+  line.appendChild(s); line.appendChild(document.createTextNode(" "));
+});
+const allWords = line.querySelectorAll(".w");
+
+/* ---- 1. logo reveal, 0 → 3.4s ------------------------------------------ */
+const strokes = ["#m1","#m2","#m4","#m5","#m6","#m8","#m9","#m10","#m12","#mbase"];
+const dots = ["#m3","#m7","#m11"];
+gsap.set([...strokes, ...dots], { opacity: 0 });
+gsap.set("#s1word", { opacity: 0, y: 28 });
+gsap.set("#s1rule", { width: 0 });
+
+tl.to(strokes, { opacity: 1, duration: 0.5, stagger: 0.055, ease: "power2.out" }, 0.25)
+  .to(dots,    { opacity: 1, duration: 0.3, stagger: 0.07,  ease: "back.out(2)" }, 0.75)
+  .to("#s1rule", { width: 420, duration: 0.6, ease: "power3.inOut" }, 1.15)
+  .to("#s1word", { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 1.35)
+  .to("#s1", { opacity: 0, duration: 0.45, ease: "power2.in" }, 2.95);
+
+/* ---- 2. kinetic type, 3.2 → 8s ----------------------------------------- */
+gsap.set("#s2", { opacity: 0 });
+gsap.set(allWords, { opacity: 0, y: 40, rotateX: -55 });
+tl.to("#s2", { opacity: 1, duration: 0.3 }, 3.2)
+  .to(allWords, { opacity: 1, y: 0, rotateX: 0, duration: 0.42,
+                  stagger: 0.33, ease: "power3.out" }, 3.45)
+  .to("#s2", { opacity: 0, y: -40, duration: 0.5, ease: "power2.in" }, 7.5);
+
+/* ---- 3. three feature scenes ------------------------------------------- */
+/* Each: the plate rises and pushes in slowly (a still frame that drifts reads
+   as alive); the caption words snap in over it. Out on a quick lift so the
+   cut feels sharp rather than dissolved. */
+[["f1",8],["f2",13],["f3",18]].forEach(([id, t]) => {
+  const sec = "#" + id, img = "#" + id + "img", ttl = "#" + id + "t";
+  gsap.set(sec, { opacity: 0 });
+  gsap.set(sec + " .shot", { y: 90, scale: 0.97, opacity: 0 });
+  gsap.set(img, { y: 0, scale: 1 });
+  gsap.set(sec + " .step", { opacity: 0, x: -24 });
+  gsap.set(ttl, { opacity: 0, y: 30 });
+
+  tl.to(sec, { opacity: 1, duration: 0.25, ease: "none" }, t)
+    .to(sec + " .shot", { y: 0, scale: 1, opacity: 1, duration: 0.75, ease: "power3.out" }, t + 0.05)
+    .to(img, { y: -120, scale: 1.05, duration: 4.6, ease: "none" }, t + 0.2)
+    .to(sec + " .step", { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, t + 0.35)
+    .to(ttl, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t + 0.5)
+    .to(sec, { opacity: 0, y: -60, duration: 0.4, ease: "power2.in" }, t + 4.6);
+});
+
+/* ---- 4. call to action, 22.8 → 30s ------------------------------------- */
+gsap.set("#s4", { opacity: 0 });
+gsap.set("#s4 svg", { opacity: 0, scale: 0.9 });
+gsap.set("#s4claim", { opacity: 0, y: 30 });
+gsap.set("#s4url", { opacity: 0, y: 20 });
+gsap.set("#s4sub", { opacity: 0 });
+
+tl.to("#s4", { opacity: 1, duration: 0.3 }, 22.8)
+  .to("#s4 svg", { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 23.0)
+  .to("#s4claim", { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 23.5)
+  .to("#s4url", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 24.3)
+  .to("#s4sub", { opacity: 1, duration: 0.4 }, 24.9);
+
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
