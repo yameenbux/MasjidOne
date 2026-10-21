@@ -42,11 +42,43 @@ a self-serve signup funnel. Nobody buys this without a meeting.
 | `components/site-behaviour.tsx` | client-side behaviour for those sections |
 | `components/ui/pricing.tsx` | the third-party pricing block |
 | `components/masjidone-pricing.tsx` | MasjidOne's real plan data |
+| `lib/security-policy.ts` | the Content Security Policy, derived from the constants above it |
 
 `site-sections.tsx` was mechanically ported from the original HTML, so it is
 plain markup driven by CSS classes rather than idiomatic React. Its behaviour
 is attached imperatively in `site-behaviour.tsx`. If you refactor a section
 into real components, move its behaviour with it.
+
+### Browser hardening — three rules, because each one fails silently
+
+There is a Content Security Policy, as a `<meta>` tag in `app/layout.tsx`,
+because GitHub Pages cannot set response headers. `README.md` explains what it
+does and — at least as plainly — what it cannot. Three things follow for
+anybody changing this repository, and all three break quietly rather than
+loudly, which is why they are rules rather than notes.
+
+1. **A new external origin must be added to `lib/security-policy.ts`, or the
+   browser will refuse it.** Not an error you will see in a build: a blocked
+   `fetch`, font or frame fails at runtime, in a console nobody has open. The
+   policy is *derived* — `MASJID_SCREENS` feeds `frame-src`,
+   `NEXT_PUBLIC_FORM_ENDPOINT` feeds `connect-src` and `form-action` — so adding
+   an origin to the constant is usually all that is needed. Adding a hardcoded
+   URL anywhere else is the thing that breaks.
+2. **`form-action` lists `mailto:` and the Worker origin on purpose. Do not
+   "tidy" it to `'self'`.** Both forms carry a real `action` and
+   `method="POST"` so they work with JavaScript disabled. Narrowing this breaks
+   that fallback and the breakage is invisible to anyone testing with
+   JavaScript on — which is everyone.
+3. **Serialise `application/ld+json` with `jsonLd()` from `lib/utils.ts`, never
+   `JSON.stringify`.** `stringify` escapes quotes and backslashes and leaves
+   `<` and `/` alone, so a value containing `</script>` closes the element and
+   the rest parses as markup. Harmless while those blocks are built from our own
+   constants; a hole the day one carries a masjid's name.
+
+**Verify a policy change in a browser, not in a build.** A CSP that is too
+strict throws nothing at `npm run build`. The check is loading every route with
+the console open, including a sign-in attempt at `/admin/` — that page makes no
+network call until you try one, so `connect-src` is otherwise never exercised.
 
 ## Design system
 
@@ -363,6 +395,36 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   keys and Cloudflare tokens stay out of git permanently — a key committed
   once lives in the history forever.
 - Do not add a server dependency. `output: 'export'` must keep working.
+- **Do not issue `DROP` or `DELETE` through the Supabase MCP tooling.** They
+  hang: both wait on an interactive confirmation for destructive statements that
+  the tooling cannot deliver, so the call times out and the whole transaction
+  rolls back leaving no trace — which is exactly what makes it look like a
+  database fault rather than a tooling one. `ALTER`, `UPDATE`, `INSERT`,
+  `REVOKE` and `CREATE FUNCTION` all go through normally. Run anything
+  destructive in the Supabase SQL editor. To change a policy prefer
+  **`ALTER POLICY`** over `DROP` plus `CREATE`: it avoids the timeout and leaves
+  no window in which the policy does not exist.
+- **Do not gate the `bmcc` storage INSERT on `verified_admin()`.** An anonymous
+  upload there looks like an oversight and is load-bearing:
+  `charity_collections.bmcc_certificate_path` stores the path, so the file has
+  to exist *before* the record does, and the person submitting a charity
+  collection request is not signed in. Tightening it breaks public submission,
+  and because the submitting form lives in the platform repository the breakage
+  will not be visible from here. What was genuinely missing was a rate limit —
+  it was the only anonymous write in the system without one — and that is now a
+  bucket-wide ceiling of 10 uploads an hour via `bmcc_upload_allowed()`. Storage
+  carries no identity for an anonymous uploader (`owner` is null, there is no IP
+  column), so a global ceiling is the only thing available at the policy layer.
+- **Do not assume `anon` cannot call a function because you never granted it.**
+  Postgres grants `EXECUTE` to `PUBLIC` by default and `anon` inherits it.
+  `masjid_attention()` — a masjid's whole operational picture — was anonymously
+  callable for exactly that reason; it refused on its first statement, so
+  nothing leaked, but it should never have been reachable. Worse,
+  **`REVOKE EXECUTE … FROM anon` is a silent no-op** against a `PUBLIC` grant:
+  it reports success and changes nothing. Revoke `FROM PUBLIC`, then grant
+  explicitly to whichever role needs it. `has_function_privilege('anon', …)` is
+  the only answer worth believing; in `proacl`, a bare `=X/postgres` is the
+  `PUBLIC` grant.
 
 ## Open items
 
@@ -476,8 +538,46 @@ These are commercial claims. Getting one wrong loses a sale and a referral.
   `DROP FUNCTION public.masjid_theme(text);` — in the Supabase SQL editor. It
   is already unreachable (EXECUTE revoked from every role, `masjids.theme` back
   to `{}`, comment marked DEAD), but it is a signpost toward a model this
-  product does not have. The drop could not be issued through the MCP tooling,
-  which timed out on it repeatedly while every other statement went through.
+  product does not have.
+
+  **Why it timed out, finally established on 21 October 2026, after three more
+  attempts.** Nothing is wrong with the database and nothing is wrong with the
+  statement. `DROP` and `DELETE` both wait on an interactive confirmation for
+  destructive statements that the MCP tooling cannot deliver, so they sit until
+  the call times out and roll back leaving no trace — while `ALTER`, `UPDATE`,
+  `INSERT`, `REVOKE` and `CREATE FUNCTION` all go through. The entry that stood
+  here saying it "timed out repeatedly while every other statement went
+  through" was an accurate observation with the wrong implied cause. **It is one
+  statement in the Supabase SQL editor and it will work.** Do not spend another
+  afternoon on the tooling.
+- **Two views still call `sole_masjid()`, and they will break the public site
+  the day a second masjid is inserted.** `notices_live` and `hall_availability`
+  are `SECURITY DEFINER` views filtering on `masjid_id = sole_masjid()`. Because
+  that function raises rather than guessing — correctly, and it must keep
+  raising — they **fail closed rather than leaking**, which is the right way
+  round. But "fail closed" here means the public notices board and hall
+  availability start raising for the **first** masjid too, not only the second.
+  The parameterised forms already exist and are already anonymously callable:
+  `notices_live(p_masjid text)` and `hall_availability(p_masjid text)`.
+  Converting the views and their callers has to happen in **one** change,
+  across the platform repository and whichever masjid portal reads them —
+  change a view alone and a masjid's notices board goes blank. Not urgent now;
+  blocking the moment a second masjid is signed.
+- **The `Test Teacher` account is disabled but not deleted.** A development
+  fixture created 28 September 2026 holding a live `teacher` role at the
+  founding masjid. On 21 October its `auth.users.banned_until` was set to
+  2999-12-31, verified to return `user_banned` from the auth API, so it can no
+  longer obtain a token — but the `auth.users` row, the profile, the role and
+  the `madrasah_staff` row all remain, because `DELETE` cannot be issued through
+  the MCP tooling (see "Things not to do"). It authored nothing: no register, no
+  attendance mark, no concern, no audit row.
+  **Finish it through the portal, not with SQL**, so the audit rows carry a real
+  actor: suspend the person (`set_person_active` deletes their roles and logs
+  `account_suspended`), archive the staff record (`archive_madrasah_staff`),
+  then delete the user in the Supabase dashboard, which cascades the profile.
+  Boys Year 7 keeps Irfan Ahmed; `ZZ TEST CLASS` simply loses a main teacher it
+  should never have had. That class and its one pupil, `Testchild Zzzfamily`,
+  are also fixtures and also still there.
 - **Direct Debit is wired end to end but has never been exercised, and it
   cannot be until there is a paying masjid.** Written 7 October 2026, because
   the next person will otherwise spend an afternoon rediscovering why.
