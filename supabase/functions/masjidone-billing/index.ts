@@ -458,18 +458,91 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+// ---------------------------------------------------------------------------
+//  CORS, FOR /start ONLY.
+//
+//  WITHOUT THIS THE BUTTON CANNOT WORK FROM A BROWSER AT ALL, and the way it
+//  fails is the worst kind: not a visible error in testing, but a dead button
+//  the first time somebody presses it, which on this route means in front of a
+//  committee. components/admin-direct-debit.tsx posts from masjidone.co.uk to
+//  this function on supabase.co, carrying Authorization and
+//  Content-Type: application/json. Both of those make the request non-simple,
+//  so the browser sends a preflight OPTIONS first and refuses to send the real
+//  POST unless that preflight answers with permission. This file used to return
+//  405 to every non-POST and no Access-Control-Allow-Origin at all, so the
+//  preflight was rejected and the POST never left the browser.
+//
+//  /webhook GETS NONE OF THIS, deliberately. Stripe is not a browser, sends no
+//  Origin, and is not subject to the same-origin policy. Advertising this
+//  function to web pages on the route that accepts signed events would widen
+//  it for no reason.
+//
+//  NAMED ORIGINS, NEVER '*'. A wildcard is not even legal here — the browser
+//  refuses `Access-Control-Allow-Origin: *` on a credentialed request — and
+//  this route reads an Authorization header. Anything not on the list gets no
+//  CORS header back, which is a refusal the browser enforces; it is not a
+//  substitute for the authorisation check in readAsCaller(), which is what
+//  actually protects the route.
+// ---------------------------------------------------------------------------
+const ALLOWED_ORIGINS = [
+  "https://masjidone.co.uk",
+  "https://www.masjidone.co.uk",
+  /* The GitHub Pages project-page origin, in case the site is ever served
+     there instead of the custom domain — see next.config.mjs on basePath. */
+  "https://yameenbux.github.io",
+  /* Local development against the deployed function. */
+  "http://localhost:3000",
+];
+
+function corsFor(origin: string): Record<string, string> {
+  if (!ALLOWED_ORIGINS.includes(origin)) return {};
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "authorization, content-type, apikey, x-client-info",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
+  };
+}
+
+/** Copy a response, adding the CORS headers. Responses are immutable. */
+function withCors(res: Response, cors: Record<string, string>): Response {
+  if (Object.keys(cors).length === 0) return res;
+  const headers = new Headers(res.headers);
+  for (const [k, v] of Object.entries(cors)) headers.set(k, v);
+  return new Response(res.body, {
+    status: res.status,
+    statusText: res.statusText,
+    headers,
+  });
+}
+
 Deno.serve(async (req) => {
   const path = new URL(req.url).pathname.replace(/\/+$/, "");
-  if (req.method !== "POST") return json({ error: "POST only." }, 405);
+  const origin = req.headers.get("Origin") ?? "";
+  const isStart = path.endsWith("/start");
+  const cors = isStart ? corsFor(origin) : {};
+
+  /* The preflight. 204 with the permissions and no body — answered before the
+     POST-only check below, which is what used to reject it. */
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: isStart ? 204 : 405, headers: cors });
+  }
+
+  if (req.method !== "POST") {
+    return withCors(json({ error: "POST only." }, 405), cors);
+  }
   try {
     if (path.endsWith("/webhook")) return await webhook(req);
-    if (path.endsWith("/start")) return await start(req);
+    if (isStart) return withCors(await start(req), cors);
     return json({ error: "Unknown route. Use /start or /webhook." }, 404);
   } catch (err) {
     /* The /start route's refusals arrive here. They are a person's problem to
-       read, so the message goes back rather than a generic failure. */
+       read, so the message goes back rather than a generic failure. The CORS
+       headers have to be on this too, or the browser hides the message and the
+       console shows a CORS error instead of the reason. */
     const message = (err as Error).message ?? String(err);
     console.error(`masjidone-billing: ${path} failed: ${message}`);
-    return json({ error: message }, 400);
+    return withCors(json({ error: message }, 400), cors);
   }
 });

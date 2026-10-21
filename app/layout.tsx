@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { BASE_PATH, SITE_ORIGIN, openGraphFor } from "@/lib/site";
 import { StructuredData } from "@/components/structured-data";
+import { CONTENT_SECURITY_POLICY } from "@/lib/security-policy";
 
 /**
  * TITLE AND DESCRIPTION ARE WRITTEN FOR A SEARCH RESULT, not for the page.
@@ -109,6 +110,29 @@ export default function RootLayout({
   return (
     <html lang="en-GB">
       <head>
+        {/*
+          FIRST IN THE HEAD, deliberately: a meta CSP governs only what the
+          parser meets after it, so anything above this line is unprotected.
+
+          See lib/security-policy.ts for what this policy does and — more
+          importantly — what it cannot do. Two things it does NOT do, so neither
+          is mistaken for done: it does not stop injected inline script
+          ('unsafe-inline' is unavoidable without a server to mint a nonce), and
+          it carries no frame-ancestors, because browsers ignore that directive
+          in meta form. Clickjacking stays open until /admin/ is served from
+          somewhere that can set real headers.
+
+          Strict-Transport-Security, X-Frame-Options and Permissions-Policy have
+          no meta equivalent at all and are therefore absent rather than
+          forgotten.
+        */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={CONTENT_SECURITY_POLICY}
+        />
+        {/* Send the full URL within our own origin, origin-only to anybody
+            else, and nothing at all over a downgrade. */}
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

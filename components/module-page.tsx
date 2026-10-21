@@ -2,6 +2,7 @@ import * as React from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-sections";
 import { SiteBehaviour } from "@/components/site-behaviour";
 import { BASE_PATH, SITE_ORIGIN, DEMO_HREF, PRICING } from "@/lib/site";
+import { jsonLd } from "@/lib/utils";
 
 /**
  * Shared shell for the module pages — one page per thing a committee actually
@@ -252,7 +253,7 @@ export function ModulePage({
       <SiteBehaviour />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(crumbs) }}
       />
     </>
   );
